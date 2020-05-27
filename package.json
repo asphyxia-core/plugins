@@ -1,0 +1,9 @@
+{
+  "name": "asphyxia-plugins",
+  "version": "1.0.0",
+  "description": "Community Plugins for Asphyxia CORE",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^14.0.5"
+  }
+}

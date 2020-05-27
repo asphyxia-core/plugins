@@ -1,0 +1,9 @@
+{
+  "includeDeclarations": true,
+  "excludeExternals": true,
+  "externalPattern": ["!asphyxia-core.d.ts"],
+  "mode": "file",
+  "readme": "../docs/_typedoc.md",
+  "name": "Asphyxia CORE Module API",
+  "out": "../docs/typedoc"
+}

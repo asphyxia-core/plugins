@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "esnext",
+    "noImplicitAny": false,
+    "moduleResolution": "node",
+    "types": ["./asphyxia-core"],
+    "sourceMap": false
+  }
+}
