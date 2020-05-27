@@ -1,0 +1,42 @@
+//-
+  Custom web component for individual user profile
+  The following frontend components are already avaliable:
+    * Bulma                [https://bulma.io/]
+    * MaterialDesignIcons  [https://materialdesignicons.com/]
+    * jQuery               [https://jquery.com/]
+    * axios                [https://github.com/axios/axios]
+    * GeoPattern           [https://github.com/btmills/geopattern]
+    * jdenticon            [https://jdenticon.com/]
+  You can include your own js/css as well
+
+  To request data from database, use //DATA// to indicate a comment block for capture and follow:
+    fieldName: expression
+
+  Then fieldName will be avaliable for the template engine when rendering.
+
+  WebUI file with prefix "profile_" is different from other pug file:
+    * This page have a "refid" local variable, you can request data with it or use it during render.
+    * User can access these page by editing a profile.
+
+//DATA//
+  profile: DB.FindOne(refid, { login_count: { $exists: true } })
+
+//-
+  You can include your own stylesheet
+link(rel="stylesheet" href="static/css/profile_name.css")
+
+div
+  h3 Hi #{profile.name}
+
+  section.section
+    //-
+      You can send data back to plugin using post method in form
+      see custom_page.pug for sending data using emit() function
+    form(method="post" action="/emit/change")
+      input(type="hidden" name="refid" value=refid)
+      .field
+        label.label Change Name
+      .field
+        input.input(type="text" name="name", value=profile.name)
+      .field
+        button.button.is-primary#change-name-button(type="submit") Submit

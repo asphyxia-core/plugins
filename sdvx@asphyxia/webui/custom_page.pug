@@ -1,0 +1,29 @@
+//-
+  Custom web component for plugin page
+  The following frontend components are already avaliable:
+    * Bulma                [https://bulma.io/]
+    * MaterialDesignIcons  [https://materialdesignicons.com/]
+    * jQuery               [https://jquery.com/]
+    * axios                [https://github.com/axios/axios]
+    * GeoPattern           [https://github.com/btmills/geopattern]
+    * jdenticon            [https://jdenticon.com/]
+  You can include your own js, css or images as well.
+  
+  To request data from database, use //DATA// to indicate a comment block for capture and follow:
+    fieldName: expression
+
+  Then fieldName will be avaliable for the template engine when rendering.
+
+//DATA//
+  data: DB.FindOne({ clicked: { $exists: true } })
+
+.content
+  h3 Custom Page
+  p Clicked: #{data.clicked}
+  p
+    button.button.is-primary#plugin-click
+      | Send "click" event and refresh
+
+//- You can include custom javascripts and send data back to plugin using emit()
+    see profile_name.pug for sending data using form
+script(src="static/js/custom_page.js")
