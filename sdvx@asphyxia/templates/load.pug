@@ -1,0 +1,98 @@
+game
+  result(__type="u8") 0
+  name(__type="str") #{name}
+  code(__type="str") 1337-6666
+  sdvx_id(__type="str") 1337-6666
+  gamecoin_packet(__type="u32") #{currency.packets}
+  gamecoin_block(__type="u32") #{currency.blocks}
+  appeal_id(__type="u16") #{appeal}
+
+  last_music_id(__type="s32") #{state.lastMusicID}
+  last_music_type(__type="u8") #{state.lastMusicType}
+  sort_type(__type="u8") #{state.sortType}
+  headphone(__type="u8") #{state.headphone}
+  blaster_energy(__type="u32") #{state.blasterEnergy}
+  blaster_count(__type="u32") #{state.blasterCount}
+
+  hispeed(__type="s32") #{settings.hiSpeed}
+  lanespeed(__type="u32") #{settings.laneSpeed}
+  gauge_option(__type="u8") #{settings.gaugeOption}
+  ars_option(__type="u8") #{settings.arsOption}
+  notes_option(__type="u8") #{settings.notesOption}
+  early_late_disp(__type="u8") #{settings.earlyLateDisp}
+  draw_adjust(__type="s32") #{settings.drawAdjust}
+  eff_c_left(__type="u8") #{settings.effCLeft}
+  eff_c_right(__type="u8") #{settings.effCRight}
+  narrow_down(__type="u8") #{settings.narrowDown}
+
+  kac_id(__type="str") #{name}
+  skill_level(__type="s16") #{skill.level}
+  skill_base_id(__type="s16") #{skill.base}
+  skill_name_id(__type="s16") #{skill.name}
+
+  ea_shop
+    packet_booster(__type="s32") 1
+    if version != 5
+      block_booster(__type="s32") 1
+  
+  eaappli
+    relation(__type="s8") 1
+  cloud
+    relation(__type="s8") 1
+  block_no(__type="s32") 0
+
+  skill
+    each course in courses
+      course
+        ssnid(__type="s16") #{course.sid}
+        crsid(__type="s16") #{course.cid}
+        sc(__type="s32") #{course.score}
+        ct(__type="s16") #{course.clearType}
+        gr(__type="s16") #{course.grade}
+        ar(__type="s16") #{course.achieveRate}
+        cnt(__type="s16") #{course.playCount}
+
+  item
+    each item in items
+      info
+        type(__type="u8") #{item.type}
+        id(__type="u32") #{item.id}
+        param(__type="u32") #{item.param}
+
+  param
+    each param in params
+      info
+        type(__type="u8") #{param.type}
+        id(__type="u32") #{param.id}
+        param(__type="u32" __count=param.param.length) #{param.param.join(" ")}
+    
+    //- Akaname
+    each id in [0, 1, 2]
+      info
+        type(__type="u8") 6
+        id(__type="u32") #{id}
+        param(__type="u32" __count="1") #{akaname}
+
+  play_count(__type="u32") 1001
+  day_count(__type="u32") 301
+  today_count(__type="u32") 21
+  play_chain(__type="u32") 31
+  max_play_chain(__type="u32") 31
+  week_count(__type="u32") 9
+  week_play_count(__type="u32") 101
+  week_chain(__type="u32") 31
+  max_week_chain(__type="u32") 31
+
+  if mixes
+    each mix in mixes
+      automation
+        mix_id(__type="s32") #{mix.id}
+        mix_code(__type="str") #{mix.code}
+        seq(__type="str")
+        mix_name(__type="str") #{mix.name}
+        player_name(__type="str") #{mix.creator}
+        generate_param(__type="str") #{mix.param}
+        distribution_date(__type="u32") 19990101
+        jacket_id(__type="s32") #{mix.jacketID}
+        tag_bit(__type="s32") #{mix.tag}
+        like_flg(__type="u8") 0

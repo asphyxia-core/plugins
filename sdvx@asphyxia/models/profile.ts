@@ -1,5 +1,7 @@
 export interface Profile {
-  modelVer: string;
+  collection: 'profile';
+
+  pluginVer: number;
 
   name: string;
   appeal: number;
@@ -9,7 +11,7 @@ export interface Profile {
     packets: number;
     blocks: number;
   };
-  
+
   state: {
     lastMusicID: number;
     lastMusicType: number;
@@ -17,7 +19,7 @@ export interface Profile {
     headphone: number;
     blasterEnergy: number;
     blasterCount: number;
-  }
+  };
 
   settings: {
     hiSpeed: number;
@@ -30,5 +32,5 @@ export interface Profile {
     effCLeft: number;
     effCRight: number;
     narrowDown: number;
-  }
+  };
 }

@@ -1,7 +1,0 @@
-<!--
-  Learn ejs here: https://ejs.co/#docs
--->
-<example status="0">
-  <refid __type="str"> <%= refid %> </refid>
-  <event __type="str"> <%= event %> </event>
-</example>

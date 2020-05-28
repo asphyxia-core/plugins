@@ -1,9 +1,13 @@
 // Version specific data (e.g. skills level)
 export interface VersionData {
+  collection: 'version';
+
   version: number;
-  skillLevel: number;
-  skillBaseID: number;
-  skillNameID: number;
+  skill: {
+    level: number;
+    base: number;
+    name: number;
+  };
   items: {
     [key: string]: number;
   };

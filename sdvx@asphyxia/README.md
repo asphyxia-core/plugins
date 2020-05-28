@@ -1,5 +1,3 @@
 # SOUND VOLTEX
 
-Supported Versions:
-  * HEAVENLY HAVEN
-  * VIVID WAVE
+(WORK IN PROGRESS)
