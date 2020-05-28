@@ -1,5 +1,5 @@
 import { common } from './handlers/common';
-import { load, create, loadScores } from './handlers/profile';
+import { load, create, loadScores, save } from './handlers/profile';
 export function register() {
   R.GameCode('KFC');
 
@@ -12,6 +12,8 @@ export function register() {
   R.Route('game.sv4_new', create);
   R.Route('game.sv4_frozen', true);
   R.Route('game.sv4_load_r', true);
+  R.Route('game.sv4_save', save);
+  R.Route('game.sv4_save_m', true);
 
   R.Route('game.sv5_common', common);
 }

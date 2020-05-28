@@ -3,32 +3,32 @@ game
   name(__type="str") #{name}
   code(__type="str") 1337-6666
   sdvx_id(__type="str") 1337-6666
-  gamecoin_packet(__type="u32") #{currency.packets}
-  gamecoin_block(__type="u32") #{currency.blocks}
+  gamecoin_packet(__type="u32") #{packets}
+  gamecoin_block(__type="u32") #{blocks}
   appeal_id(__type="u16") #{appeal}
 
-  last_music_id(__type="s32") #{state.lastMusicID}
-  last_music_type(__type="u8") #{state.lastMusicType}
-  sort_type(__type="u8") #{state.sortType}
-  headphone(__type="u8") #{state.headphone}
-  blaster_energy(__type="u32") #{state.blasterEnergy}
-  blaster_count(__type="u32") #{state.blasterCount}
+  last_music_id(__type="s32") #{musicID}
+  last_music_type(__type="u8") #{musicType}
+  sort_type(__type="u8") #{sortType}
+  headphone(__type="u8") #{headphone}
+  blaster_energy(__type="u32") #{blasterEnergy}
+  blaster_count(__type="u32") #{blasterCount}
 
-  hispeed(__type="s32") #{settings.hiSpeed}
-  lanespeed(__type="u32") #{settings.laneSpeed}
-  gauge_option(__type="u8") #{settings.gaugeOption}
-  ars_option(__type="u8") #{settings.arsOption}
-  notes_option(__type="u8") #{settings.notesOption}
-  early_late_disp(__type="u8") #{settings.earlyLateDisp}
-  draw_adjust(__type="s32") #{settings.drawAdjust}
-  eff_c_left(__type="u8") #{settings.effCLeft}
-  eff_c_right(__type="u8") #{settings.effCRight}
-  narrow_down(__type="u8") #{settings.narrowDown}
+  hispeed(__type="s32") #{hiSpeed}
+  lanespeed(__type="u32") #{laneSpeed}
+  gauge_option(__type="u8") #{gaugeOption}
+  ars_option(__type="u8") #{arsOption}
+  notes_option(__type="u8") #{notesOption}
+  early_late_disp(__type="u8") #{earlyLateDisp}
+  draw_adjust(__type="s32") #{drawAdjust}
+  eff_c_left(__type="u8") #{effCLeft}
+  eff_c_right(__type="u8") #{effCRight}
+  narrow_down(__type="u8") #{narrowDown}
 
   kac_id(__type="str") #{name}
-  skill_level(__type="s16") #{skill.level}
-  skill_base_id(__type="s16") #{skill.base}
-  skill_name_id(__type="s16") #{skill.name}
+  skill_level(__type="s16") #{skillLevel}
+  skill_base_id(__type="s16") #{skillBase}
+  skill_name_id(__type="s16") #{skillName}
 
   ea_shop
     packet_booster(__type="s32") 1
@@ -58,6 +58,13 @@ game
         type(__type="u8") #{item.type}
         id(__type="u32") #{item.id}
         param(__type="u32") #{item.param}
+
+    //- Unlock automation songs
+    each song in mixes
+      info
+        type(__type="u8") 15
+        id(__type="u32") #{song}
+        param(__type="u32") 1
 
   param
     each param in params

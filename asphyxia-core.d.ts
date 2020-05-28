@@ -62,7 +62,12 @@ declare type KAttrMap = { [key: string]: string };
 /**
  * Supported response encoding
  */
-declare type KEncoding = 'shift_jis' | 'utf8' | 'euc-jp' | 'ascii' | 'iso-8859-1';
+declare type KEncoding =
+  | 'shift_jis'
+  | 'utf8'
+  | 'euc-jp'
+  | 'ascii'
+  | 'iso-8859-1';
 
 /**
  * Information about requester
@@ -191,7 +196,11 @@ declare interface EamuseSend {
    *                 pass null or undefined to render static xml
    * @param options  Response options. See: [[EamuseSendOption]]
    */
-  xmlFile: (file: string, data?: any, options?: EamuseSendOption) => Promise<void>;
+  xmlFile: (
+    file: string,
+    data?: any,
+    options?: EamuseSendOption
+  ) => Promise<void>;
 
   /**
    * Render and send pug template from a file
@@ -201,13 +210,21 @@ declare interface EamuseSend {
    *                 pass null or undefined to render static xml
    * @param options  Response options. See: [[EamuseSendOption]]
    */
-  pugFile: (file: string, data?: any, options?: EamuseSendOption) => Promise<void>;
+  pugFile: (
+    file: string,
+    data?: any,
+    options?: EamuseSendOption
+  ) => Promise<void>;
 }
 
 /**
  * Helper type for typing your custom route.
  */
-declare type EamusePluginRoute = (req: EamuseInfo, data: any, send: EamuseSend) => Promise<any>;
+declare type EamusePluginRoute = (
+  req: EamuseInfo,
+  data: any,
+  send: EamuseSend
+) => Promise<any>;
 
 /**
  * Helper type for typing your custom route.
@@ -284,7 +301,10 @@ declare namespace R {
    *
    * Callback can be async function if you want to use await for your DB operations.
    */
-  function WebUIEvent(event: string, callback: (data: any) => void | Promise<void>): void;
+  function WebUIEvent(
+    event: string,
+    callback: (data: any) => void | Promise<void>
+  ): void;
 }
 
 /**
@@ -685,8 +705,16 @@ declare namespace K {
   function ITEM(type: 'bool', content: boolean, attr?: KAttrMap): any;
   function ITEM(type: KNumberType, content: number, attr?: KAttrMap): any;
   function ITEM(type: KBigIntType, content: bigint, attr?: KAttrMap): any;
-  function ITEM(type: KNumberGroupType, content: number[], attr?: KAttrMap): any;
-  function ITEM(type: KBigIntGroupType, content: bigint[], attr?: KAttrMap): any;
+  function ITEM(
+    type: KNumberGroupType,
+    content: number[],
+    attr?: KAttrMap
+  ): any;
+  function ITEM(
+    type: KBigIntGroupType,
+    content: bigint[],
+    attr?: KAttrMap
+  ): any;
 
   /**
    * Example:
@@ -728,7 +756,9 @@ declare namespace IO {
    * Asynchronously read a directory.
    * @param path A path to a directory.
    */
-  function ReadDir(path: string): Promise<{ name: string; type: 'file' | 'dir' | 'unsupported' }[]>;
+  function ReadDir(
+    path: string
+  ): Promise<{ name: string; type: 'file' | 'dir' | 'unsupported' }[]>;
 
   /**
    * Asynchronously writes data to a file, replacing the file if it already exists.
@@ -744,7 +774,10 @@ declare namespace IO {
   function WriteFile(
     path: string,
     data: any,
-    options: { encoding?: string | null; mode?: number | string; flag?: string } | string | null
+    options:
+      | { encoding?: string | null; mode?: number | string; flag?: string }
+      | string
+      | null
   ): Promise<void>;
 
   /**
@@ -788,7 +821,11 @@ declare namespace IO {
    */
   function ReadFile(
     path: string,
-    options: { encoding?: string | null; flag?: string } | string | undefined | null
+    options:
+      | { encoding?: string | null; flag?: string }
+      | string
+      | undefined
+      | null
   ): Promise<string | Buffer>;
 
   /**
@@ -827,6 +864,101 @@ declare namespace U {
   function GetConfig(key: string): any;
 }
 
+/** @ignore */
+type Doc<T> = { _id?: string } & T;
+/** @ignore */
+type Query<T> = {
+  [P in keyof T]?:
+    | T[P]
+    | (T[P] extends Array<infer E>
+        ? { $elemMatch: Query<E[]> } | { $size: number }
+        : T[P] extends number | string
+        ?
+            | { $lt: T[P] }
+            | { $lte: T[P] }
+            | { $gt: T[P] }
+            | { $gte: T[P] }
+            | { $in: T[P][] }
+            | { $ne: any }
+            | { $nin: any[] }
+            | { $exists: boolean }
+            | { $regex: RegExp }
+        : T[P] extends object
+        ? Query<T[P]>
+        : T[P]);
+} & {
+  $or?: Query<T>[];
+  $and?: Query<T>[];
+  $not?: Query<T>;
+  $where?: (this: T) => boolean;
+  _id?: string;
+  [path: string]: any;
+};
+/** @ignore */
+type Operators =
+  | '$exists'
+  | '$lt'
+  | '$lte'
+  | '$gt'
+  | '$gte'
+  | '$in'
+  | '$ne'
+  | '$nin'
+  | '$regex';
+/** @ignore */
+type PickyOperator<T, C, F> = Pick<
+  {
+    [P in keyof T]?: T[P] extends C ? F : Omit<T[P], Operators>;
+  },
+  {
+    [P in keyof T]: T[P] extends C ? P : never;
+  }[keyof T]
+>;
+/** @ignore */
+type ArrayPushOperator<T> = Pick<
+  {
+    [P in keyof T]?: T[P] extends Array<infer E>
+      ? E | { $each?: E[]; $slice?: number }
+      : never;
+  },
+  { [P in keyof T]: T[P] extends Array<any> ? P : never }[keyof T]
+> & { [path: string]: any | { $each?: any[]; $slice?: number } };
+/** @ignore */
+type ArraySetOperator<T> = Pick<
+  {
+    [P in keyof T]?: T[P] extends Array<infer E> ? E | { $each: E[] } : never;
+  },
+  { [P in keyof T]: T[P] extends Array<any> ? P : never }[keyof T]
+> & { [path: string]: any | { $each: any[] } };
+/** @ignore */
+type ArrayInOperator<T> = Pick<
+  {
+    [P in keyof T]?: T[P] extends Array<infer E> ? E | { $in: E[] } : never;
+  },
+  { [P in keyof T]: T[P] extends Array<any> ? P : never }[keyof T]
+> & { [path: string]: any | { $in: any[] } };
+/** @ignore */
+type ArrayPopOperator<T> = Pick<
+  {
+    [P in keyof T]?: T[P] extends Array<any> ? -1 | 1 : never;
+  },
+  { [P in keyof T]: T[P] extends Array<any> ? P : never }[keyof T]
+> & { [path: string]: -1 | 1 };
+/** @ignore */
+type Update<T> = Partial<T> & {
+  $unset?: PickyOperator<T, number, true> & { [path: string]: true };
+  $set?: { [P in keyof T]?: Omit<T[P], Operators> } & { [path: string]: any };
+  $min?: PickyOperator<T, number, number> & { [path: string]: number };
+  $max?: PickyOperator<T, number, number> & { [path: string]: number };
+  $inc?: PickyOperator<T, number, number> & { [path: string]: number };
+  $push?: ArrayPushOperator<T>;
+  $addToSet?: ArraySetOperator<T>;
+  $pop?: ArrayPopOperator<T>;
+  $pull?: ArrayInOperator<T>;
+} & {
+  [path: string]: any;
+};
+
 /**
  * Database operation.
  *
@@ -848,52 +980,52 @@ declare namespace U {
  * There will be 16 profiles maximum which is small enough to manage.
  */
 declare namespace DB {
-  function FindOne(refid: string, query: object): Promise<any>;
-  function FindOne(query: object): Promise<any>;
+  function FindOne<T>(refid: string, query: Query<T>): Promise<Doc<T>>;
+  function FindOne<T>(query: Query<T>): Promise<Doc<T>>;
 
-  function Find(refid: string | null, query: object): Promise<any>;
-  function Find(query: object): Promise<any>;
+  function Find<T>(refid: string | null, query: Query<T>): Promise<Doc<T>[]>;
+  function Find<T>(query: Query<T>): Promise<Doc<T>[]>;
 
-  function Insert(refid: string, doc: object): Promise<any>;
-  function Insert(doc: object): Promise<any>;
+  function Insert<T>(refid: string, doc: T): Promise<Doc<T>>;
+  function Insert<T>(doc: T): Promise<Doc<T>>;
 
-  function Remove(refid: string | null, query: object): Promise<number>;
-  function Remove(query: object): Promise<number>;
+  function Remove<T>(refid: string | null, query: Query<T>): Promise<number>;
+  function Remove<T>(query: Query<T>): Promise<number>;
 
-  function Update(
+  function Update<T>(
     refid: string | null,
-    query: object,
-    update: object
+    query: Query<T>,
+    update: Update<T>
   ): Promise<{
     updated: number;
-    docs: any[];
+    docs: Doc<T>[];
   }>;
-  function Update(
-    query: object,
-    update: object
+  function Update<T>(
+    query: Query<T>,
+    update: Update<T>
   ): Promise<{
     updated: number;
-    docs: any[];
+    docs: Doc<T>[];
   }>;
 
-  function Upsert(
+  function Upsert<T>(
     refid: string | null,
-    query: object,
-    update: object
+    query: Query<T>,
+    update: Update<T>
   ): Promise<{
     updated: number;
-    docs: any[];
+    docs: Doc<T>[];
     upsert: boolean;
   }>;
-  function Upsert(
-    query: object,
-    update: object
+  function Upsert<T>(
+    query: Query<T>,
+    update: Update<T>
   ): Promise<{
     updated: number;
-    docs: any[];
+    docs: Doc<T>[];
     upsert: boolean;
   }>;
 
-  function Count(refid: string | null, query: object): Promise<number>;
-  function Count(query: object): Promise<number>;
+  function Count<T>(refid: string | null, query: Query<T>): Promise<number>;
+  function Count<T>(query: Query<T>): Promise<number>;
 }

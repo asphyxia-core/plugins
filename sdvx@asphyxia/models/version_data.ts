@@ -3,15 +3,8 @@ export interface VersionData {
   collection: 'version';
 
   version: number;
-  skill: {
-    level: number;
-    base: number;
-    name: number;
-  };
-  items: {
-    [key: string]: number;
-  };
-  params: {
-    [key: string]: number[];
-  };
+
+  skillLevel: number;
+  skillBase: number;
+  skillName: number;
 }
