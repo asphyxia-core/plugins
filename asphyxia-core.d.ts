@@ -81,7 +81,7 @@ declare interface EamuseInfo {
 /**
  * Detail of a config
  */
-declare interface CONFIG_OPTIONS {
+declare interface ConfigOption {
   /** Provide a name to display in webui. If not provided, webui will use key as the name. */
   name?: string;
   /** Provide a description for the option */
@@ -288,11 +288,11 @@ declare namespace R {
    * Register a configuration option.
    *
    * @param key config key
-   * @param options See [[CONFIG_OPTIONS]]
+   * @param options See [[ConfigOption]]
    *
    * __NOTE__: `options.validator` will only notify user about invalid value. It wouldn't stop user from saving invalid value.
    */
-  function Config(key: string, options: CONFIG_OPTIONS): void;
+  function Config(key: string, options: ConfigOption): void;
 
   /**
    * Register a WebUI event callback
@@ -967,7 +967,7 @@ type Update<T> = Partial<T> & {
  * If `refid` is a string, query will match a specific profile data in __ProfileSpace__.
  *
  * If `refid` is null, query will match all profile data in __ProfileSpace__.
- *   (doesn't apply to [[DB.FindOne]] and [[DB.Insert]])
+ *   (doesn't apply to [[DB.Insert]])
  *
  * If `refid` is not provided, query will match data in ___PluginSpace___.
  *
@@ -980,7 +980,7 @@ type Update<T> = Partial<T> & {
  * There will be 16 profiles maximum which is small enough to manage.
  */
 declare namespace DB {
-  function FindOne<T>(refid: string, query: Query<T>): Promise<Doc<T>>;
+  function FindOne<T>(refid: string | null, query: Query<T>): Promise<Doc<T>>;
   function FindOne<T>(query: Query<T>): Promise<Doc<T>>;
 
   function Find<T>(refid: string | null, query: Query<T>): Promise<Doc<T>[]>;
@@ -1029,3 +1029,9 @@ declare namespace DB {
   function Count<T>(refid: string | null, query: Query<T>): Promise<number>;
   function Count<T>(query: Query<T>): Promise<number>;
 }
+
+/** @ignore */
+declare namespace _ {}
+/** @ignore */
+declare const _: any;
+/// <reference types="lodash" />

@@ -26,9 +26,9 @@ game
   narrow_down(__type="u8") #{narrowDown}
 
   kac_id(__type="str") #{name}
-  skill_level(__type="s16") #{skillLevel}
-  skill_base_id(__type="s16") #{skillBase}
-  skill_name_id(__type="s16") #{skillName}
+  skill_level(__type="s16") #{skillLevel || 0}
+  skill_base_id(__type="s16") #{skillBase || 0}
+  skill_name_id(__type="s16") #{skillName || 0}
 
   ea_shop
     packet_booster(__type="s32") 1

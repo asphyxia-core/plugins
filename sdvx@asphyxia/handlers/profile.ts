@@ -4,16 +4,102 @@ import { SDVX_AUTOMATION_SONGS } from '../data/vvw';
 import { CourseRecord } from '../models/course_record';
 import { Item } from '../models/item';
 import { Param } from '../models/param';
+import { MusicRecord } from '../models/music_record';
+
+function getVersion(info: EamuseInfo) {
+  if (info.module == 'game_3') return 0;
+  if (info.method.startsWith('sv4')) return 4;
+  if (info.method.startsWith('sv5')) return 5;
+  return 0;
+}
 
 export const loadScores: EPR = async (info, data, send) => {
   const refid = $(data).str('refid');
-  const records = await DB.Find(refid, { collection: 'music' });
+  if (!refid) return send.deny();
 
-  send.pugFile('templates/load_m.pug', { records });
+  const records = await DB.Find<MusicRecord>(refid, { collection: 'music' });
+
+  send.object({
+    music: {
+      info: records.map(r => ({
+        param: K.ARRAY('u32', [
+          r.mid,
+          r.type,
+          r.score,
+          r.clear,
+          r.grade,
+          0,
+          0,
+          r.buttonRate,
+          r.longRate,
+          r.volRate,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+        ]),
+      })),
+    },
+  });
+};
+
+export const saveScores: EPR = async (info, data, send) => {
+  const refid = $(data).str('refid');
+  if (!refid) return send.deny();
+
+  const musicID = $(data).number('music_id');
+  const musicType = $(data).number('music_type');
+
+  if (musicID == null || musicType == null) return send.deny();
+
+  const record = (await DB.FindOne<MusicRecord>(refid, {
+    collection: 'music',
+    mid: musicID,
+    type: musicType,
+  })) || {
+    collection: 'music',
+    mid: musicID,
+    type: musicType,
+    score: 0,
+    clear: 0,
+    grade: 0,
+    buttonRate: 0,
+    longRate: 0,
+    volRate: 0,
+  };
+
+  const score = $(data).number('score', 0);
+  if (score > record.score) {
+    record.score = score;
+    record.buttonRate = $(data).number('btn_rate', 0);
+    record.longRate = $(data).number('long_rate', 0);
+    record.volRate = $(data).number('vol_rate', 0);
+  }
+
+  record.clear = Math.max($(data).number('clear_type', 0), record.clear);
+  record.grade = Math.max($(data).number('score_grade', 0), record.grade);
+
+  await DB.Upsert<MusicRecord>(
+    refid,
+    {
+      collection: 'music',
+      mid: musicID,
+      type: musicType,
+    },
+    record
+  );
+
+  send.success();
 };
 
 export const save: EPR = async (info, data, send) => {
   const refid = $(data).str('refid');
+  if (!refid) return send.deny();
+
+  const version = getVersion(info);
+  if (version == 0) return send.deny();
 
   await DB.Update<Profile>(
     refid,
@@ -47,21 +133,29 @@ export const save: EPR = async (info, data, send) => {
     }
   );
 
+  await DB.Upsert<VersionData>(
+    {
+      collection: 'version',
+      version,
+    },
+    {
+      $set: {
+        skillBase: $(data).number('skill_base_id'),
+        skillLevel: $(data).number('skill_level'),
+        skillName: $(data).number('skill_name_id'),
+      },
+    }
+  );
+
   send.success();
 };
 
 export const load: EPR = async (info, data, send) => {
   const refid = $(data).str('refid');
+  if (!refid) return send.deny();
 
-  let version = 0;
-  switch (info.method) {
-    case 'sv4_load':
-      version = 4;
-      break;
-    case 'sv5_load':
-      version = 5;
-      break;
-  }
+  const version = getVersion(info);
+  if (version == 0) return send.deny();
 
   const profile = await DB.FindOne<Profile>(refid, {
     collection: 'profile',
@@ -74,18 +168,8 @@ export const load: EPR = async (info, data, send) => {
 
   let versionData = await DB.FindOne<VersionData>(refid, {
     collection: 'version',
+    version,
   });
-
-  if (!versionData) {
-    versionData = {
-      collection: 'version',
-      version,
-      skillBase: 0,
-      skillLevel: 0,
-      skillName: 0,
-    };
-    await DB.Insert(refid, versionData);
-  }
 
   const courses = await DB.Find<CourseRecord>(refid, { collection: 'course' });
   const items = await DB.Find<Item>(refid, { collection: 'item' });
@@ -103,6 +187,8 @@ export const load: EPR = async (info, data, send) => {
 
 export const create: EPR = async (info, data, send) => {
   const refid = $(data).str('refid');
+  if (!refid) return send.deny();
+
   const name = $(data).str('name', 'GUEST');
 
   const profile: Profile = {

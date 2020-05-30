@@ -2,8 +2,8 @@
   "name": "asphyxia-plugins",
   "version": "1.0.0",
   "description": "Community Plugins for Asphyxia CORE",
-  "dependencies": {},
-  "devDependencies": {
+  "dependencies": {
+    "@types/lodash": "^4.14.153",
     "@types/node": "^14.0.5"
   }
 }

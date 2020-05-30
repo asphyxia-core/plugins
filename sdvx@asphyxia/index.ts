@@ -1,19 +1,32 @@
 import { common } from './handlers/common';
-import { load, create, loadScores, save } from './handlers/profile';
+import { load, create, loadScores, save, saveScores } from './handlers/profile';
+
 export function register() {
   R.GameCode('KFC');
 
   R.Config('unlock_all_songs', { type: 'boolean', default: false });
   R.Config('unlock_all_navigators', { type: 'boolean', default: false });
 
-  R.Route('game.sv4_common', common);
-  R.Route('game.sv4_load', load);
-  R.Route('game.sv4_load_m', loadScores);
-  R.Route('game.sv4_new', create);
-  R.Route('game.sv4_frozen', true);
-  R.Route('game.sv4_load_r', true);
-  R.Route('game.sv4_save', save);
-  R.Route('game.sv4_save_m', true);
+  const MultiRoute = (method: string, handler: EPR | boolean) => {
+    // Helper for register multiple versions.
+    R.Route(`game.sv4_${method}`, handler);
+    R.Route(`game.sv5_${method}`, handler);
+  };
 
-  R.Route('game.sv5_common', common);
+  // Common
+  MultiRoute('common', common);
+
+  // Profile
+  MultiRoute('new', create);
+  MultiRoute('load', load);
+  MultiRoute('load_m', loadScores);
+  MultiRoute('load_r', true);
+  MultiRoute('save', save);
+  MultiRoute('save_m', saveScores);
+  MultiRoute('frozen', true);
+
+  // Useless
+  MultiRoute('lounge', false);
+
+  R.Unhandled();
 }
