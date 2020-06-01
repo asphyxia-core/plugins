@@ -3,6 +3,7 @@ export interface Profile {
 
   pluginVer: number;
 
+  id: number;
   name: string;
   appeal: number;
   akaname: number;

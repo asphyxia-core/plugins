@@ -1,8 +1,8 @@
 game
   result(__type="u8") 0
   name(__type="str") #{name}
-  code(__type="str") 1337-6666
-  sdvx_id(__type="str") 1337-6666
+  code(__type="str") #{code}
+  sdvx_id(__type="str") #{code}
   gamecoin_packet(__type="u32") #{packets}
   gamecoin_block(__type="u32") #{blocks}
   appeal_id(__type="u16") #{appeal}
@@ -26,10 +26,11 @@ game
   narrow_down(__type="u8") #{narrowDown}
 
   kac_id(__type="str") #{name}
-  skill_level(__type="s16") #{skillLevel || 0}
-  skill_base_id(__type="s16") #{skillBase || 0}
-  skill_name_id(__type="s16") #{skillName || 0}
 
+  skill_level(__type="s16") #{skill.level}
+  skill_base_id(__type="s16") #{skill.base}
+  skill_name_id(__type="s16") #{skill.name}
+  
   ea_shop
     packet_booster(__type="s32") 1
     if version != 5
@@ -47,10 +48,10 @@ game
         ssnid(__type="s16") #{course.sid}
         crsid(__type="s16") #{course.cid}
         sc(__type="s32") #{course.score}
-        ct(__type="s16") #{course.clearType}
+        ct(__type="s16") #{course.clear}
         gr(__type="s16") #{course.grade}
-        ar(__type="s16") #{course.achieveRate}
-        cnt(__type="s16") #{course.playCount}
+        ar(__type="s16") #{course.rate}
+        cnt(__type="s16") #{course.count}
 
   item
     each item in items
@@ -60,7 +61,7 @@ game
         param(__type="u32") #{item.param}
 
     //- Unlock automation songs
-    each song in mixes
+    each song in automation
       info
         type(__type="u8") 15
         id(__type="u32") #{song}
@@ -69,9 +70,9 @@ game
   param
     each param in params
       info
-        type(__type="u8") #{param.type}
-        id(__type="u32") #{param.id}
-        param(__type="u32" __count=param.param.length) #{param.param.join(" ")}
+        type(__type="s32") #{param.type}
+        id(__type="s32") #{param.id}
+        param(__type="s32" __count=param.param.length) #{param.param.join(" ")}
     
     //- Akaname
     each id in [0, 1, 2]
@@ -99,7 +100,7 @@ game
         mix_name(__type="str") #{mix.name}
         player_name(__type="str") #{mix.creator}
         generate_param(__type="str") #{mix.param}
-        distribution_date(__type="u32") 19990101
-        jacket_id(__type="s32") #{mix.jacketID}
+        distribution_date(__type="u32") 20200101
+        jacket_id(__type="s32") #{mix.jacket}
         tag_bit(__type="s32") #{mix.tag}
         like_flg(__type="u8") 0

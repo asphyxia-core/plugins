@@ -1,5 +1,14 @@
 import { common } from './handlers/common';
-import { load, create, loadScores, save, saveScores } from './handlers/profile';
+import { hiscore, rival, saveMix, loadMix } from './handlers/features';
+import {
+  load,
+  create,
+  loadScore,
+  save,
+  saveScore,
+  saveCourse,
+  buy,
+} from './handlers/profiles';
 
 export function register() {
   R.GameCode('KFC');
@@ -19,14 +28,29 @@ export function register() {
   // Profile
   MultiRoute('new', create);
   MultiRoute('load', load);
-  MultiRoute('load_m', loadScores);
-  MultiRoute('load_r', true);
+  MultiRoute('load_m', loadScore);
   MultiRoute('save', save);
-  MultiRoute('save_m', saveScores);
+  MultiRoute('save_m', saveScore);
+  MultiRoute('save_c', saveCourse);
   MultiRoute('frozen', true);
+  MultiRoute('buy', buy);
 
-  // Useless
+  // Features
+  MultiRoute('hiscore', hiscore);
+  MultiRoute('load_r', rival);
+  MultiRoute('save_ap', saveMix);
+  MultiRoute('load_ap', loadMix);
+
+  // Lazy
   MultiRoute('lounge', false);
+  MultiRoute('shop', true);
+  MultiRoute('save_e', true);
+  MultiRoute('play_e', true);
+  MultiRoute('play_s', true);
+  MultiRoute('entry_s', true);
+  MultiRoute('entry_e', true);
+  MultiRoute('exception', true);
+  R.Route('eventlog.write', true);
 
   R.Unhandled();
 }

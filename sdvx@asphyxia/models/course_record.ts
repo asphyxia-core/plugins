@@ -1,11 +1,13 @@
 export interface CourseRecord {
   collection: 'course';
 
+  version: number;
+
   sid: number;
   cid: number;
   score: number;
-  clearType: number;
+  clear: number;
   grade: number;
-  achieveRate: number;
-  playCount: number;
+  rate: number;
+  count: number;
 }

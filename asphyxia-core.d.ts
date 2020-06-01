@@ -1,4 +1,5 @@
 /// <reference types="node" />
+/// <reference types="lodash" />
 
 declare type KNumberType =
   | 's8'
@@ -657,6 +658,54 @@ declare namespace $ {
   function STR(data: any, path: string, def?: string): string;
 }
 
+/** @ignore */
+declare interface KITEM<
+  S extends
+    | KNumberType
+    | KBigIntType
+    | KNumberGroupType
+    | KBigIntGroupType
+    | 'str'
+    | 'bool'
+    | 'bin'
+    | 'ip4'
+> {
+  '@attr': {
+    __type: S;
+  };
+  '@content': S extends 'str'
+    ? string
+    : S extends 'bin'
+    ? Buffer
+    : S extends KNumberType | 'ip4' | 'bool'
+    ? [number]
+    : S extends KBigIntType
+    ? [bigint]
+    : S extends KNumberGroupType
+    ? number[]
+    : S extends KBigIntGroupType
+    ? bigint[]
+    : unknown;
+}
+
+/** @ignore */
+declare interface KARRAY<S extends KNumberType | KBigIntType> {
+  '@attr': {
+    __count: number;
+    __type: S;
+  };
+  '@content': S extends KNumberType
+    ? number[]
+    : S extends KBigIntType
+    ? bigint[]
+    : unknown;
+}
+
+/** @ignore */
+declare interface KATTR<M> {
+  '@attr': M;
+}
+
 /**
  * K stands for `Konstruct`
  *
@@ -682,7 +731,7 @@ declare namespace K {
    * @param attr  Attribute map
    * @param inner Inner tag/data
    */
-  function ATTR(attr: KAttrMap, inner?: any): any;
+  function ATTR<M extends KAttrMap, T>(attr: M, inner?: T): KATTR<M> & T;
 
   /**
    * Example:
@@ -699,22 +748,30 @@ declare namespace K {
    * @param content data of specified type
    * @param attr    attribute map in addition to **__type**
    */
-  function ITEM(type: 'str', content: string, attr?: KAttrMap): any;
-  function ITEM(type: 'bin', content: Buffer, attr?: KAttrMap): any;
-  function ITEM(type: 'ip4', content: string, attr?: KAttrMap): any;
-  function ITEM(type: 'bool', content: boolean, attr?: KAttrMap): any;
-  function ITEM(type: KNumberType, content: number, attr?: KAttrMap): any;
-  function ITEM(type: KBigIntType, content: bigint, attr?: KAttrMap): any;
-  function ITEM(
-    type: KNumberGroupType,
+  function ITEM(type: 'str', content: string, attr?: KAttrMap): KITEM<'str'>;
+  function ITEM(type: 'bin', content: Buffer, attr?: KAttrMap): KITEM<'bin'>;
+  function ITEM(type: 'ip4', content: string, attr?: KAttrMap): KITEM<'ip4'>;
+  function ITEM(type: 'bool', content: boolean, attr?: KAttrMap): KITEM<'bool'>;
+  function ITEM<S extends KNumberType>(
+    type: S,
+    content: number,
+    attr?: KAttrMap
+  ): KITEM<S>;
+  function ITEM<S extends KBigIntType>(
+    type: S,
+    content: bigint,
+    attr?: KAttrMap
+  ): KITEM<S>;
+  function ITEM<S extends KNumberGroupType>(
+    type: S,
     content: number[],
     attr?: KAttrMap
-  ): any;
-  function ITEM(
-    type: KBigIntGroupType,
+  ): KITEM<S>;
+  function ITEM<S extends KBigIntGroupType>(
+    type: S,
     content: bigint[],
     attr?: KAttrMap
-  ): any;
+  ): KITEM<S>;
 
   /**
    * Example:
@@ -731,9 +788,21 @@ declare namespace K {
    * @param content array of data, ____count__ attribute will be automatically set to `content.length`
    * @param attr    attribute map in addition to **__type** and **__count**
    */
-  function ARRAY(type: 'u8' | 's8', content: Buffer, attr?: KAttrMap): any;
-  function ARRAY(type: KNumberType, content: number[], attr?: KAttrMap): any;
-  function ARRAY(type: KBigIntType, content: bigint[], attr?: KAttrMap): any;
+  function ARRAY<S extends 'u8' | 's8'>(
+    type: S,
+    content: Buffer,
+    attr?: KAttrMap
+  ): KARRAY<S>;
+  function ARRAY<S extends KNumberType>(
+    type: S,
+    content: number[],
+    attr?: KAttrMap
+  ): KARRAY<S>;
+  function ARRAY<S extends KBigIntType>(
+    type: S,
+    content: bigint[],
+    attr?: KAttrMap
+  ): KARRAY<S>;
 }
 
 /**
@@ -867,6 +936,8 @@ declare namespace U {
 /** @ignore */
 type Doc<T> = { _id?: string } & T;
 /** @ignore */
+type ProfileDoc<T> = { _id?: string; __refid?: string } & T;
+/** @ignore */
 type Query<T> = {
   [P in keyof T]?:
     | T[P]
@@ -978,15 +1049,24 @@ type Update<T> = Partial<T> & {
  *
  * If you need to make rival/friend feature, we recommend you to get all profile data by passing null to `refid`.
  * There will be 16 profiles maximum which is small enough to manage.
+ *
+ * All query and doc should not have any fields start with "__" with "__refid" being the only exception.
+ * However, "__refid" field will still be ignored while other "__" starting fields will cause an error to be thrown.
  */
 declare namespace DB {
-  function FindOne<T>(refid: string | null, query: Query<T>): Promise<Doc<T>>;
+  function FindOne<T>(
+    refid: string | null,
+    query: Query<T>
+  ): Promise<ProfileDoc<T>>;
   function FindOne<T>(query: Query<T>): Promise<Doc<T>>;
 
-  function Find<T>(refid: string | null, query: Query<T>): Promise<Doc<T>[]>;
+  function Find<T>(
+    refid: string | null,
+    query: Query<T>
+  ): Promise<ProfileDoc<T>[]>;
   function Find<T>(query: Query<T>): Promise<Doc<T>[]>;
 
-  function Insert<T>(refid: string, doc: T): Promise<Doc<T>>;
+  function Insert<T>(refid: string, doc: T): Promise<ProfileDoc<T>>;
   function Insert<T>(doc: T): Promise<Doc<T>>;
 
   function Remove<T>(refid: string | null, query: Query<T>): Promise<number>;
@@ -998,7 +1078,7 @@ declare namespace DB {
     update: Update<T>
   ): Promise<{
     updated: number;
-    docs: Doc<T>[];
+    docs: ProfileDoc<T>[];
   }>;
   function Update<T>(
     query: Query<T>,
@@ -1014,7 +1094,7 @@ declare namespace DB {
     update: Update<T>
   ): Promise<{
     updated: number;
-    docs: Doc<T>[];
+    docs: ProfileDoc<T>[];
     upsert: boolean;
   }>;
   function Upsert<T>(
@@ -1031,7 +1111,5 @@ declare namespace DB {
 }
 
 /** @ignore */
-declare namespace _ {}
-/** @ignore */
+// @ts-ignore
 declare const _: any;
-/// <reference types="lodash" />

@@ -24,6 +24,7 @@ export const EVENT5 = [
   'STANDARD_UNLOCK_ENABLE',
   'PLAYERJUDGEADJ_ENABLE',
   'MIXID_INPUT_ENABLE',
+  'SERIALCODE_JAPAN',
   'EVENTDATE_ONIGO',
   'EVENTDATE_GOTT',
   'GENERATOR_ABLE',
@@ -2588,7 +2589,18 @@ export const SDVX_AUTOMATION_SONGS = [
 export const EXTENDS5 = [
   {
     id: 91,
-    type: 14,
-    params: [0, 1, 0, 0, 1, SDVX_AUTOMATION_SONGS.join(','), '', '', '', ''],
+    type: 17,
+    params: [
+      0,
+      1,
+      0,
+      0,
+      1,
+      SDVX_AUTOMATION_SONGS.join(','),
+      '0',
+      '0',
+      '0',
+      '0',
+    ],
   },
 ];
