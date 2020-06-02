@@ -18,7 +18,7 @@ async function getAutomationMixes(params: Param[]) {
   const mixids = params
     .filter(p => p.id == 3)
     .reduce((res, p) => _.union(res, p.param), []);
-  return await DB.Find<Mix>(null, { collection: 'mix', id: { $in: mixids } });
+  return await DB.Find<Mix>({ collection: 'mix', id: { $in: mixids } });
 }
 
 function unlockNavigators(items: Partial<Item>[]) {

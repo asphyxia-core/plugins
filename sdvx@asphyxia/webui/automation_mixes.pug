@@ -1,0 +1,139 @@
+//DATA//
+  mixes: DB.Find({ collection: 'mix' })
+
+-
+  const mixes_reversed = _.reverse(mixes)
+  const DIFF = ['NOV', 'ADV', 'EXH', 'INF', 'MXM']
+  const editing = query.edit
+  const sharing = query.share
+  function formatCode(code) {
+    return `${code.slice(0,4)}-${code.slice(4,8)}-${code.slice(8)}`
+  }
+
+  function shortenParam(param) {
+    const data = JSON.parse(param);
+    const gParam = JSON.parse(data.gene.params);
+    return [
+      data.dbVer,
+      gParam.minorVer,
+      gParam.seed,
+      data.gene.ver,
+      data.voxdj.params, 
+      data.voxdj.ver,
+    ].concat(...data.musics.map(m=>[m.id, m.grade]))
+  }
+
+
+//----------------
+      Editing
+//----------------
+if editing
+  - const mix = mixes_reversed.filter(m=>m.code == editing)[0]
+  if mix
+    .card
+      .card-header
+        p.card-header-title
+          span.icon
+            i.mdi.mdi-music
+          | #{formatCode(mix.code)}
+      .card-content
+        form(method="post" action="/emit/updateMix")
+          input.input(type="hidden" name="code", value=mix.code readonly)
+          .field
+            label.label Mix Name
+            .control
+              input.input(type="text" name="name", placeholder=mix.name)
+          .field
+            label.label By
+            .control
+              input.input(type="text" name="creator", placeholder=mix.creator)
+          .field.buttons
+            a.button(href="?")
+              span.icon
+                i.mdi.mdi-chevron-left
+              span Back
+            button.button.is-primary(type="submit")
+              span.icon
+                i.mdi.mdi-check
+              span Submit
+  else
+    p Mix not found
+    a.button(href="?")
+      span.icon
+        i.mdi.mdi-chevron-left
+      span Back
+
+//----------------
+      Sharing
+//----------------
+else if sharing
+  -
+    const mix = mixes_reversed.filter(m=>m.code == sharing)[0]
+  if mix
+    .card
+      .card-header
+        p.card-header-title
+          span.icon
+            i.mdi.mdi-music
+          | #{formatCode(mix.code)}
+      .card-content
+        .notification.is-info.is-light Double click and copy the code
+        .field
+          input.input.is-small.is-size-7(type='text' onClick="this.setSelectionRange(0, this.value.length)" value=`\`${JSON.stringify([mix.code,mix.name,mix.creator].concat(shortenParam(mix.param)))}\`` readonly)
+        .field
+          a.button(href="?")
+            span.icon
+              i.mdi.mdi-chevron-left
+            span Back
+  else
+    p Mix not found
+    a.button(href="?")
+      span.icon
+        i.mdi.mdi-chevron-left
+      span Back
+
+//----------------
+     Main Page
+//----------------
+else
+  div.content
+    .buttons
+      form(method="post" action="/emit/importMix")
+        .field.has-addons
+          .control.is-expanded
+            input.input(placeholder="Paste code here" name='json')
+          .control
+            button.button.is-info(type="submit")
+              span.icon
+                i.mdi.mdi-import
+              span Import Mix
+    .columns.is-multiline
+      each mix in mixes_reversed
+        .column.is-half
+          .card
+            .card-header
+              p.card-header-title
+                span.icon
+                  i.mdi.mdi-music
+                | #{formatCode(mix.code)}
+            .card-content
+              p #{mix.name}
+              p <b>by</b> #{mix.creator} 
+              - let param = JSON.parse(mix.param)
+              - let musics = param.musics.map(m=>`${m.id}(${DIFF[m.grade]})`).join('+')
+              p #{param.musics.length}-SONGS 
+                span.has-tooltip-right(data-tooltip=musics) MIX
+              .buttons
+                a.button.is-primary(href=`?share=${mix.code}`)
+                  span.icon
+                    i.mdi.mdi-export
+                  span Share
+                a.button.is-info.is-outlined(href=`?edit=${mix.code}`)
+                  span.icon
+                    i.mdi.mdi-pencil
+                  span Edit
+                button.button.is-danger.is-outlined(onClick=`emit('deleteMix', {code: '${mix.code}'}).then(()=>location.reload(true))`)
+                  span.icon
+                    i.mdi.mdi-trash-can
+                  span Delete
+

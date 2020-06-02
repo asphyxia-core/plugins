@@ -69,11 +69,11 @@ export const saveMix: EPR = async (info, data, send) => {
 
   const id = await GetCounter('mix');
   let code = _.padStart(_.random(0, 999999999999).toString(), 12, '0');
-  while (await DB.FindOne<Mix>(null, { code })) {
+  while (await DB.FindOne<Mix>({ collection: 'mix', code })) {
     code = _.padStart(_.random(0, 999999999999).toString(), 12, '0');
   }
 
-  const doc = await DB.Insert<Mix>(refid, {
+  const doc = await DB.Insert<Mix>({
     collection: 'mix',
     id,
     code,
@@ -103,7 +103,7 @@ export const saveMix: EPR = async (info, data, send) => {
 export const loadMix: EPR = async (info, data, send) => {
   const code = $(data).str('mix_code');
 
-  const mix = await DB.FindOne<Mix>(null, { collection: 'mix', code });
+  const mix = await DB.FindOne<Mix>({ collection: 'mix', code });
   if (!mix) {
     send.object({ result: K.ITEM('s32', 1) });
     return;

@@ -1,6 +1,12 @@
 import { common } from './handlers/common';
 import { hiscore, rival, saveMix, loadMix } from './handlers/features';
 import {
+  updateProfile,
+  updateMix,
+  importMix,
+  deleteMix,
+} from './handlers/webui';
+import {
   load,
   create,
   loadScore,
@@ -15,6 +21,11 @@ export function register() {
 
   R.Config('unlock_all_songs', { type: 'boolean', default: false });
   R.Config('unlock_all_navigators', { type: 'boolean', default: false });
+
+  R.WebUIEvent('updateProfile', updateProfile);
+  R.WebUIEvent('updateMix', updateMix);
+  R.WebUIEvent('importMix', importMix);
+  R.WebUIEvent('deleteMix', deleteMix);
 
   const MultiRoute = (method: string, handler: EPR | boolean) => {
     // Helper for register multiple versions.
