@@ -1,0 +1,36 @@
+//DATA//
+  info: DB.Find(refid, { collection: 'playerinfo' })
+
+-
+
+div
+  each i in info
+    .card
+      .card-header
+        p.card-header-title
+          span.icon
+            i.mdi.mdi-account-edit
+          | User Detail (#{i.version})
+      .card-content
+        form(method="post" action="/emit/updatePlayerInfo")
+          .field
+            label.label ID
+            .control
+              input.input(type="text" name="refid", value=refid readonly)
+          .field
+            label.label Version
+            .control
+              input.input(type="text" name="version", value=i.version readonly)
+          .field
+            label.label Name
+            .control
+              input.input(type="text" name="name", value=i.name)
+          .field
+            label.label Title
+            .control
+              input.input(type="text" name="title", value=i.title)
+          .field
+            button.button.is-primary(type="submit")
+              span.icon
+                i.mdi.mdi-check
+              span Submit
