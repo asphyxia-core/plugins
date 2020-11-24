@@ -15,7 +15,7 @@ export function register() {
 
   R.Config("custom_mdb_path", {
     name: "Custom MDB PATH",
-    desc: "You need to enabled Custom MDB option first. USE ABSOLUTE PATH !!",
+    desc: "You need to enable Custom MDB option first. USE ABSOLUTE PATH !!",
     type: "string",
     default: "",
   })

@@ -1,8 +1,8 @@
 import * as path from "path";
-import { readXML } from './helper';
-import { music } from "./mdb_mt.json"
+import { readJSON, readXML } from './helper';
 
 export async function processData() {
+  const { music } = await readJSON(path.resolve(__dirname, './mdb_ex.json'))
   return {
     music,
   };
