@@ -1,7 +1,7 @@
 import { gameInfoGet, shopInfoRegist } from "./handlers/info";
 import { playableMusic } from "./handlers/MusicList"
 import { getPlayer, check, regist, savePlayer } from "./handlers/profiles";
-import { updatePlayerInfo } from "./models/webui";
+import { updatePlayerInfo } from "./handlers/webui";
 
 export function register() {
   R.GameCode('M32');

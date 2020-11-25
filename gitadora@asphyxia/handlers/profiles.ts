@@ -745,25 +745,25 @@ export const savePlayer: EPR = async (info, data, send) => {
 
   const autoSet = (field: keyof Profile, path: string, array = false): void => {
     if (array) {
-      profile[field] = dataplayer.content(path, profile[field])
+      profile[field] = dataplayer.numbers(path, profile[field])
     } else {
-      profile[field] = dataplayer.content(path, profile[field])[0]
+      profile[field] = dataplayer.number(path, profile[field])
     }
   };
 
   const autoExtra = (field: keyof Extra, path: string, array = false): void => {
     if (array) {
-      extra[field] = dataplayer.content(path, extra[field])
+      extra[field] = dataplayer.numbers(path, extra[field])
     } else {
-      extra[field] = dataplayer.content(path, extra[field])[0]
+      extra[field] = dataplayer.number(path, extra[field])
     }
   };
 
   const autoRec = (field: keyof Record, path: string, array = false): void => {
     if (array) {
-      rec[field] = dataplayer.content(path, rec[field])
+      rec[field] = dataplayer.numbers(path, rec[field])
     } else {
-      rec[field] = dataplayer.content(path, rec[field])[0]
+      rec[field] = dataplayer.number(path, rec[field])
     }
   };
 
