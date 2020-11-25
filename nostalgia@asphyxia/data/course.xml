@@ -1,0 +1,699 @@
+<?xml version="1.0" encoding="shift_jis"?>
+<course_data_list release_code="2019022700">
+  <course_data index="1">
+    <name __type="str">ベーシック10級検定</name>
+    <priority __type="s32">40</priority>
+    <req_nos __type="s32">1000</req_nos>
+    <mode_type __type="s32">1</mode_type>
+    <req_grade __type="s32">80000</req_grade>
+    <seq_list>
+      <tune tune_no="0">
+        <index __type="s32">140</index>
+        <difficulty __type="s32">0</difficulty>
+        <clear_point __type="s32">850000</clear_point>
+      </tune>
+      <tune tune_no="1">
+        <index __type="s32">225</index>
+        <difficulty __type="s32">0</difficulty>
+        <clear_point __type="s32">1725000</clear_point>
+      </tune>
+      <tune tune_no="2">
+        <index __type="s32">170</index>
+        <difficulty __type="s32">0</difficulty>
+        <clear_point __type="s32">2625000</clear_point>
+      </tune>
+    </seq_list>
+    <unlock_music __type="s32">0</unlock_music>
+    <unlock_item_list />
+    <start_date __type="str">2019-01-01 10:00</start_date>
+    <end_date __type="str">9999-01-01 00:00</end_date>
+  </course_data>
+  <course_data index="2">
+    <name __type="str">ベーシック9級検定</name>
+    <priority __type="s32">39</priority>
+    <req_nos __type="s32">1500</req_nos>
+    <mode_type __type="s32">1</mode_type>
+    <req_grade __type="s32">120000</req_grade>
+    <seq_list>
+      <tune tune_no="0">
+        <index __type="s32">199</index>
+        <difficulty __type="s32">0</difficulty>
+        <clear_point __type="s32">875000</clear_point>
+      </tune>
+      <tune tune_no="1">
+        <index __type="s32">209</index>
+        <difficulty __type="s32">0</difficulty>
+        <clear_point __type="s32">1775000</clear_point>
+      </tune>
+      <tune tune_no="2">
+        <index __type="s32">212</index>
+        <difficulty __type="s32">0</difficulty>
+        <clear_point __type="s32">2700000</clear_point>
+      </tune>
+    </seq_list>
+    <unlock_music __type="s32">0</unlock_music>
+    <unlock_item_list />
+    <start_date __type="str">2019-01-01 10:00</start_date>
+    <end_date __type="str">9999-01-01 00:00</end_date>
+  </course_data>
+  <course_data index="3">
+    <name __type="str">ベーシック8級検定</name>
+    <priority __type="s32">38</priority>
+    <req_nos __type="s32">2000</req_nos>
+    <mode_type __type="s32">1</mode_type>
+    <req_grade __type="s32">200000</req_grade>
+    <seq_list>
+      <tune tune_no="0">
+        <index __type="s32">220</index>
+        <difficulty __type="s32">1</difficulty>
+        <clear_point __type="s32">900000</clear_point>
+      </tune>
+      <tune tune_no="1">
+        <index __type="s32">232</index>
+        <difficulty __type="s32">1</difficulty>
+        <clear_point __type="s32">1825000</clear_point>
+      </tune>
+      <tune tune_no="2">
+        <index __type="s32">82</index>
+        <difficulty __type="s32">0</difficulty>
+        <clear_point __type="s32">2775000</clear_point>
+      </tune>
+    </seq_list>
+    <unlock_music __type="s32">0</unlock_music>
+    <unlock_item_list />
+    <start_date __type="str">2019-01-01 10:00</start_date>
+    <end_date __type="str">9999-01-01 00:00</end_date>
+  </course_data>
+  <course_data index="4">
+    <name __type="str">ベーシック7級検定</name>
+    <priority __type="s32">37</priority>
+    <req_nos __type="s32">2500</req_nos>
+    <mode_type __type="s32">1</mode_type>
+    <req_grade __type="s32">300000</req_grade>
+    <seq_list>
+      <tune tune_no="0">
+        <index __type="s32">186</index>
+        <difficulty __type="s32">1</difficulty>
+        <clear_point __type="s32">925000</clear_point>
+      </tune>
+      <tune tune_no="1">
+        <index __type="s32">141</index>
+        <difficulty __type="s32">1</difficulty>
+        <clear_point __type="s32">1875000</clear_point>
+      </tune>
+      <tune tune_no="2">
+        <index __type="s32">32</index>
+        <difficulty __type="s32">1</difficulty>
+        <clear_point __type="s32">2850000</clear_point>
+      </tune>
+    </seq_list>
+    <unlock_music __type="s32">0</unlock_music>
+    <unlock_item_list />
+    <start_date __type="str">2019-01-01 10:00</start_date>
+    <end_date __type="str">9999-01-01 00:00</end_date>
+  </course_data>
+  <course_data index="5">
+    <name __type="str">ベーシック6級検定</name>
+    <priority __type="s32">36</priority>
+    <req_nos __type="s32">3000</req_nos>
+    <mode_type __type="s32">1</mode_type>
+    <req_grade __type="s32">400000</req_grade>
+    <seq_list>
+      <tune tune_no="0">
+        <index __type="s32">36</index>
+        <difficulty __type="s32">1</difficulty>
+        <clear_point __type="s32">925000</clear_point>
+      </tune>
+      <tune tune_no="1">
+        <index __type="s32">87</index>
+        <difficulty __type="s32">1</difficulty>
+        <clear_point __type="s32">1875000</clear_point>
+      </tune>
+      <tune tune_no="2">
+        <index __type="s32">242</index>
+        <difficulty __type="s32">1</difficulty>
+        <clear_point __type="s32">2850000</clear_point>
+      </tune>
+    </seq_list>
+    <unlock_music __type="s32">0</unlock_music>
+    <unlock_item_list />
+    <start_date __type="str">2019-01-01 10:00</start_date>
+    <end_date __type="str">9999-01-01 00:00</end_date>
+  </course_data>
+  <course_data index="6">
+    <name __type="str">ベーシック5級検定</name>
+    <priority __type="s32">35</priority>
+    <req_nos __type="s32">3500</req_nos>
+    <mode_type __type="s32">1</mode_type>
+    <req_grade __type="s32">450000</req_grade>
+    <seq_list>
+      <tune tune_no="0">
+        <index __type="s32">122</index>
+        <difficulty __type="s32">2</difficulty>
+        <clear_point __type="s32">925000</clear_point>
+      </tune>
+      <tune tune_no="1">
+        <index __type="s32">40</index>
+        <difficulty __type="s32">2</difficulty>
+        <clear_point __type="s32">1875000</clear_point>
+      </tune>
+      <tune tune_no="2">
+        <index __type="s32">85</index>
+        <difficulty __type="s32">2</difficulty>
+        <clear_point __type="s32">2850000</clear_point>
+      </tune>
+    </seq_list>
+    <unlock_music __type="s32">0</unlock_music>
+    <unlock_item_list />
+    <start_date __type="str">2019-01-01 10:00</start_date>
+    <end_date __type="str">9999-01-01 00:00</end_date>
+  </course_data>
+  <course_data index="7">
+    <name __type="str">ベーシック4級検定</name>
+    <priority __type="s32">34</priority>
+    <req_nos __type="s32">4000</req_nos>
+    <mode_type __type="s32">1</mode_type>
+    <req_grade __type="s32">500000</req_grade>
+    <seq_list>
+      <tune tune_no="0">
+        <index __type="s32">7</index>
+        <difficulty __type="s32">2</difficulty>
+        <clear_point __type="s32">925000</clear_point>
+      </tune>
+      <tune tune_no="1">
+        <index __type="s32">28</index>
+        <difficulty __type="s32">2</difficulty>
+        <clear_point __type="s32">1875000</clear_point>
+      </tune>
+      <tune tune_no="2">
+        <index __type="s32">49</index>
+        <difficulty __type="s32">0</difficulty>
+        <clear_point __type="s32">2850000</clear_point>
+      </tune>
+    </seq_list>
+    <unlock_music __type="s32">0</unlock_music>
+    <unlock_item_list />
+    <start_date __type="str">2020-01-21 10:00</start_date>
+    <end_date __type="str">9999-01-01 00:00</end_date>
+  </course_data>
+  <course_data index="8">
+    <name __type="str">ベーシック3級検定</name>
+    <priority __type="s32">33</priority>
+    <req_nos __type="s32">4500</req_nos>
+    <mode_type __type="s32">1</mode_type>
+    <req_grade __type="s32">525000</req_grade>
+    <seq_list>
+      <tune tune_no="0">
+        <index __type="s32">8</index>
+        <difficulty __type="s32">2</difficulty>
+        <clear_point __type="s32">925000</clear_point>
+      </tune>
+      <tune tune_no="1">
+        <index __type="s32">29</index>
+        <difficulty __type="s32">0</difficulty>
+        <clear_point __type="s32">1875000</clear_point>
+      </tune>
+      <tune tune_no="2">
+        <index __type="s32">50</index>
+        <difficulty __type="s32">1</difficulty>
+        <clear_point __type="s32">2850000</clear_point>
+      </tune>
+    </seq_list>
+    <unlock_music __type="s32">0</unlock_music>
+    <unlock_item_list />
+    <start_date __type="str">2020-01-21 10:00</start_date>
+    <end_date __type="str">9999-01-01 00:00</end_date>
+  </course_data>
+  <course_data index="9">
+    <name __type="str">ベーシック2級検定</name>
+    <priority __type="s32">32</priority>
+    <req_nos __type="s32">5000</req_nos>
+    <mode_type __type="s32">1</mode_type>
+    <req_grade __type="s32">540000</req_grade>
+    <seq_list>
+      <tune tune_no="0">
+        <index __type="s32">9</index>
+        <difficulty __type="s32">0</difficulty>
+        <clear_point __type="s32">925000</clear_point>
+      </tune>
+      <tune tune_no="1">
+        <index __type="s32">30</index>
+        <difficulty __type="s32">1</difficulty>
+        <clear_point __type="s32">1875000</clear_point>
+      </tune>
+      <tune tune_no="2">
+        <index __type="s32">51</index>
+        <difficulty __type="s32">2</difficulty>
+        <clear_point __type="s32">2850000</clear_point>
+      </tune>
+    </seq_list>
+    <unlock_music __type="s32">0</unlock_music>
+    <unlock_item_list />
+    <start_date __type="str">2020-01-21 10:00</start_date>
+    <end_date __type="str">9999-01-01 00:00</end_date>
+  </course_data>
+  <course_data index="10">
+    <name __type="str">ベーシック1級検定</name>
+    <priority __type="s32">31</priority>
+    <req_nos __type="s32">6000</req_nos>
+    <mode_type __type="s32">1</mode_type>
+    <req_grade __type="s32">550000</req_grade>
+    <seq_list>
+      <tune tune_no="0">
+        <index __type="s32">10</index>
+        <difficulty __type="s32">1</difficulty>
+        <clear_point __type="s32">925000</clear_point>
+      </tune>
+      <tune tune_no="1">
+        <index __type="s32">31</index>
+        <difficulty __type="s32">2</difficulty>
+        <clear_point __type="s32">1875000</clear_point>
+      </tune>
+      <tune tune_no="2">
+        <index __type="s32">52</index>
+        <difficulty __type="s32">2</difficulty>
+        <clear_point __type="s32">2850000</clear_point>
+      </tune>
+    </seq_list>
+    <unlock_music __type="s32">0</unlock_music>
+    <unlock_item_list />
+    <start_date __type="str">2020-01-21 10:00</start_date>
+    <end_date __type="str">9999-01-01 00:00</end_date>
+  </course_data>
+  <course_data index="11">
+    <name __type="str">リサイタル10級検定</name>
+    <priority __type="s32">30</priority>
+    <req_nos __type="s32">1000</req_nos>
+    <mode_type __type="s32">2</mode_type>
+    <req_grade __type="s32">80000</req_grade>
+    <seq_list>
+      <tune tune_no="0">
+        <index __type="s32">7</index>
+        <difficulty __type="s32">1</difficulty>
+        <clear_point __type="s32">34000</clear_point>
+      </tune>
+      <tune tune_no="1">
+        <index __type="s32">238</index>
+        <difficulty __type="s32">1</difficulty>
+        <clear_point __type="s32">72000</clear_point>
+      </tune>
+      <tune tune_no="2">
+        <index __type="s32">227</index>
+        <difficulty __type="s32">1</difficulty>
+        <clear_point __type="s32">114000</clear_point>
+      </tune>
+    </seq_list>
+    <unlock_music __type="s32">0</unlock_music>
+    <unlock_item_list />
+    <start_date __type="str">2019-01-01 10:00</start_date>
+    <end_date __type="str">9999-01-01 00:00</end_date>
+  </course_data>
+  <course_data index="12">
+    <name __type="str">リサイタル9級検定</name>
+    <priority __type="s32">29</priority>
+    <req_nos __type="s32">1500</req_nos>
+    <mode_type __type="s32">2</mode_type>
+    <req_grade __type="s32">120000</req_grade>
+    <seq_list>
+      <tune tune_no="0">
+        <index __type="s32">19</index>
+        <difficulty __type="s32">1</difficulty>
+        <clear_point __type="s32">36000</clear_point>
+      </tune>
+      <tune tune_no="1">
+        <index __type="s32">220</index>
+        <difficulty __type="s32">1</difficulty>
+        <clear_point __type="s32">76000</clear_point>
+      </tune>
+      <tune tune_no="2">
+        <index __type="s32">214</index>
+        <difficulty __type="s32">1</difficulty>
+        <clear_point __type="s32">120000</clear_point>
+      </tune>
+    </seq_list>
+    <unlock_music __type="s32">0</unlock_music>
+    <unlock_item_list />
+    <start_date __type="str">2019-01-01 10:00</start_date>
+    <end_date __type="str">9999-01-01 00:00</end_date>
+  </course_data>
+  <course_data index="13">
+    <name __type="str">リサイタル8級検定</name>
+    <priority __type="s32">28</priority>
+    <req_nos __type="s32">2000</req_nos>
+    <mode_type __type="s32">2</mode_type>
+    <req_grade __type="s32">200000</req_grade>
+    <seq_list>
+      <tune tune_no="0">
+        <index __type="s32">8</index>
+        <difficulty __type="s32">1</difficulty>
+        <clear_point __type="s32">38000</clear_point>
+      </tune>
+      <tune tune_no="1">
+        <index __type="s32">63</index>
+        <difficulty __type="s32">1</difficulty>
+        <clear_point __type="s32">80000</clear_point>
+      </tune>
+      <tune tune_no="2">
+        <index __type="s32">86</index>
+        <difficulty __type="s32">2</difficulty>
+        <clear_point __type="s32">126000</clear_point>
+      </tune>
+    </seq_list>
+    <unlock_music __type="s32">0</unlock_music>
+    <unlock_item_list />
+    <start_date __type="str">2019-01-01 10:00</start_date>
+    <end_date __type="str">9999-01-01 00:00</end_date>
+  </course_data>
+  <course_data index="14">
+    <name __type="str">リサイタル7級検定</name>
+    <priority __type="s32">27</priority>
+    <req_nos __type="s32">2500</req_nos>
+    <mode_type __type="s32">2</mode_type>
+    <req_grade __type="s32">300000</req_grade>
+    <seq_list>
+      <tune tune_no="0">
+        <index __type="s32">72</index>
+        <difficulty __type="s32">2</difficulty>
+        <clear_point __type="s32">40000</clear_point>
+      </tune>
+      <tune tune_no="1">
+        <index __type="s32">71</index>
+        <difficulty __type="s32">2</difficulty>
+        <clear_point __type="s32">84000</clear_point>
+      </tune>
+      <tune tune_no="2">
+        <index __type="s32">70</index>
+        <difficulty __type="s32">2</difficulty>
+        <clear_point __type="s32">132000</clear_point>
+      </tune>
+    </seq_list>
+    <unlock_music __type="s32">0</unlock_music>
+    <unlock_item_list />
+    <start_date __type="str">2019-01-01 10:00</start_date>
+    <end_date __type="str">9999-01-01 00:00</end_date>
+  </course_data>
+  <course_data index="15">
+    <name __type="str">リサイタル6級検定</name>
+    <priority __type="s32">26</priority>
+    <req_nos __type="s32">3000</req_nos>
+    <mode_type __type="s32">2</mode_type>
+    <req_grade __type="s32">400000</req_grade>
+    <seq_list>
+      <tune tune_no="0">
+        <index __type="s32">105</index>
+        <difficulty __type="s32">1</difficulty>
+        <clear_point __type="s32">40000</clear_point>
+      </tune>
+      <tune tune_no="1">
+        <index __type="s32">101</index>
+        <difficulty __type="s32">2</difficulty>
+        <clear_point __type="s32">84000</clear_point>
+      </tune>
+      <tune tune_no="2">
+        <index __type="s32">186</index>
+        <difficulty __type="s32">2</difficulty>
+        <clear_point __type="s32">132000</clear_point>
+      </tune>
+    </seq_list>
+    <unlock_music __type="s32">0</unlock_music>
+    <unlock_item_list />
+    <start_date __type="str">2019-01-01 10:00</start_date>
+    <end_date __type="str">9999-01-01 00:00</end_date>
+  </course_data>
+  <course_data index="16">
+    <name __type="str">リサイタル5級検定</name>
+    <priority __type="s32">25</priority>
+    <req_nos __type="s32">3500</req_nos>
+    <mode_type __type="s32">2</mode_type>
+    <req_grade __type="s32">450000</req_grade>
+    <seq_list>
+      <tune tune_no="0">
+        <index __type="s32">26</index>
+        <difficulty __type="s32">2</difficulty>
+        <clear_point __type="s32">40000</clear_point>
+      </tune>
+      <tune tune_no="1">
+        <index __type="s32">160</index>
+        <difficulty __type="s32">1</difficulty>
+        <clear_point __type="s32">84000</clear_point>
+      </tune>
+      <tune tune_no="2">
+        <index __type="s32">133</index>
+        <difficulty __type="s32">2</difficulty>
+        <clear_point __type="s32">132000</clear_point>
+      </tune>
+    </seq_list>
+    <unlock_music __type="s32">0</unlock_music>
+    <unlock_item_list />
+    <start_date __type="str">2019-01-01 10:00</start_date>
+    <end_date __type="str">9999-01-01 00:00</end_date>
+  </course_data>
+  <course_data index="17">
+    <name __type="str">リサイタル4級検定</name>
+    <priority __type="s32">24</priority>
+    <req_nos __type="s32">4000</req_nos>
+    <mode_type __type="s32">2</mode_type>
+    <req_grade __type="s32">500000</req_grade>
+    <seq_list>
+      <tune tune_no="0">
+        <index __type="s32">17</index>
+        <difficulty __type="s32">0</difficulty>
+        <clear_point __type="s32">40000</clear_point>
+      </tune>
+      <tune tune_no="1">
+        <index __type="s32">38</index>
+        <difficulty __type="s32">1</difficulty>
+        <clear_point __type="s32">84000</clear_point>
+      </tune>
+      <tune tune_no="2">
+        <index __type="s32">59</index>
+        <difficulty __type="s32">2</difficulty>
+        <clear_point __type="s32">132000</clear_point>
+      </tune>
+    </seq_list>
+    <unlock_music __type="s32">0</unlock_music>
+    <unlock_item_list />
+    <start_date __type="str">2020-01-21 10:00</start_date>
+    <end_date __type="str">9999-01-01 00:00</end_date>
+  </course_data>
+  <course_data index="18">
+    <name __type="str">リサイタル3級検定</name>
+    <priority __type="s32">23</priority>
+    <req_nos __type="s32">4500</req_nos>
+    <mode_type __type="s32">2</mode_type>
+    <req_grade __type="s32">525000</req_grade>
+    <seq_list>
+      <tune tune_no="0">
+        <index __type="s32">18</index>
+        <difficulty __type="s32">1</difficulty>
+        <clear_point __type="s32">40000</clear_point>
+      </tune>
+      <tune tune_no="1">
+        <index __type="s32">39</index>
+        <difficulty __type="s32">2</difficulty>
+        <clear_point __type="s32">84000</clear_point>
+      </tune>
+      <tune tune_no="2">
+        <index __type="s32">60</index>
+        <difficulty __type="s32">2</difficulty>
+        <clear_point __type="s32">132000</clear_point>
+      </tune>
+    </seq_list>
+    <unlock_music __type="s32">0</unlock_music>
+    <unlock_item_list />
+    <start_date __type="str">2020-01-21 10:00</start_date>
+    <end_date __type="str">9999-01-01 00:00</end_date>
+  </course_data>
+  <course_data index="19">
+    <name __type="str">リサイタル2級検定</name>
+    <priority __type="s32">22</priority>
+    <req_nos __type="s32">5000</req_nos>
+    <mode_type __type="s32">2</mode_type>
+    <req_grade __type="s32">540000</req_grade>
+    <seq_list>
+      <tune tune_no="0">
+        <index __type="s32">19</index>
+        <difficulty __type="s32">2</difficulty>
+        <clear_point __type="s32">40000</clear_point>
+      </tune>
+      <tune tune_no="1">
+        <index __type="s32">40</index>
+        <difficulty __type="s32">2</difficulty>
+        <clear_point __type="s32">84000</clear_point>
+      </tune>
+      <tune tune_no="2">
+        <index __type="s32">61</index>
+        <difficulty __type="s32">0</difficulty>
+        <clear_point __type="s32">132000</clear_point>
+      </tune>
+    </seq_list>
+    <unlock_music __type="s32">0</unlock_music>
+    <unlock_item_list />
+    <start_date __type="str">2020-01-21 10:00</start_date>
+    <end_date __type="str">9999-01-01 00:00</end_date>
+  </course_data>
+  <course_data index="20">
+    <name __type="str">リサイタル1級検定</name>
+    <priority __type="s32">21</priority>
+    <req_nos __type="s32">6000</req_nos>
+    <mode_type __type="s32">2</mode_type>
+    <req_grade __type="s32">550000</req_grade>
+    <seq_list>
+      <tune tune_no="0">
+        <index __type="s32">20</index>
+        <difficulty __type="s32">2</difficulty>
+        <clear_point __type="s32">40000</clear_point>
+      </tune>
+      <tune tune_no="1">
+        <index __type="s32">41</index>
+        <difficulty __type="s32">0</difficulty>
+        <clear_point __type="s32">84000</clear_point>
+      </tune>
+      <tune tune_no="2">
+        <index __type="s32">62</index>
+        <difficulty __type="s32">1</difficulty>
+        <clear_point __type="s32">132000</clear_point>
+      </tune>
+    </seq_list>
+    <unlock_music __type="s32">0</unlock_music>
+    <unlock_item_list />
+    <start_date __type="str">2020-01-21 10:00</start_date>
+    <end_date __type="str">9999-01-01 00:00</end_date>
+  </course_data>
+  <course_data index="21">
+    <name __type="str">KACスペシャル検定(Normal)</name>
+    <priority __type="s32">60</priority>
+    <req_nos __type="s32">2000</req_nos>
+    <mode_type __type="s32">1</mode_type>
+    <req_grade __type="s32">0</req_grade>
+    <seq_list>
+      <tune tune_no="0">
+        <index __type="s32">261</index>
+        <difficulty __type="s32">0</difficulty>
+        <clear_point __type="s32">900000</clear_point>
+      </tune>
+      <tune tune_no="1">
+        <index __type="s32">262</index>
+        <difficulty __type="s32">0</difficulty>
+        <clear_point __type="s32">1800000</clear_point>
+      </tune>
+      <tune tune_no="2">
+        <index __type="s32">263</index>
+        <difficulty __type="s32">0</difficulty>
+        <clear_point __type="s32">2750000</clear_point>
+      </tune>
+    </seq_list>
+    <unlock_music __type="s32">263</unlock_music>
+    <unlock_item_list>
+      <unlock_item unlock_item_no="0">
+        <type __type="s32">1</type>
+        <index __type="s32">263</index>
+        <unlock_condition __type="s32">2</unlock_condition>
+      </unlock_item>
+    </unlock_item_list>
+    <start_date __type="str">2019-02-28 10:00</start_date>
+    <end_date __type="str">9999-01-01 00:00</end_date>
+  </course_data>
+  <course_data index="22">
+    <name __type="str">KACスペシャル検定(Hard)</name>
+    <priority __type="s32">59</priority>
+    <req_nos __type="s32">2000</req_nos>
+    <mode_type __type="s32">1</mode_type>
+    <req_grade __type="s32">0</req_grade>
+    <seq_list>
+      <tune tune_no="0">
+        <index __type="s32">261</index>
+        <difficulty __type="s32">1</difficulty>
+        <clear_point __type="s32">925000</clear_point>
+      </tune>
+      <tune tune_no="1">
+        <index __type="s32">262</index>
+        <difficulty __type="s32">1</difficulty>
+        <clear_point __type="s32">1875000</clear_point>
+      </tune>
+      <tune tune_no="2">
+        <index __type="s32">263</index>
+        <difficulty __type="s32">1</difficulty>
+        <clear_point __type="s32">2850000</clear_point>
+      </tune>
+    </seq_list>
+    <unlock_music __type="s32">263</unlock_music>
+    <unlock_item_list>
+      <unlock_item unlock_item_no="0">
+        <type __type="s32">1</type>
+        <index __type="s32">263</index>
+        <unlock_condition __type="s32">2</unlock_condition>
+      </unlock_item>
+    </unlock_item_list>
+    <start_date __type="str">2019-02-28 10:00</start_date>
+    <end_date __type="str">9999-01-01 00:00</end_date>
+  </course_data>
+  <course_data index="23">
+    <name __type="str">KACスペシャル検定(Expert)</name>
+    <priority __type="s32">58</priority>
+    <req_nos __type="s32">2000</req_nos>
+    <mode_type __type="s32">1</mode_type>
+    <req_grade __type="s32">0</req_grade>
+    <seq_list>
+      <tune tune_no="0">
+        <index __type="s32">261</index>
+        <difficulty __type="s32">2</difficulty>
+        <clear_point __type="s32">925000</clear_point>
+      </tune>
+      <tune tune_no="1">
+        <index __type="s32">262</index>
+        <difficulty __type="s32">2</difficulty>
+        <clear_point __type="s32">1875000</clear_point>
+      </tune>
+      <tune tune_no="2">
+        <index __type="s32">263</index>
+        <difficulty __type="s32">2</difficulty>
+        <clear_point __type="s32">2850000</clear_point>
+      </tune>
+    </seq_list>
+    <unlock_music __type="s32">263</unlock_music>
+    <unlock_item_list>
+      <unlock_item unlock_item_no="0">
+        <type __type="s32">1</type>
+        <index __type="s32">263</index>
+        <unlock_condition __type="s32">2</unlock_condition>
+      </unlock_item>
+    </unlock_item_list>
+    <start_date __type="str">2019-02-28 10:00</start_date>
+    <end_date __type="str">9999-01-01 00:00</end_date>
+  </course_data>
+  <course_data index="24">
+    <name __type="str">KACスペシャル検定(Real)</name>
+    <priority __type="s32">57</priority>
+    <req_nos __type="s32">2000</req_nos>
+    <mode_type __type="s32">1</mode_type>
+    <req_grade __type="s32">0</req_grade>
+    <seq_list>
+      <tune tune_no="0">
+        <index __type="s32">261</index>
+        <difficulty __type="s32">3</difficulty>
+        <clear_point __type="s32">925000</clear_point>
+      </tune>
+      <tune tune_no="1">
+        <index __type="s32">262</index>
+        <difficulty __type="s32">3</difficulty>
+        <clear_point __type="s32">1875000</clear_point>
+      </tune>
+      <tune tune_no="2">
+        <index __type="s32">263</index>
+        <difficulty __type="s32">3</difficulty>
+        <clear_point __type="s32">2850000</clear_point>
+      </tune>
+    </seq_list>
+    <unlock_music __type="s32">263</unlock_music>
+    <unlock_item_list>
+      <unlock_item unlock_item_no="0">
+        <type __type="s32">1</type>
+        <index __type="s32">263</index>
+        <unlock_condition __type="s32">2</unlock_condition>
+      </unlock_item>
+    </unlock_item_list>
+    <start_date __type="str">2019-02-28 10:00</start_date>
+    <end_date __type="str">9999-01-01 00:00</end_date>
+  </course_data>
+</course_data_list>
