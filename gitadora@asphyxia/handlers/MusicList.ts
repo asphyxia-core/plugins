@@ -14,8 +14,8 @@ export const playableMusic: EPR = async (info, data, send) => {
       const mdb = $(data).elements("mdb.mdb_data");
 
       for (const m of mdb) {
-        const d = m.content("xg_diff_list");
-        const contain = m.content("contain_stat");
+        const d = m.numbers("xg_diff_list");
+        const contain = m.numbers("contain_stat");
         const gf = contain[0];
         const dm = contain[1];
 

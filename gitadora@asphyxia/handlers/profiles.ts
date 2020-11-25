@@ -870,21 +870,21 @@ export const savePlayer: EPR = async (info, data, send) => {
 
   const stages = $(data).elements('player.stage');
   for (const stage of stages) {
-    const mid = stage.content('musicid', -1);
-    const seq = stage.content('seq', -1);
+    const mid = stage.number('musicid', -1);
+    const seq = stage.number('seq', -1);
 
     if (mid < 0 || seq < 0) continue;
 
-    // const skill = stage.content('skill', 0);
-    const newSkill = stage.content('new_skill', 0);
+    // const skill = stage.number('skill', 0);
+    const newSkill = stage.number('new_skill', 0);
     const clear = stage.bool('clear');
     const fc = stage.bool('fullcombo');
     const ex = stage.bool('excellent');
 
-    const perc = stage.content('perc', 0);
-    const rank = stage.content('rank', 0);
+    const perc = stage.number('perc', 0);
+    const rank = stage.number('rank', 0);
     const meter = stage.bigint('meter', BigInt(0));
-    const prog = stage.content('meter_prog', 0);
+    const prog = stage.number('meter_prog', 0);
 
 
     const score = (await DB.FindOne<Scores>(refid, {
