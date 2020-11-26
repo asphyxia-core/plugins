@@ -387,7 +387,7 @@ export const getPlayer: EPR = async (info, data, send) => {
   }
 
   send.object({
-    player: K.ATTR({ 'no': `$no` }, {
+    player: K.ATTR({ 'no': `${no}` }, {
       now_date: K.ITEM('u64', time),
       secretmusic: {
         music: {
