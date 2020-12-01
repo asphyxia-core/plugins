@@ -28,13 +28,13 @@ export const common: EPR = async (info, data, send) => {
 
   // Flags
   const event_list = [1, 83, 130, 194, 195, 98, 145, 146, 147, 148, 149, 56, 86, 105, 140, 211, 143]
-  const event = event_list.map((e) => {
-    return {
-      info: {
-        event_id: K.ITEM("u32", e)
+  const event = {
+    info: event_list.map((e) => {
+      return {
+          event_id: K.ITEM("u32", e)
       }
-    }
-  })
+    })
+  }
 
   send.object({
     music_limited: {
