@@ -1,3 +1,13 @@
+export interface CommonMusicDataField {
+  music_id: KITEM<"s32">;
+  music_type: KITEM<"u8">;
+  limited: KITEM<"u8">;
+}
+
+interface CommonMusicData {
+  music: CommonMusicDataField[]
+}
+
 export async function readXML(path: string) {
   const xml = await IO.ReadFile(path, 'utf-8');
   const json = U.parseXML(xml, false)
@@ -10,7 +20,7 @@ export async function readJSON(path: string) {
   return json
 }
 
-export async function readJSONOrXML(jsonPath: string, xmlPath: string) {
+export async function readJSONOrXML(jsonPath: string, xmlPath: string): Promise<CommonMusicData> {
   const str: string | null = await IO.ReadFile(jsonPath, 'utf-8');
   if (str == null || str.length == 0) {
     const data = await processMdbData(xmlPath)
@@ -22,11 +32,11 @@ export async function readJSONOrXML(jsonPath: string, xmlPath: string) {
   }
 }
 
-export async function processMdbData(path: string) {
+export async function processMdbData(path: string): Promise<CommonMusicData> {
   const data = await readXML(path);
   const mdb = $(data).elements("mdb.music");
   const diff_list = ["novice", "advanced", "exhaust", "infinite"]
-  const music: any[] = [];
+  const music: CommonMusicDataField[] = [];
   for (const m of mdb) {
     for (const [i, d] of diff_list.entries()) {
       const elem = m.element(`difficulty.${d}`)
