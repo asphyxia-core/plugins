@@ -13,7 +13,7 @@ export const shop: EPR = async (info, data, send) => {
 
 export const common: EPR = async (info, data, send) => {
   let { music } = U.GetConfig("enable_custom_mdb")
-      ?  await processMdbData(path.normalize(U.GetConfig("custom_mdb_path")))
+      ?  await processCustomData()
       :  (await processValidData(info))
 
   if (music.length === 0) {
@@ -70,11 +70,15 @@ export const exception: EPR = async (info, data, send) => {
   send.success()
 }
 
+async function processCustomData() {
+  return processMdbData("data/custom_mdb.xml")
+}
+
 async function processValidData(info: EamuseInfo) {
   const version = parseInt(info.model.trim().substr(10), 10)
   if (version >= 2020102200) {
     // MUSECA PLUS
-    return await processCommunityPlusData();
+     processCommunityPlusData();
   } else /** if (version > 2016071300) */ {
     return await processOnePlusHalfData()
   } /** else {

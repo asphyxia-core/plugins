@@ -15,9 +15,10 @@ export const load: EPR = async (info, data, send) => {
   }
 
   const item = _.map(profile.item, (v, k) => {
+    const id = k.replace("g", "")
     return {
       type: K.ITEM("u8", v.type),
-      id: K.ITEM("u32", parseInt(k)),
+      id: K.ITEM("u32", parseInt(id)),
       param: K.ITEM("u32", v.param)
     }
   })
@@ -98,8 +99,11 @@ export const save: EPR = async (info, data, send) => {
 
   const dbItem = (await DB.FindOne<Profile>(refid, { collection: "profile" })).item
   for(const item of $(data).elements("item.info")) {
-    dbItem[item.number("id")] = {
-      type: item.number("type"),
+    const id = item.number("id");
+    const type = item.number("type")
+    // Grafica and Mission shares same ID. Why?????  
+    dbItem[type == 16 ? `g${id}` : id] = {
+      type,
       param : item.number("param")
     }
   }

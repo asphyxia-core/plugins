@@ -2,6 +2,10 @@ import { common, exception, lounge, shop, hiscore, frozen } from "./handlers/com
 import { load, load_m, newProfile, save, save_m } from "./handlers/player";
 
 export function register() {
+  if(!R.DataFile) { // TODO: Better implementation.
+    return console.error("You need newer version of Core.")
+  }
+
   R.GameCode('PIX');
 
   R.Config("unlock_all_songs", {
@@ -17,11 +21,10 @@ export function register() {
     default: false,
   })
 
-  R.Config("custom_mdb_path", {
-    name: "Custom MDB PATH",
-    desc: "You need to enable Custom MDB option first. USE ABSOLUTE PATH !!",
-    type: "string",
-    default: "",
+  R.DataFile("data/custom_mdb.xml", {
+   accept: ".xml",
+   name: "Custom MDB",
+   desc: "You need to enable Custom MDB option first."
   })
 
   const Route = (method: string, handler: EPR | boolean) => {
@@ -43,6 +46,7 @@ export function register() {
   Route("new", newProfile)
   Route("save", save)
   Route("save_m", save_m)
+  //Route("save_c", save_c)
   Route("load", load)
   Route("load_m", load_m)
 
