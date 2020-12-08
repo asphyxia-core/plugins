@@ -97,8 +97,8 @@ export const getPlayer: EPR = async (info, data, send) => {
   const gfRecord = await getRecord(refid, version, 'gf')
   const dmExtra = await getExtra(refid, version, 'dm')
   const gfExtra = await getExtra(refid, version, 'gf')
-  const dmScores = await getScores(refid, version, 'dm')
-  const gfScores = await getScores(refid, version, 'gf')
+  const dmScores = (await getScore(refid, version, 'dm')).scores
+  const gfScores = (await getScore(refid, version, 'gf')).scores
 
   const profile = dm ? dmProfile : gfProfile;
   const extra = dm ? dmExtra : gfExtra;
@@ -167,9 +167,8 @@ export const getPlayer: EPR = async (info, data, send) => {
   // Format scores
   const musicdata = [];
   const scores = dm ? dmScores : gfScores;
-  for (const score of scores) {
-    const mid = score.mid
-    musicdata.push(K.ATTR({ musicid: `${mid}` }, {
+  for (const [musicid, score] of _.entries(scores)) {
+    musicdata.push(K.ATTR({ musicid }, {
       mdata: K.ARRAY('s16', [
         -1,
         _.get(score, 'diffs.1.perc', -2),
@@ -538,12 +537,12 @@ async function registerUser(refid: string, version: string, id = _.random(0, 999
     title: 'Please edit on WebUI',
   }
 
-  const defaultProfile = (dm): Profile => {
+  const defaultProfile = (game: 'gf' | 'dm'): Profile => {
     return {
       collection: 'profile',
       pluginVer: PLUGIN_VER,
 
-      game: dm ? 'dm' : 'gf',
+      game,
       version,
       id,
 
@@ -598,12 +597,12 @@ async function registerUser(refid: string, version: string, id = _.random(0, 999
     }
   };
 
-  const defaultRecord = (dm): Record => {
+  const defaultRecord = (game: 'gf' | 'dm'): Record => {
     return {
       collection: 'record',
       pluginVer: PLUGIN_VER,
 
-      game: dm ? 'dm' : 'gf',
+      game,
       version,
 
       diff_100_nr: 0,
@@ -645,12 +644,12 @@ async function registerUser(refid: string, version: string, id = _.random(0, 999
     }
   }
 
-  const defaultExtra = (dm): Extra => {
+  const defaultExtra = (game: 'gf' | 'dm'): Extra => {
     return {
       collection: 'extra',
       pluginVer: PLUGIN_VER,
 
-      game: dm ? 'dm' : 'gf',
+      game,
       version,
       id,
 
@@ -718,12 +717,12 @@ async function registerUser(refid: string, version: string, id = _.random(0, 999
   const dm = { game: 'dm', version };
 
   await DB.Upsert(refid, { collection: 'playerinfo', version }, defaultInfo)
-  await DB.Upsert(refid, { collection: 'profile', ...gf }, defaultProfile(false))
-  await DB.Upsert(refid, { collection: 'profile', ...dm }, defaultProfile(true))
-  await DB.Upsert(refid, { collection: 'record', ...gf }, defaultRecord(false))
-  await DB.Upsert(refid, { collection: 'record', ...dm }, defaultRecord(true))
-  await DB.Upsert(refid, { collection: 'extra', ...gf }, defaultExtra(false))
-  await DB.Upsert(refid, { collection: 'extra', ...dm }, defaultExtra(true))
+  await DB.Upsert(refid, { collection: 'profile', ...gf }, defaultProfile('gf'))
+  await DB.Upsert(refid, { collection: 'profile', ...dm }, defaultProfile('dm'))
+  await DB.Upsert(refid, { collection: 'record', ...gf }, defaultRecord('gf'))
+  await DB.Upsert(refid, { collection: 'record', ...dm }, defaultRecord('dm'))
+  await DB.Upsert(refid, { collection: 'extra', ...gf }, defaultExtra('gf'))
+  await DB.Upsert(refid, { collection: 'extra', ...dm }, defaultExtra('dm'))
 
   return defaultInfo
 }
@@ -887,20 +886,21 @@ export const savePlayer: EPR = async (info, data, send) => {
     const prog = stage.number('meter_prog', 0);
 
 
-    const score = (await DB.FindOne<Scores>(refid, {
-      collection: 'scores',
-      mid,
-      version,
-      game
-    })) || {
+    const score = (await getScore(refid, version, game)
+     || {
       collection: 'scores',
       game,
       version,
       pluginVer: PLUGIN_VER,
-      mid,
-      update: [0, 0],
-      diffs: {}
-    };
+      scores: {}
+    }).scores;
+
+    if(!score[mid]) {
+      score[mid]  = {
+        update: [0,0],
+        diffs: {}
+      }
+    }
 
     if (newSkill > score.update[1]) {
       score.update[0] = seq;
@@ -917,12 +917,7 @@ export const savePlayer: EPR = async (info, data, send) => {
       ex: _.get(score.diffs[seq], 'ex') || ex,
     };
 
-    await DB.Upsert(refid, {
-      collection: 'scores',
-      mid,
-      version,
-      game
-    }, score)
+    await saveScore(refid, version, game, score);
   }
 
   await send.object({
@@ -967,10 +962,23 @@ async function getRecord(refid: string, version: string, game: 'gf' | 'dm') {
   })
 }
 
-async function getScores(refid: string, version: string, game: 'gf' | 'dm') {
-  return (await DB.Find<Scores>(refid, {
+async function getScore(refid: string, version: string, game: 'gf' | 'dm') {
+  return await DB.FindOne<Scores>(refid, {
     collection: 'scores',
     version: version,
     game: game
-  }))
+  })
+}
+
+async function saveScore(refid: string, version: string, game: 'gf' | 'dm', scores: Scores['scores']) {
+  return await DB.Upsert<Scores>(refid, {
+    collection: 'scores',
+    version,
+    game
+  }, {
+    collection: 'scores',
+    version,
+    game,
+    scores
+  })
 }
