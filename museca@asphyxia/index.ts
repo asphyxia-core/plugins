@@ -1,9 +1,10 @@
 import { common, exception, lounge, shop, hiscore, frozen } from "./handlers/common";
 import { load, load_m, newProfile, save, save_m } from "./handlers/player";
+import { isRequiredVersion } from "./utils";
 
 export function register() {
-  if(!R.DataFile) { // TODO: Better implementation.
-    return console.error("You need newer version of Core.")
+  if(!isRequiredVersion(1, 19)) {
+    console.error("You need newer version of Core. v1.19 or newer required.")
   }
 
   R.GameCode('PIX');
