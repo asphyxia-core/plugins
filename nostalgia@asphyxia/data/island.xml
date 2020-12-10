@@ -1,0 +1,1996 @@
+<?xml version="1.0" encoding="shift_jis"?>
+<island_data_list release_code="2019100200">
+  <island_data index="1">
+    <name __type="str">ひとりぼっちの世界</name>
+    <route_type __type="s32">1</route_type>
+    <cost __type="s32">0</cost>
+    <section __type="s32">1</section>
+    <team __type="s32">1</team>
+    <position __type="s32">0</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">0</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">1</container_type>
+        <movie_num __type="s32">1</movie_num>
+        <precious_item __type="s32">0</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">0</music_index>
+          <get_point __type="s32">0</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">0</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">0</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">0</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">1</offline>
+    <start_date __type="str">2018-01-01 05:00</start_date>
+    <end_date __type="str">9999-12-31 23:59</end_date>
+  </island_data>
+  <island_data index="2">
+    <name __type="str">はじまりの街</name>
+    <route_type __type="s32">2</route_type>
+    <cost __type="s32">0</cost>
+    <section __type="s32">1</section>
+    <team __type="s32">1</team>
+    <position __type="s32">1</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">0</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">1</container_type>
+        <movie_num __type="s32">2</movie_num>
+        <precious_item __type="s32">1</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">214</music_index>
+          <get_point __type="s32">15</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">1</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">1</hall_index>
+      <hall_index __type="s32">2</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">3</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">4</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">5</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">1</offline>
+    <start_date __type="str">2018-01-01 05:00</start_date>
+    <end_date __type="str">9999-12-31 23:59</end_date>
+  </island_data>
+  <island_data index="3">
+    <name __type="str">旅立ちの海</name>
+    <route_type __type="s32">2</route_type>
+    <cost __type="s32">500</cost>
+    <section __type="s32">1</section>
+    <team __type="s32">1</team>
+    <position __type="s32">4</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">214</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">1</container_type>
+        <movie_num __type="s32">3</movie_num>
+        <precious_item __type="s32">2</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">215</music_index>
+          <get_point __type="s32">36</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">216</music_index>
+          <get_point __type="s32">54</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">2</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">3</hall_index>
+      <hall_index __type="s32">4</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">2</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">5</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">16</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">15</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2018-01-01 05:00</start_date>
+    <end_date __type="str">9999-12-31 23:59</end_date>
+  </island_data>
+  <island_data index="4">
+    <name __type="str">砂の国</name>
+    <route_type __type="s32">2</route_type>
+    <cost __type="s32">2500</cost>
+    <section __type="s32">1</section>
+    <team __type="s32">1</team>
+    <position __type="s32">9</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">216</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">1</container_type>
+        <movie_num __type="s32">4</movie_num>
+        <precious_item __type="s32">3</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">217</music_index>
+          <get_point __type="s32">54</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">218</music_index>
+          <get_point __type="s32">72</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">3</program_index>
+      <program_index __type="s32">4</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">5</hall_index>
+      <hall_index __type="s32">6</hall_index>
+      <hall_index __type="s32">7</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">1</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">6</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">7</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">15</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">14</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2018-01-01 05:00</start_date>
+    <end_date __type="str">9999-12-31 23:59</end_date>
+  </island_data>
+  <island_data index="5">
+    <name __type="str">小さな家</name>
+    <route_type __type="s32">2</route_type>
+    <cost __type="s32">5000</cost>
+    <section __type="s32">1</section>
+    <team __type="s32">1</team>
+    <position __type="s32">10</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">218</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">1</container_type>
+        <movie_num __type="s32">5</movie_num>
+        <precious_item __type="s32">4</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">219</music_index>
+          <get_point __type="s32">152</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">5</program_index>
+      <program_index __type="s32">6</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">8</hall_index>
+      <hall_index __type="s32">9</hall_index>
+      <hall_index __type="s32">10</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">1</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">7</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">8</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">14</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">13</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2018-01-01 05:00</start_date>
+    <end_date __type="str">9999-12-31 23:59</end_date>
+  </island_data>
+  <island_data index="6">
+    <name __type="str">目覚めの森</name>
+    <route_type __type="s32">3</route_type>
+    <cost __type="s32">0</cost>
+    <section __type="s32">1</section>
+    <team __type="s32">1</team>
+    <position __type="s32">3</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">0</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">1</container_type>
+        <movie_num __type="s32">6</movie_num>
+        <precious_item __type="s32">5</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">220</music_index>
+          <get_point __type="s32">15</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">7</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">11</hall_index>
+      <hall_index __type="s32">12</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">3</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">4</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">5</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">1</offline>
+    <start_date __type="str">2018-01-01 05:00</start_date>
+    <end_date __type="str">9999-12-31 23:59</end_date>
+  </island_data>
+  <island_data index="7">
+    <name __type="str">風の丘</name>
+    <route_type __type="s32">3</route_type>
+    <cost __type="s32">500</cost>
+    <section __type="s32">1</section>
+    <team __type="s32">1</team>
+    <position __type="s32">8</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">220</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">1</container_type>
+        <movie_num __type="s32">7</movie_num>
+        <precious_item __type="s32">6</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">221</music_index>
+          <get_point __type="s32">36</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">211</music_index>
+          <get_point __type="s32">54</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">8</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">13</hall_index>
+      <hall_index __type="s32">14</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">2</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">5</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">17</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">23</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2018-01-01 05:00</start_date>
+    <end_date __type="str">9999-12-31 23:59</end_date>
+  </island_data>
+  <island_data index="8">
+    <name __type="str">水晶の谷</name>
+    <route_type __type="s32">3</route_type>
+    <cost __type="s32">2500</cost>
+    <section __type="s32">1</section>
+    <team __type="s32">1</team>
+    <position __type="s32">13</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">211</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">1</container_type>
+        <movie_num __type="s32">8</movie_num>
+        <precious_item __type="s32">7</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">222</music_index>
+          <get_point __type="s32">54</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">223</music_index>
+          <get_point __type="s32">72</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">9</program_index>
+      <program_index __type="s32">10</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">15</hall_index>
+      <hall_index __type="s32">16</hall_index>
+      <hall_index __type="s32">17</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">1</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">6</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">7</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">19</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">25</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2018-01-01 05:00</start_date>
+    <end_date __type="str">9999-12-31 23:59</end_date>
+  </island_data>
+  <island_data index="9">
+    <name __type="str">小さな家</name>
+    <route_type __type="s32">3</route_type>
+    <cost __type="s32">5000</cost>
+    <section __type="s32">1</section>
+    <team __type="s32">1</team>
+    <position __type="s32">12</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">223</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">1</container_type>
+        <movie_num __type="s32">9</movie_num>
+        <precious_item __type="s32">8</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">224</music_index>
+          <get_point __type="s32">152</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">11</program_index>
+      <program_index __type="s32">12</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">18</hall_index>
+      <hall_index __type="s32">19</hall_index>
+      <hall_index __type="s32">20</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">1</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">7</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">8</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">21</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">26</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2018-01-01 05:00</start_date>
+    <end_date __type="str">9999-12-31 23:59</end_date>
+  </island_data>
+  <island_data index="10">
+    <name __type="str">Early Summer Island</name>
+    <route_type __type="s32">1</route_type>
+    <cost __type="s32">500</cost>
+    <section __type="s32">2</section>
+    <team __type="s32">1</team>
+    <position __type="s32">1</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">0</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">3</container_type>
+        <movie_num __type="s32">0</movie_num>
+        <precious_item __type="s32">0</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">188</music_index>
+          <get_point __type="s32">36</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">191</music_index>
+          <get_point __type="s32">54</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">13</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">21</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">2</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">5</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">24</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">18</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2019-08-01 10:00</start_date>
+    <end_date __type="str">2019-08-15 05:00</end_date>
+  </island_data>
+  <island_data index="11">
+    <name __type="str">Mid-Summer Island</name>
+    <route_type __type="s32">1</route_type>
+    <cost __type="s32">500</cost>
+    <section __type="s32">2</section>
+    <team __type="s32">1</team>
+    <position __type="s32">2</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">0</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">3</container_type>
+        <movie_num __type="s32">0</movie_num>
+        <precious_item __type="s32">0</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">192</music_index>
+          <get_point __type="s32">36</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">190</music_index>
+          <get_point __type="s32">54</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">14</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">22</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">2</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">5</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">24</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">18</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2019-08-08 10:00</start_date>
+    <end_date __type="str">2019-08-22 05:00</end_date>
+  </island_data>
+  <island_data index="12">
+    <name __type="str">Post-Summer Island</name>
+    <route_type __type="s32">1</route_type>
+    <cost __type="s32">1000</cost>
+    <section __type="s32">2</section>
+    <team __type="s32">1</team>
+    <position __type="s32">3</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">0</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">3</container_type>
+        <movie_num __type="s32">0</movie_num>
+        <precious_item __type="s32">0</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">189</music_index>
+          <get_point __type="s32">48</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">193</music_index>
+          <get_point __type="s32">54</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">194</music_index>
+          <get_point __type="s32">24</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">15</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">23</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">1</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">6</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">7</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">25</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">19</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2019-08-15 10:00</start_date>
+    <end_date __type="str">2019-08-29 05:00</end_date>
+  </island_data>
+  <island_data index="13">
+    <name __type="str">実りの里-やさい畑-</name>
+    <route_type __type="s32">1</route_type>
+    <cost __type="s32">2000</cost>
+    <section __type="s32">2</section>
+    <team __type="s32">1</team>
+    <position __type="s32">10</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">0</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">3</container_type>
+        <movie_num __type="s32">0</movie_num>
+        <precious_item __type="s32">0</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">244</music_index>
+          <get_point __type="s32">54</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">241</music_index>
+          <get_point __type="s32">72</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">17</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">25</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">1</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">8</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">9</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">21</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">26</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2019-03-14 10:00</start_date>
+    <end_date __type="str">2019-03-28 05:00</end_date>
+  </island_data>
+  <island_data index="14">
+    <name __type="str">実りの里-くだもの畑-</name>
+    <route_type __type="s32">1</route_type>
+    <cost __type="s32">2000</cost>
+    <section __type="s32">2</section>
+    <team __type="s32">1</team>
+    <position __type="s32">11</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">0</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">3</container_type>
+        <movie_num __type="s32">0</movie_num>
+        <precious_item __type="s32">0</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">243</music_index>
+          <get_point __type="s32">54</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">242</music_index>
+          <get_point __type="s32">72</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">18</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">26</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">1</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">8</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">9</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">15</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">14</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2019-03-21 10:00</start_date>
+    <end_date __type="str">2019-04-04 05:00</end_date>
+  </island_data>
+  <island_data index="15">
+    <name __type="str">KACリサイタル部門</name>
+    <route_type __type="s32">1</route_type>
+    <cost __type="s32">0</cost>
+    <section __type="s32">2</section>
+    <team __type="s32">1</team>
+    <position __type="s32">7</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">0</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">3</container_type>
+        <movie_num __type="s32">0</movie_num>
+        <precious_item __type="s32">0</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">0</music_index>
+          <get_point __type="s32">0</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">16</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">24</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">0</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2018-11-21 10:00</start_date>
+    <end_date __type="str">2019-01-07 18:00</end_date>
+  </island_data>
+  <island_data index="16">
+    <name __type="str">忘れられた廃棄場</name>
+    <route_type __type="s32">4</route_type>
+    <cost __type="s32">3000</cost>
+    <section __type="s32">1</section>
+    <team __type="s32">1</team>
+    <position __type="s32">2</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">214</music_index>
+      <music_index __type="s32">220</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">1</container_type>
+        <movie_num __type="s32">10</movie_num>
+        <precious_item __type="s32">9</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">250</music_index>
+          <get_point __type="s32">30</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">19</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">27</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">1</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">4</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">5</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">25</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">26</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2019-01-10 10:00</start_date>
+    <end_date __type="str">9999-12-31 23:59</end_date>
+  </island_data>
+  <island_data index="17">
+    <name __type="str">おもちゃの王国</name>
+    <route_type __type="s32">4</route_type>
+    <cost __type="s32">5000</cost>
+    <section __type="s32">1</section>
+    <team __type="s32">1</team>
+    <position __type="s32">6</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">250</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">1</container_type>
+        <movie_num __type="s32">11</movie_num>
+        <precious_item __type="s32">10</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">251</music_index>
+          <get_point __type="s32">52</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">252</music_index>
+          <get_point __type="s32">76</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">20</program_index>
+      <program_index __type="s32">21</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">28</hall_index>
+      <hall_index __type="s32">29</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">1</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">7</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">8</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">21</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">26</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2019-01-10 10:00</start_date>
+    <end_date __type="str">9999-12-31 23:59</end_date>
+  </island_data>
+  <island_data index="18">
+    <name __type="str">真夜中の湖畔</name>
+    <route_type __type="s32">3</route_type>
+    <cost __type="s32">7500</cost>
+    <section __type="s32">1</section>
+    <team __type="s32">2</team>
+    <position __type="s32">3</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">219</music_index>
+      <music_index __type="s32">224</music_index>
+      <music_index __type="s32">252</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">1</container_type>
+        <movie_num __type="s32">12</movie_num>
+        <precious_item __type="s32">11</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">254</music_index>
+          <get_point __type="s32">124</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">253</music_index>
+          <get_point __type="s32">54</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">22</program_index>
+      <program_index __type="s32">23</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">30</hall_index>
+      <hall_index __type="s32">31</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">1</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">8</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">9</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">14</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">13</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2019-01-10 10:00</start_date>
+    <end_date __type="str">9999-12-31 23:59</end_date>
+  </island_data>
+  <island_data index="19">
+    <name __type="str">郷愁の階段</name>
+    <route_type __type="s32">1</route_type>
+    <cost __type="s32">1000</cost>
+    <section __type="s32">2</section>
+    <team __type="s32">1</team>
+    <position __type="s32">6</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">0</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">3</container_type>
+        <movie_num __type="s32">1</movie_num>
+        <precious_item __type="s32">0</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">19</music_index>
+          <get_point __type="s32">12</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">38</music_index>
+          <get_point __type="s32">18</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">3</music_index>
+          <get_point __type="s32">24</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">20</music_index>
+          <get_point __type="s32">24</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">41</music_index>
+          <get_point __type="s32">30</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">34</music_index>
+          <get_point __type="s32">30</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">42</music_index>
+          <get_point __type="s32">36</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">31</music_index>
+          <get_point __type="s32">36</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">35</music_index>
+          <get_point __type="s32">36</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">43</music_index>
+          <get_point __type="s32">36</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">33</music_index>
+          <get_point __type="s32">42</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">73</music_index>
+          <get_point __type="s32">42</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">74</music_index>
+          <get_point __type="s32">48</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">75</music_index>
+          <get_point __type="s32">48</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">81</music_index>
+          <get_point __type="s32">48</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">82</music_index>
+          <get_point __type="s32">48</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">98</music_index>
+          <get_point __type="s32">48</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">99</music_index>
+          <get_point __type="s32">48</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">134</music_index>
+          <get_point __type="s32">48</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">135</music_index>
+          <get_point __type="s32">52</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">153</music_index>
+          <get_point __type="s32">52</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">181</music_index>
+          <get_point __type="s32">52</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">182</music_index>
+          <get_point __type="s32">52</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">24</program_index>
+      <program_index __type="s32">25</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">32</hall_index>
+      <hall_index __type="s32">33</hall_index>
+      <hall_index __type="s32">34</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">1</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">7</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">16</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">20</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">25</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">29</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">33</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2018-12-25 10:00</start_date>
+    <end_date __type="str">9999-12-31 23:59</end_date>
+  </island_data>
+  <island_data index="20">
+    <name __type="str">凍てつく山脈</name>
+    <route_type __type="s32">1</route_type>
+    <cost __type="s32">3000</cost>
+    <section __type="s32">2</section>
+    <team __type="s32">1</team>
+    <position __type="s32">12</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">0</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">3</container_type>
+        <movie_num __type="s32">0</movie_num>
+        <precious_item __type="s32">0</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">140</music_index>
+          <get_point __type="s32">16</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">141</music_index>
+          <get_point __type="s32">16</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">142</music_index>
+          <get_point __type="s32">16</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">247</music_index>
+          <get_point __type="s32">24</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">248</music_index>
+          <get_point __type="s32">54</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">249</music_index>
+          <get_point __type="s32">72</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">26</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">35</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">2</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">6</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">25</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">19</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2019-04-25 10:00</start_date>
+    <end_date __type="str">2019-05-09 05:00</end_date>
+  </island_data>
+  <island_data index="21">
+    <name __type="str">魅惑の黄金パレス</name>
+    <route_type __type="s32">1</route_type>
+    <cost __type="s32">500</cost>
+    <section __type="s32">2</section>
+    <team __type="s32">1</team>
+    <position __type="s32">5</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">0</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">3</container_type>
+        <movie_num __type="s32">0</movie_num>
+        <precious_item __type="s32">0</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">0</music_index>
+          <get_point __type="s32">0</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">27</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">36</hall_index>
+      <hall_index __type="s32">37</hall_index>
+      <hall_index __type="s32">38</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">0</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2019-07-25 10:00</start_date>
+    <end_date __type="str">2019-08-08 05:00</end_date>
+  </island_data>
+  <island_data index="22">
+    <name __type="str">幻想郷を彩る階段</name>
+    <route_type __type="s32">1</route_type>
+    <cost __type="s32">1000</cost>
+    <section __type="s32">2</section>
+    <team __type="s32">1</team>
+    <position __type="s32">9</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">0</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">3</container_type>
+        <movie_num __type="s32">0</movie_num>
+        <precious_item __type="s32">0</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">178</music_index>
+          <get_point __type="s32">20</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">179</music_index>
+          <get_point __type="s32">30</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">177</music_index>
+          <get_point __type="s32">42</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">28</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">39</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">1</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">5</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">6</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">16</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">15</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">29</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">33</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2019-02-07 10:00</start_date>
+    <end_date __type="str">9999-12-31 23:59</end_date>
+  </island_data>
+  <island_data index="23">
+    <name __type="str">風がそよぐ階段</name>
+    <route_type __type="s32">1</route_type>
+    <cost __type="s32">2000</cost>
+    <section __type="s32">2</section>
+    <team __type="s32">1</team>
+    <position __type="s32">4</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">0</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">3</container_type>
+        <movie_num __type="s32">0</movie_num>
+        <precious_item __type="s32">0</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">87</music_index>
+          <get_point __type="s32">24</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">170</music_index>
+          <get_point __type="s32">32</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">171</music_index>
+          <get_point __type="s32">40</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">172</music_index>
+          <get_point __type="s32">54</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">29</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">40</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">1</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">5</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">6</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">24</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">25</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">29</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">33</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2019-02-07 10:00</start_date>
+    <end_date __type="str">9999-12-31 23:59</end_date>
+  </island_data>
+  <island_data index="24">
+    <name __type="str">秋雪が舞う階段</name>
+    <route_type __type="s32">1</route_type>
+    <cost __type="s32">2000</cost>
+    <section __type="s32">2</section>
+    <team __type="s32">1</team>
+    <position __type="s32">13</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">0</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">3</container_type>
+        <movie_num __type="s32">0</movie_num>
+        <precious_item __type="s32">0</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">131</music_index>
+          <get_point __type="s32">24</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">147</music_index>
+          <get_point __type="s32">32</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">148</music_index>
+          <get_point __type="s32">42</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">149</music_index>
+          <get_point __type="s32">50</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">130</music_index>
+          <get_point __type="s32">64</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">30</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">41</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">1</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">5</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">6</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">18</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">19</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">29</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">33</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2019-02-07 10:00</start_date>
+    <end_date __type="str">9999-12-31 23:59</end_date>
+  </island_data>
+  <island_data index="25">
+    <name __type="str">光が降り注ぐ階段</name>
+    <route_type __type="s32">1</route_type>
+    <cost __type="s32">3000</cost>
+    <section __type="s32">2</section>
+    <team __type="s32">1</team>
+    <position __type="s32">8</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">0</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">3</container_type>
+        <movie_num __type="s32">0</movie_num>
+        <precious_item __type="s32">0</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">76</music_index>
+          <get_point __type="s32">32</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">105</music_index>
+          <get_point __type="s32">48</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">160</music_index>
+          <get_point __type="s32">64</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">31</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">42</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">1</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">7</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">8</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">22</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">26</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">29</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">33</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2019-02-07 10:00</start_date>
+    <end_date __type="str">9999-12-31 23:59</end_date>
+  </island_data>
+  <island_data index="26">
+    <name __type="str">アニバーサリーアイランド</name>
+    <route_type __type="s32">1</route_type>
+    <cost __type="s32">500</cost>
+    <section __type="s32">2</section>
+    <team __type="s32">1</team>
+    <position __type="s32">7</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">0</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">3</container_type>
+        <movie_num __type="s32">0</movie_num>
+        <precious_item __type="s32">0</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">270</music_index>
+          <get_point __type="s32">48</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">280</music_index>
+          <get_point __type="s32">48</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">279</music_index>
+          <get_point __type="s32">54</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">269</music_index>
+          <get_point __type="s32">72</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">33</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">43</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">1</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">5</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">24</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">19</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">16</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2019-03-21 10:00</start_date>
+    <end_date __type="str">9999-12-31 23:59</end_date>
+  </island_data>
+  <island_data index="27">
+    <name __type="str">化石の砦</name>
+    <route_type __type="s32">5</route_type>
+    <cost __type="s32">3500</cost>
+    <section __type="s32">1</section>
+    <team __type="s32">2</team>
+    <position __type="s32">6</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">214</music_index>
+      <music_index __type="s32">220</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">1</container_type>
+        <movie_num __type="s32">13</movie_num>
+        <precious_item __type="s32">12</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">264</music_index>
+          <get_point __type="s32">45</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">34</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">44</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">1</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">4</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">5</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">25</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">26</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2019-04-11 10:00</start_date>
+    <end_date __type="str">9999-12-31 23:59</end_date>
+  </island_data>
+  <island_data index="28">
+    <name __type="str">雲のエアポート</name>
+    <route_type __type="s32">5</route_type>
+    <cost __type="s32">7000</cost>
+    <section __type="s32">1</section>
+    <team __type="s32">2</team>
+    <position __type="s32">11</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">264</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">1</container_type>
+        <movie_num __type="s32">14</movie_num>
+        <precious_item __type="s32">13</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">265</music_index>
+          <get_point __type="s32">52</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">266</music_index>
+          <get_point __type="s32">76</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">35</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">45</hall_index>
+      <hall_index __type="s32">46</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">1</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">7</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">8</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">21</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">26</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2019-04-11 10:00</start_date>
+    <end_date __type="str">9999-12-31 23:59</end_date>
+  </island_data>
+  <island_data index="29">
+    <name __type="str">試練の活火山</name>
+    <route_type __type="s32">5</route_type>
+    <cost __type="s32">9500</cost>
+    <section __type="s32">1</section>
+    <team __type="s32">2</team>
+    <position __type="s32">10</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">266</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">1</container_type>
+        <movie_num __type="s32">15</movie_num>
+        <precious_item __type="s32">14</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">285</music_index>
+          <get_point __type="s32">84</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">286</music_index>
+          <get_point __type="s32">100</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">36</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">47</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">1</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">8</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">9</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">14</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">26</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2019-05-23 10:00</start_date>
+    <end_date __type="str">9999-12-31 23:59</end_date>
+  </island_data>
+  <island_data index="30">
+    <name __type="str">白昼夢の水平線</name>
+    <route_type __type="s32">1</route_type>
+    <cost __type="s32">3000</cost>
+    <section __type="s32">2</section>
+    <team __type="s32">2</team>
+    <position __type="s32">2</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">0</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">3</container_type>
+        <movie_num __type="s32">0</movie_num>
+        <precious_item __type="s32">0</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">287</music_index>
+          <get_point __type="s32">54</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">284</music_index>
+          <get_point __type="s32">73</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">37</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">48</hall_index>
+      <hall_index __type="s32">49</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">1</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">7</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">9</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">21</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">14</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2019-07-25 10:00</start_date>
+    <end_date __type="str">2019-08-08 05:00</end_date>
+  </island_data>
+  <island_data index="31">
+    <name __type="str">雨の街</name>
+    <route_type __type="s32">2</route_type>
+    <cost __type="s32">7500</cost>
+    <section __type="s32">1</section>
+    <team __type="s32">2</team>
+    <position __type="s32">1</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">219</music_index>
+      <music_index __type="s32">224</music_index>
+      <music_index __type="s32">252</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">1</container_type>
+        <movie_num __type="s32">16</movie_num>
+        <precious_item __type="s32">15</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">291</music_index>
+          <get_point __type="s32">54</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">292</music_index>
+          <get_point __type="s32">124</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">38</program_index>
+      <program_index __type="s32">39</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">50</hall_index>
+      <hall_index __type="s32">51</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">1</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">7</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">9</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">21</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">26</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2019-07-11 10:00</start_date>
+    <end_date __type="str">9999-12-31 23:59</end_date>
+  </island_data>
+  <island_data index="32">
+    <name __type="str">Keyboard Mythology Island</name>
+    <route_type __type="s32">1</route_type>
+    <cost __type="s32">2000</cost>
+    <section __type="s32">2</section>
+    <team __type="s32">2</team>
+    <position __type="s32">1</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">0</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">3</container_type>
+        <movie_num __type="s32">0</movie_num>
+        <precious_item __type="s32">0</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">288</music_index>
+          <get_point __type="s32">36</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">289</music_index>
+          <get_point __type="s32">92</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">40</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">52</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">1</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">7</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">8</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">12</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">27</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2019-08-22 10:00</start_date>
+    <end_date __type="str">2019-09-05 05:00</end_date>
+  </island_data>
+  <island_data index="33">
+    <name __type="str">GUMI 10th Anniversary Island</name>
+    <route_type __type="s32">1</route_type>
+    <cost __type="s32">500</cost>
+    <section __type="s32">2</section>
+    <team __type="s32">2</team>
+    <position __type="s32">3</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">0</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">3</container_type>
+        <movie_num __type="s32">0</movie_num>
+        <precious_item __type="s32">0</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">293</music_index>
+          <get_point __type="s32">30</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">294</music_index>
+          <get_point __type="s32">50</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">295</music_index>
+          <get_point __type="s32">76</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">41</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">53</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">1</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">6</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">7</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">16</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">29</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2019-06-26 10:00</start_date>
+    <end_date __type="str">2019-07-11 05:00</end_date>
+  </island_data>
+  <island_data index="34">
+    <name __type="str">眠らない工場</name>
+    <route_type __type="s32">4</route_type>
+    <cost __type="s32">6500</cost>
+    <section __type="s32">1</section>
+    <team __type="s32">2</team>
+    <position __type="s32">12</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">252</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">1</container_type>
+        <movie_num __type="s32">17</movie_num>
+        <precious_item __type="s32">16</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">296</music_index>
+          <get_point __type="s32">54</get_point>
+        </music>
+        <music>
+          <music_index __type="s32">297</music_index>
+          <get_point __type="s32">124</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">42</program_index>
+      <program_index __type="s32">45</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">54</hall_index>
+      <hall_index __type="s32">57</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">1</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">8</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">9</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">12</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">27</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2019-08-08 10:00</start_date>
+    <end_date __type="str">9999-12-31 23:59</end_date>
+  </island_data>
+  <island_data index="35">
+    <name __type="str">最果ての研究所</name>
+    <route_type __type="s32">1</route_type>
+    <cost __type="s32">5000</cost>
+    <section __type="s32">1</section>
+    <team __type="s32">3</team>
+    <position __type="s32">2</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">253</music_index>
+      <music_index __type="s32">286</music_index>
+      <music_index __type="s32">292</music_index>
+      <music_index __type="s32">297</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">1</container_type>
+        <movie_num __type="s32">18</movie_num>
+        <precious_item __type="s32">0</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">267</music_index>
+          <get_point __type="s32">130</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">43</program_index>
+      <program_index __type="s32">46</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">55</hall_index>
+      <hall_index __type="s32">58</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">1</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">6</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">14</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">22</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">26</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2019-08-22 10:00</start_date>
+    <end_date __type="str">9999-12-31 23:59</end_date>
+  </island_data>
+  <island_data index="36">
+    <name __type="str">はじまりの場所</name>
+    <route_type __type="s32">1</route_type>
+    <cost __type="s32">4500</cost>
+    <section __type="s32">1</section>
+    <team __type="s32">3</team>
+    <position __type="s32">6</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">267</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">1</container_type>
+        <movie_num __type="s32">19</movie_num>
+        <precious_item __type="s32">0</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">213</music_index>
+          <get_point __type="s32">50</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">44</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">56</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">1</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">7</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">13</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">42</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">26</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2019-08-22 10:00</start_date>
+    <end_date __type="str">9999-12-31 23:59</end_date>
+  </island_data>
+  <island_data index="37">
+    <name __type="str">記憶の終着駅</name>
+    <route_type __type="s32">1</route_type>
+    <cost __type="s32">10000</cost>
+    <section __type="s32">1</section>
+    <team __type="s32">3</team>
+    <position __type="s32">11</position>
+    <entry_cond_music_index_list>
+      <music_index __type="s32">213</music_index>
+    </entry_cond_music_index_list>
+    <get_music_index_list>
+      <container container_no="1">
+        <container_type __type="s32">1</container_type>
+        <movie_num __type="s32">20</movie_num>
+        <precious_item __type="s32">0</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">298</music_index>
+          <get_point __type="s32">100</get_point>
+        </music>
+      </container>
+      <container container_no="2">
+        <container_type __type="s32">1</container_type>
+        <movie_num __type="s32">0</movie_num>
+        <precious_item __type="s32">0</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">299</music_index>
+          <get_point __type="s32">0</get_point>
+        </music>
+      </container>
+      <container container_no="3">
+        <container_type __type="s32">1</container_type>
+        <movie_num __type="s32">0</movie_num>
+        <precious_item __type="s32">0</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">301</music_index>
+          <get_point __type="s32">76</get_point>
+        </music>
+      </container>
+      <container container_no="4">
+        <container_type __type="s32">1</container_type>
+        <movie_num __type="s32">0</movie_num>
+        <precious_item __type="s32">0</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">300</music_index>
+          <get_point __type="s32">76</get_point>
+        </music>
+      </container>
+      <container container_no="5">
+        <container_type __type="s32">1</container_type>
+        <movie_num __type="s32">0</movie_num>
+        <precious_item __type="s32">0</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">302</music_index>
+          <get_point __type="s32">76</get_point>
+        </music>
+      </container>
+      <container container_no="6">
+        <container_type __type="s32">1</container_type>
+        <movie_num __type="s32">0</movie_num>
+        <precious_item __type="s32">0</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">303</music_index>
+          <get_point __type="s32">76</get_point>
+        </music>
+      </container>
+      <container container_no="7">
+        <container_type __type="s32">3</container_type>
+        <movie_num __type="s32">0</movie_num>
+        <precious_item __type="s32">0</precious_item>
+        <movie_package __type="str">_label</movie_package>
+        <music>
+          <music_index __type="s32">305</music_index>
+          <get_point __type="s32">85</get_point>
+        </music>
+      </container>
+    </get_music_index_list>
+    <used_practice __type="bool">1</used_practice>
+    <used_recital __type="bool">1</used_recital>
+    <used_concours __type="bool">0</used_concours>
+    <used_lesson_and_test __type="bool">1</used_lesson_and_test>
+    <used_recital_program_index_list>
+      <program_index __type="s32">47</program_index>
+      <program_index __type="s32">48</program_index>
+      <program_index __type="s32">49</program_index>
+    </used_recital_program_index_list>
+    <used_recital_hall_index_list>
+      <hall_index __type="s32">59</hall_index>
+      <hall_index __type="s32">60</hall_index>
+      <hall_index __type="s32">61</hall_index>
+    </used_recital_hall_index_list>
+    <how_to_earn_point_index_list>
+      <how_to_earn_point_index __type="s32">1</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">8</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">12</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">43</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">29</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">32</how_to_earn_point_index>
+      <how_to_earn_point_index __type="s32">35</how_to_earn_point_index>
+    </how_to_earn_point_index_list>
+    <offline __type="bool">0</offline>
+    <start_date __type="str">2019-09-26 10:00</start_date>
+    <end_date __type="str">9999-12-31 23:59</end_date>
+  </island_data>
+</island_data_list>
