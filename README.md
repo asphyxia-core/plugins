@@ -21,3 +21,5 @@ I'll do my best to merge PR, but please make sure you are submitting code target
 ## How do I make plugins?
 
 Checkout our [Documentation](https://asphyxia-core.github.io/typedoc/) and maybe consider join our [Discord](https://discord.gg/3TW3BDm) server. Make sure to familiar yourself with at least XML and Typescript/Javascript.
+
+Note that you should run `npm install` to install typing for node and lodash, and launch CORE using `--dev` arguments to enable console log and typechecking when using typescript.
