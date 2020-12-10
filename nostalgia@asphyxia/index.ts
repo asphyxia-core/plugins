@@ -6,7 +6,7 @@ export function register() {
   
     const MultiRoute = (method: string, handler: EPR | boolean) => {
       // Helper for register multiple versions.
-      // But.. only Opus 2 for now.
+      R.Route(method, handler); // First version and Forte.
       R.Route(`op2_${method}`, handler);
     };
 
@@ -25,4 +25,10 @@ export function register() {
     PlayerRoute('get_playdata', get_playdata)
     PlayerRoute('regist_playdata', regist_playdata)
     PlayerRoute('set_total_result', set_total_result)
+
+    R.Unhandled(async (info, data, send) => {
+        if (["eventlog"].includes(info.module)) return;
+        console.error(`Received Unhandled Response on ${info.method} by ${info.model}/${info.module}`)
+        console.error(`Received Request: ${JSON.stringify(data, null, 4)}`)
+    })
 }
