@@ -1,15 +1,14 @@
-import * as path from "path";
-import { readJSON, readXML } from './helper';
+import { CommonMusicData, readJSONOrXML, readXML } from './helper';
 
 export async function processData() {
-  const { music } = await readJSON(path.resolve(__dirname, './mdb_ex.json'))
+  const { music } = await readJSONOrXML('data/mdb_ex.json', 'data/mdb_ex.xml', processRawData)
   return {
     music,
   };
 }
 
-export async function processRawData() {
-  const data = await readXML(path.resolve(__dirname, './mdb_ex.xml'))
+export async function processRawData(path: string): Promise<CommonMusicData> {
+  const data = await readXML(path)
   const mdb = $(data).elements("mdb.mdb_data");
   const music: any[] = [];
   for (const m of mdb) {

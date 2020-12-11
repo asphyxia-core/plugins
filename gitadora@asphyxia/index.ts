@@ -2,8 +2,13 @@ import { gameInfoGet, shopInfoRegist } from "./handlers/info";
 import { playableMusic } from "./handlers/MusicList"
 import { getPlayer, check, regist, savePlayer } from "./handlers/profiles";
 import { updatePlayerInfo } from "./handlers/webui";
+import { isRequiredVersion } from "./utils";
 
 export function register() {
+  if(!isRequiredVersion(1, 20)) {
+    console.error("You need newer version of Core. v1.20 or newer required.")
+  }
+
   R.GameCode('M32');
 
   R.Config("enable_custom_mdb", {
@@ -13,11 +18,10 @@ export function register() {
     default: false,
   })
 
-  R.Config("custom_mdb_path", {
-    name: "Custom MDB PATH",
-    desc: "You need to enable Custom MDB option first. USE ABSOLUTE PATH !!",
-    type: "string",
-    default: "",
+  R.DataFile("data/custom_mdb.xml", {
+    accept: ".xml",
+    name: "Custom MDB",
+    desc: "You need to enable Custom MDB option first."
   })
 
   R.WebUIEvent('updatePlayerInfo', updatePlayerInfo);

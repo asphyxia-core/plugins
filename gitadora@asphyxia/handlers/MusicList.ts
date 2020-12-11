@@ -1,34 +1,32 @@
 import { getVersion } from "../utils";
 import { processData as ExchainMusic } from "../data/Exchain"
 import { processData as MatixxMusic } from "../data/Matixx"
-import { readXML } from "../data/helper";
-import * as path from "path";
+import { CommonMusicDataField, readJSONOrXML, readXML } from "../data/helper";
 
 export const playableMusic: EPR = async (info, data, send) => {
   const version = getVersion(info);
-
-  let musicList: any[] = [];
+  let music: CommonMusicDataField[] = [];
   try {
     if (U.GetConfig("enable_custom_mdb")) {
-      const data = await readXML(path.normalize(U.GetConfig("custom_mdb_path")))
+      const data = await readXML('data/custom_mdb.xml')
       const mdb = $(data).elements("mdb.mdb_data");
-
+    
       for (const m of mdb) {
         const d = m.numbers("xg_diff_list");
         const contain = m.numbers("contain_stat");
         const gf = contain[0];
         const dm = contain[1];
-
+    
         if (gf == 0 && dm == 0) {
           continue;
         }
-
+    
         let type = gf;
         if (gf == 0) {
           type = dm;
         }
-
-        musicList.push({
+    
+        music.push({
           id: K.ITEM('s32', m.number("music_id")),
           cont_gf: K.ITEM('bool', gf == 0 ? 0 : 1),
           cont_dm: K.ITEM('bool', dm == 0 ? 0 : 1),
@@ -56,15 +54,16 @@ export const playableMusic: EPR = async (info, data, send) => {
       }
     }
   } catch (e) {
-    console.log(e.stack);
-    send.deny();
+    console.error(e.stack);
+    console.error("Fallback: Using default MDB method.")
+    music = [];
   }
 
-  if (musicList.length == 0) {
+  if (music.length == 0) {
     if (version == 'exchain') {
-      musicList = _.get(await ExchainMusic(), 'music', []);
+      music = _.get(await ExchainMusic(), 'music', []);
     } else {
-      musicList = _.get(await MatixxMusic(), 'music', []);
+      music = _.get(await MatixxMusic(), 'music', []);
     }
   }
 
@@ -74,11 +73,8 @@ export const playableMusic: EPR = async (info, data, send) => {
       major: K.ITEM('s32', 1),
       minor: K.ITEM('s32', 1),
     },
-    musicinfo: {
-      '@attr': {
-        nr: musicList.length,
-      },
-      'music': musicList,
-    },
+    musicinfo: K.ATTR({ nr: `${music.length}` }, {
+      music,
+    }),
   });
 };
