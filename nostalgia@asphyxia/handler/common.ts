@@ -95,9 +95,10 @@ export const get_music_info: EPR = async (info, data, send) => {
   }
 
   const versionObject = isForte
-    ? { 
+    ? {
       permitted_list: forte_permitted_list,
-      music_list: await processData() }
+      music_list: await processData()
+    }
     : {
       permitted_list,
       island_data_list: await processIslandData(),

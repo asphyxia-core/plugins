@@ -36,9 +36,9 @@ export async function processMdbData(path: string): Promise<CommonMusicData> {
     }));
   }
   return K.ATTR({
-      release_code: attr.release_code,
-      revision: attr.revision,
-    }, {
+    release_code: attr.release_code,
+    revision: attr.revision,
+  }, {
     music_spec: music,
   });
 }

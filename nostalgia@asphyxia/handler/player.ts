@@ -47,7 +47,7 @@ const getPlayerData = async (refid: string, info: EamuseInfo, name?: string) => 
   const param: any[] = [];
   for (const t in p.params) {
     const para = p.params[t];
-    param.push(K.ATTR({type: t}, {
+    param.push(K.ATTR({ type: t }, {
       count: K.ITEM('s32', para.length),
       params_array: K.ARRAY('s32', para),
     }));
@@ -144,20 +144,20 @@ const getPlayerData = async (refid: string, info: EamuseInfo, name?: string) => 
     K.ARRAY('s32', p.musicList.type_2, { sheet_type: '2' }),
     K.ARRAY('s32', p.musicList.type_3, { sheet_type: '3' }),
   ] : [
-    K.ARRAY('s32', p.musicList.type_0, { sheet_type: '0' }),
-    K.ARRAY('s32', p.musicList.type_1, { sheet_type: '1' }),
-    K.ARRAY('s32', p.musicList.type_2, { sheet_type: '2' }),
-  ];
+      K.ARRAY('s32', p.musicList.type_0, { sheet_type: '0' }),
+      K.ARRAY('s32', p.musicList.type_1, { sheet_type: '1' }),
+      K.ARRAY('s32', p.musicList.type_2, { sheet_type: '2' }),
+    ];
   const correct_music_list2 = !isForte ? [
     K.ARRAY('s32', p.musicList2.type_0, { sheet_type: '0' }),
     K.ARRAY('s32', p.musicList2.type_1, { sheet_type: '1' }),
     K.ARRAY('s32', p.musicList2.type_2, { sheet_type: '2' }),
     K.ARRAY('s32', p.musicList2.type_3, { sheet_type: '3' }),
   ] : [
-    K.ARRAY('s32', p.musicList2.type_0, { sheet_type: '0' }),
-    K.ARRAY('s32', p.musicList2.type_1, { sheet_type: '1' }),
-    K.ARRAY('s32', p.musicList2.type_2, { sheet_type: '2' }),
-  ];
+      K.ARRAY('s32', p.musicList2.type_0, { sheet_type: '0' }),
+      K.ARRAY('s32', p.musicList2.type_1, { sheet_type: '1' }),
+      K.ARRAY('s32', p.musicList2.type_2, { sheet_type: '2' }),
+    ];
 
   return {
     name: K.ITEM('str', p.name),
@@ -170,7 +170,7 @@ const getPlayerData = async (refid: string, info: EamuseInfo, name?: string) => 
       flag: correct_music_list,
     },
     free_for_play_music_list: {
-      flag:correct_music_list2,
+      flag: correct_music_list2,
     },
     last: {
       music_index: K.ITEM('s32', forteNumericHandler(p.music, 195, 0)),
@@ -183,7 +183,7 @@ const getPlayerData = async (refid: string, info: EamuseInfo, name?: string) => 
       music_group: K.ITEM('s32', p.group),
       hands_mode: isForte ? K.ITEM('s32', p.mode) : K.ITEM('s8', p.mode),
       near_setting: K.ITEM('s8', p.near),
-      judge_delay_offset: isForte ?  K.ITEM('s32', p.offset) : K.ITEM('s8', p.offset),
+      judge_delay_offset: isForte ? K.ITEM('s32', p.offset) : K.ITEM('s8', p.offset),
       bingo_index: K.ITEM('s32', p.bingo),
       total_skill_value: K.ITEM('u64', BigInt(p.skill)),
       key_beam_level: K.ITEM('s8', p.keyBeam),
@@ -209,7 +209,7 @@ const getPlayerData = async (refid: string, info: EamuseInfo, name?: string) => 
     present_list: {},
     various_music_list: {
       data: [
-        K.ATTR({ list_type: '0'  }, {
+        K.ATTR({ list_type: '0' }, {
           cond_flag: K.ITEM('s32', 0),
           flag: K.ITEM('s32', 0, { sheet_type: '0' }),
         }),
@@ -444,7 +444,7 @@ export const set_total_result: EPR = async (info, data, send) => {
 
   // Save Recitals
   const rInfo = $(data).element('recital_info.recital');
-  if (rInfo){
+  if (rInfo) {
     const rIndex = rInfo.number('recital_index', -1);
     if (rIndex >= 0) {
       const r = rInfo.element('result');
@@ -505,9 +505,9 @@ export const get_musicdata: EPR = async (info, data, send) => {
     if (isForte && parseInt(mdata[0], 10) > 195) continue;
 
     music.push(K.ATTR({
-        music_index: mdata[0],
-        sheet_type: mdata[1],
-      }, {
+      music_index: mdata[0],
+      sheet_type: mdata[1],
+    }, {
       score: K.ITEM('s32', musi.score),
       evaluation: K.ITEM('u32', musi.grade), // Forte
       grade_basic: K.ITEM('u32', musi.grade),
@@ -531,90 +531,90 @@ function forteNumericHandler(input: number, max: number, def: number = 0) {
 }
 
 async function readProfile(refid: string): Promise<Profile> {
-  const profile = await DB.FindOne<Profile>(refid, { collection: 'profile'} )
+  const profile = await DB.FindOne<Profile>(refid, { collection: 'profile' })
   return profile || defaultProfile
 }
 
 async function writeProfile(refid: string, profile: Profile) {
-  await DB.Upsert<Profile>(refid, { collection: 'profile'}, profile)
+  await DB.Upsert<Profile>(refid, { collection: 'profile' }, profile)
 }
 
 async function readScores(refid: string): Promise<Scores> {
-  const score = await DB.FindOne<Scores>(refid, { collection: 'scores'} )
-  return score || { collection: 'scores', recitals: {}, scores: {}}
+  const score = await DB.FindOne<Scores>(refid, { collection: 'scores' })
+  return score || { collection: 'scores', recitals: {}, scores: {} }
 }
 
 async function writeScores(refid: string, scores: Scores) {
-  await DB.Upsert<Scores>(refid, { collection: 'scores'}, scores)
+  await DB.Upsert<Scores>(refid, { collection: 'scores' }, scores)
 }
 
 const defaultProfile: Profile = {
-    collection: 'profile',
+  collection: 'profile',
 
-    name: 'GUEST',
-    music: 0,
-    sheet: 0,
-    brooch: 0,
-    hispeed: 0,
-    beatGuide: 1,
-    headphone: 0,
-    judgeBar: 250,
-    group: 0,
-    mode: 0,
-    near: 0,
-    offset: 0,
-    bingo: 0,
-    skill: '0',
-    playCount: 0,
-    todayPlayCount: 0,
-    keyBeam: 0,
-    orbit: 0,
-    noteHeight: 10,
-    noteWidth: 0,
-    judgeWidth: 0,
-    beatVolume: 0,
-    beatType: 0,
-    keyVolume: 0,
-    bgmVolume: 0,
-    note: 0,
-    sf: 0,
-    judgeFX: 0,
-    simple: 0,
-    money: 0,
-    fame: 0,
-    fameId: 0,
-    island: 0,
-    brooches: {
-      '1': {
-        level: 1,
-        watch: 0,
-        steps: 0,
-        new: 0,
-      },
+  name: 'GUEST',
+  music: 0,
+  sheet: 0,
+  brooch: 0,
+  hispeed: 0,
+  beatGuide: 1,
+  headphone: 0,
+  judgeBar: 250,
+  group: 0,
+  mode: 0,
+  near: 0,
+  offset: 0,
+  bingo: 0,
+  skill: '0',
+  playCount: 0,
+  todayPlayCount: 0,
+  keyBeam: 0,
+  orbit: 0,
+  noteHeight: 10,
+  noteWidth: 0,
+  judgeWidth: 0,
+  beatVolume: 0,
+  beatType: 0,
+  keyVolume: 0,
+  bgmVolume: 0,
+  note: 0,
+  sf: 0,
+  judgeFX: 0,
+  simple: 0,
+  money: 0,
+  fame: 0,
+  fameId: 0,
+  island: 0,
+  brooches: {
+    '1': {
+      level: 1,
+      watch: 0,
+      steps: 0,
+      new: 0,
     },
-    islands: {},
-    kentei: {},
-    cat_stairs:{
-      '0' : {
-        total: 0,
-        index: 0,
-        steps: 0,
-        goal: 0
-      }
-    },
-    params: {
-      '1': [0],
-    },
-    musicList: {
-      type_0: Array(32).fill(-1),
-      type_1: Array(32).fill(-1),
-      type_2: Array(32).fill(-1),
-      type_3: Array(32).fill(-1),
-    },
-    musicList2: {
-      type_0: Array(32).fill(-1),
-      type_1: Array(32).fill(-1),
-      type_2: Array(32).fill(-1),
-      type_3: Array(32).fill(-1),
-    },
+  },
+  islands: {},
+  kentei: {},
+  cat_stairs: {
+    '0': {
+      total: 0,
+      index: 0,
+      steps: 0,
+      goal: 0
+    }
+  },
+  params: {
+    '1': [0],
+  },
+  musicList: {
+    type_0: Array(32).fill(-1),
+    type_1: Array(32).fill(-1),
+    type_2: Array(32).fill(-1),
+    type_3: Array(32).fill(-1),
+  },
+  musicList2: {
+    type_0: Array(32).fill(-1),
+    type_1: Array(32).fill(-1),
+    type_2: Array(32).fill(-1),
+    type_3: Array(32).fill(-1),
+  },
 }
