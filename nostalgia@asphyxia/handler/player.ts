@@ -3,7 +3,7 @@
 // import { Logger } from '../../util/Logger';
 import { Profile } from '../models/profile';
 import { Scores } from '../models/scores';
-import { permitted_list } from './common';
+import { permitted_list, forte_permitted_list } from './common';
 // import { getValue, getArray, getAttr, getStr, getBigInt } from '../../util/Helper';
 
 
@@ -18,9 +18,10 @@ import { permitted_list } from './common';
 //   },
 // };
 
-const getEventInfo = () => {
+const getEventInfo = (isForte: boolean) => {
   const event: any[] = [];
-  for (let i = 1; i <= 17; ++i) {
+  const event_num = isForte ? 10 : 17
+  for (let i = 1; i <= event_num; ++i) {
     event.push({
       type: K.ITEM('s32', 4),
       index: K.ITEM('s32', i),
@@ -34,8 +35,9 @@ const getEventInfo = () => {
   return event;
 };
 
-const getPlayerData = async (refid: string, name?: string) => {
+const getPlayerData = async (refid: string, info: EamuseInfo, name?: string) => {
   const p = await readProfile(refid);
+  const isForte = !info.method.includes("op")
 
   if (name && name.length > 0) {
     p.name = name;
@@ -53,6 +55,7 @@ const getPlayerData = async (refid: string, name?: string) => {
 
   const brooch: any[] = [];
   for (const b in p.brooches) {
+    if (isForte && parseInt(b, 10) > 147) continue; // Forte Brooch is ~147.
     const bData = p.brooches[b];
     brooch.push(K.ATTR({ index: b }, {
       watch_count: K.ITEM('s32', bData.watch),
@@ -72,6 +75,20 @@ const getPlayerData = async (refid: string, name?: string) => {
     }));
   }
 
+  // Forte
+  const stairs: any[] = [];
+  for (const s in (p.cat_stairs || defaultProfile.cat_stairs)) {
+    const stair = (p.cat_stairs || defaultProfile.cat_stairs)[s];
+
+    stairs.push(K.ATTR({ index: s }, {
+      total_steps: K.ITEM("s32", stair.total),
+      chapter_index: K.ITEM("s32", stair.index),
+      chapter_steps: K.ITEM("s32", stair.steps),
+      chapter_goal: K.ITEM("s32", stair.goal)
+    }));
+  }
+
+  // >= Op2
   const kentei_record: any[] = [];
   for (const k in p.kentei) {
     const kentei = p.kentei[k];
@@ -86,6 +103,7 @@ const getPlayerData = async (refid: string, name?: string) => {
     });
   }
 
+  // >= Op2
   const island_progress: any[] = [];
   for (const i in p.islands) {
     const island = p.islands[i];
@@ -119,40 +137,53 @@ const getPlayerData = async (refid: string, name?: string) => {
     }));
   }
 
+  const correct_permitted_list = !isForte ? permitted_list : forte_permitted_list
+  const correct_music_list = !isForte ? [
+    K.ARRAY('s32', p.musicList.type_0, { sheet_type: '0' }),
+    K.ARRAY('s32', p.musicList.type_1, { sheet_type: '1' }),
+    K.ARRAY('s32', p.musicList.type_2, { sheet_type: '2' }),
+    K.ARRAY('s32', p.musicList.type_3, { sheet_type: '3' }),
+  ] : [
+    K.ARRAY('s32', p.musicList.type_0, { sheet_type: '0' }),
+    K.ARRAY('s32', p.musicList.type_1, { sheet_type: '1' }),
+    K.ARRAY('s32', p.musicList.type_2, { sheet_type: '2' }),
+  ];
+  const correct_music_list2 = !isForte ? [
+    K.ARRAY('s32', p.musicList2.type_0, { sheet_type: '0' }),
+    K.ARRAY('s32', p.musicList2.type_1, { sheet_type: '1' }),
+    K.ARRAY('s32', p.musicList2.type_2, { sheet_type: '2' }),
+    K.ARRAY('s32', p.musicList2.type_3, { sheet_type: '3' }),
+  ] : [
+    K.ARRAY('s32', p.musicList2.type_0, { sheet_type: '0' }),
+    K.ARRAY('s32', p.musicList2.type_1, { sheet_type: '1' }),
+    K.ARRAY('s32', p.musicList2.type_2, { sheet_type: '2' }),
+  ];
+
   return {
     name: K.ITEM('str', p.name),
     play_count: K.ITEM('s32', p.playCount),
     today_play_count: K.ITEM('s32', p.todayPlayCount),
-    permitted_list,
-    event_info_list: { event: getEventInfo() },
+    permitted_list: correct_permitted_list,
+    event_info_list: { event: getEventInfo(isForte) }, // Op2
+    event_control_list: { event: getEventInfo(isForte) }, // Forte
     music_list: {
-      flag: [
-        K.ARRAY('s32', p.musicList.type_0, { sheet_type: '0' }),
-        K.ARRAY('s32', p.musicList.type_1, { sheet_type: '1' }),
-        K.ARRAY('s32', p.musicList.type_2, { sheet_type: '2' }),
-        K.ARRAY('s32', p.musicList.type_3, { sheet_type: '3' }),
-      ],
+      flag: correct_music_list,
     },
     free_for_play_music_list: {
-      flag: [
-        K.ARRAY('s32', p.musicList2.type_0, { sheet_type: '0' }),
-        K.ARRAY('s32', p.musicList2.type_1, { sheet_type: '1' }),
-        K.ARRAY('s32', p.musicList2.type_2, { sheet_type: '2' }),
-        K.ARRAY('s32', p.musicList2.type_3, { sheet_type: '3' }),
-      ],
+      flag:correct_music_list2,
     },
     last: {
-      music_index: K.ITEM('s32', p.music),
-      sheet_type: K.ITEM('s8', p.sheet),
-      brooch_index: K.ITEM('s32', p.brooch),
+      music_index: K.ITEM('s32', forteNumericHandler(p.music, 195, 0)),
+      sheet_type: K.ITEM('s8', forteNumericHandler(p.sheet, 3, 0)),
+      brooch_index: K.ITEM('s32', forteNumericHandler(p.brooch, 147, 0)),
       hi_speed_level: K.ITEM('s32', p.hispeed),
       beat_guide: K.ITEM('s8', p.beatGuide),
       headphone_volume: K.ITEM('s8', p.headphone),
       judge_bar_pos: K.ITEM('s32', p.judgeBar),
       music_group: K.ITEM('s32', p.group),
-      hands_mode: K.ITEM('s8', p.mode),
+      hands_mode: isForte ? K.ITEM('s32', p.mode) : K.ITEM('s8', p.mode),
       near_setting: K.ITEM('s8', p.near),
-      judge_delay_offset: K.ITEM('s8', p.offset),
+      judge_delay_offset: isForte ?  K.ITEM('s32', p.offset) : K.ITEM('s8', p.offset),
       bingo_index: K.ITEM('s32', p.bingo),
       total_skill_value: K.ITEM('u64', BigInt(p.skill)),
       key_beam_level: K.ITEM('s8', p.keyBeam),
@@ -169,9 +200,11 @@ const getPlayerData = async (refid: string, name?: string) => {
       judge_effect_adjust: K.ITEM('s8', p.judgeFX),
       simple_bg: K.ITEM('s8', p.simple),
     },
-    brooch_list: {
-      brooch,
+    // TODO: Full unlock instead of saving?
+    cat_progress: {
+      stair: stairs
     },
+    brooch_list: { brooch },
     extra_param: { param },
     present_list: {},
     various_music_list: {
@@ -202,14 +235,14 @@ export const regist_playdata: EPR = async (info, data, send) => {
   const name = $(data).str('name');
   console.debug(`nos op2 regist: ${name}`);
 
-  send.object(await getPlayerData(refid, name));
+  send.object(await getPlayerData(refid, info, name));
 };
 
 export const get_playdata: EPR = async (info, data, send) => {
   const refid = $(data).str('refid');
   if (!refid) return send.deny();
 
-  send.object(await getPlayerData(refid));
+  send.object(await getPlayerData(refid, info));
 };
 
 // export const set_stage_result: EPR = async (info, data, send) => {
@@ -220,6 +253,7 @@ export const set_total_result: EPR = async (info, data, send) => {
   const refid = $(data).str('refid');
   if (!refid) return send.deny();
 
+  const isForte = !info.method.includes("op")
   const p = await readProfile(refid);
 
   p.playCount = $(data).number('play_count', p.playCount);
@@ -321,7 +355,7 @@ export const set_total_result: EPR = async (info, data, send) => {
   // BROOCHES
   let broochs = $(data).elements('brooch_list.brooch');
   for (const brooch of broochs) {
-    const index = parseInt(_.get(brooch, '@attr.index', '-1'));
+    const index = parseInt(brooch.attr().index || '-1');
     if (index < 0) continue;
 
     p.brooches[index] = {
@@ -335,7 +369,7 @@ export const set_total_result: EPR = async (info, data, send) => {
   // ISLAND
   let islands = $(data).elements('island_progress_list.island_progress');
   for (const island of islands) {
-    const index = parseInt(_.get(island, '@attr.index', '-1'));
+    const index = parseInt(island.attr().index || '-1');
     if (index < 0) continue;
 
     const containers: Profile['islands']['0']['containers'] = {};
@@ -366,6 +400,23 @@ export const set_total_result: EPR = async (info, data, send) => {
     };
   }
 
+  // CAT STAIR
+  let stairs = $(data).elements('cat_progress.stair');
+  if (!p.cat_stairs) {
+    p.cat_stairs = defaultProfile.cat_stairs
+  }
+  for (const stair of stairs) {
+    const index = parseInt(stair.attr().index || '-1');
+    if (index < 0) continue;
+
+    p.cat_stairs[index] = {
+      total: stair.number('total_steps', 0),
+      index: stair.number('chapter_index', 1),
+      steps: stair.number('chapter_steps', 0),
+      goal: stair.number('chapter_goal', 0),
+    };
+  }
+
   await writeProfile(refid, p);
 
   const scoreData = await readScores(refid);
@@ -376,12 +427,12 @@ export const set_total_result: EPR = async (info, data, send) => {
     const type = stage.attr().sheet_type
 
     const key = `${mid}:${type}`;
-    const c = stage.element('common');
+    const c = isForte ? stage : stage.element('common');
     const o = _.get(scoreData, `scores.${key}`, {});
     const isHigh = c.number('score', 0) >= _.get(o, 'score', 0);
     scoreData.scores[key] = {
       score: Math.max(c.number('score', 0), _.get(o, 'score', 0)),
-      grade: Math.max(c.number('grade_basic', 0), _.get(o, 'grade', 0)),
+      grade: Math.max(Math.max(c.number('grade_basic', 0), c.number('evaluation', 0)), _.get(o, 'grade', 0)),
       recital: Math.max(c.number('grade_recital', 0), _.get(o, 'recital', 0)),
       mode: isHigh ? c.number('hands_mode', 0) : _.get(o, 'mode', 0),
       count: Math.max(c.number('play_count', 0), _.get(o, 'count', 1)),
@@ -454,14 +505,15 @@ export const get_musicdata: EPR = async (info, data, send) => {
         music_index: mdata[0],
         sheet_type: mdata[1],
       }, {
-      'score': K.ITEM('s32', musi.score),
-      'grade_basic': K.ITEM('u32', musi.grade),
-      'grade_recital': K.ITEM('u32', musi.recital),
-      'play_count': K.ITEM('s32', musi.count),
-      'clear_count': K.ITEM('s32', musi.clear),
-      'multi_count': K.ITEM('s32', musi.multi),
-      'hands_mode': K.ITEM('s8', musi.mode),
-      'clear_flag': K.ITEM('s32', musi.flag),
+      score: K.ITEM('s32', musi.score),
+      evaluation: K.ITEM('u32', musi.grade), // Forte
+      grade_basic: K.ITEM('u32', musi.grade),
+      grade_recital: K.ITEM('u32', musi.recital),
+      play_count: K.ITEM('s32', musi.count),
+      clear_count: K.ITEM('s32', musi.clear),
+      multi_count: K.ITEM('s32', musi.multi),
+      hands_mode: K.ITEM('s8', musi.mode),
+      clear_flag: K.ITEM('s32', musi.flag),
     }));
   }
 
@@ -470,6 +522,10 @@ export const get_musicdata: EPR = async (info, data, send) => {
     music,
   });
 };
+
+function forteNumericHandler(input: number, max: number, def: number = 0) {
+  return input > max ? def : input;
+}
 
 async function readProfile(refid: string): Promise<Profile> {
   const profile = await DB.FindOne<Profile>(refid, { collection: 'profile'} )
@@ -535,6 +591,14 @@ const defaultProfile: Profile = {
     },
     islands: {},
     kentei: {},
+    cat_stairs:{
+      '0' : {
+        total: 0,
+        index: 0,
+        steps: 0,
+        goal: 0
+      }
+    },
     params: {
       '1': [0],
     },

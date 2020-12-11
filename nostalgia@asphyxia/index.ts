@@ -26,6 +26,9 @@ export function register() {
     PlayerRoute('regist_playdata', regist_playdata)
     PlayerRoute('set_total_result', set_total_result)
 
+    //TODO:  Fix this things with actual working handler.
+    PlayerRoute('set_stage_result', true)
+
     R.Unhandled(async (info, data, send) => {
         if (["eventlog"].includes(info.module)) return;
         console.error(`Received Unhandled Response on ${info.method} by ${info.model}/${info.module}`)
