@@ -11,7 +11,7 @@ Supported Versions
 About Forte Support
 -------------------
 Forte support is live. But since it has much difference compared to Op.2, Forte is not-primary-supported version.
-It may works unexpectedly. Forte was tested very lightly. So this was tagged as **Experiment**.
+It may works unexpectedly. Forte was tested very lightly. So this feature is tagged as **Experiment**.
 
 Also, Technically, This *may* support First version of Nostalgia too.
 But It's highly not recommend to run First version with it.
