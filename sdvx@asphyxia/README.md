@@ -1,6 +1,6 @@
 # SOUND VOLTEX
 
-Plugin Version: **v1.0**
+Plugin Version: **v1.1**
 
 Supported Versions:
 
