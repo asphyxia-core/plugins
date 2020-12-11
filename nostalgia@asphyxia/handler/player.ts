@@ -37,7 +37,7 @@ const getEventInfo = (isForte: boolean) => {
 
 const getPlayerData = async (refid: string, info: EamuseInfo, name?: string) => {
   const p = await readProfile(refid);
-  const isForte = !info.method.includes("op")
+  const isForte = !info.module.includes("op")
 
   if (name && name.length > 0) {
     p.name = name;
@@ -253,7 +253,7 @@ export const set_total_result: EPR = async (info, data, send) => {
   const refid = $(data).str('refid');
   if (!refid) return send.deny();
 
-  const isForte = !info.method.includes("op")
+  const isForte = !info.module.includes("op")
   const p = await readProfile(refid);
 
   p.playCount = $(data).number('play_count', p.playCount);
@@ -355,7 +355,7 @@ export const set_total_result: EPR = async (info, data, send) => {
   // BROOCHES
   let broochs = $(data).elements('brooch_list.brooch');
   for (const brooch of broochs) {
-    const index = parseInt(brooch.attr().index || '-1');
+    const index = parseInt(brooch.attr().index || '-1', 10);
     if (index < 0) continue;
 
     p.brooches[index] = {
@@ -369,7 +369,7 @@ export const set_total_result: EPR = async (info, data, send) => {
   // ISLAND
   let islands = $(data).elements('island_progress_list.island_progress');
   for (const island of islands) {
-    const index = parseInt(island.attr().index || '-1');
+    const index = parseInt(island.attr().index || '-1', 10);
     if (index < 0) continue;
 
     const containers: Profile['islands']['0']['containers'] = {};
@@ -406,7 +406,7 @@ export const set_total_result: EPR = async (info, data, send) => {
     p.cat_stairs = defaultProfile.cat_stairs
   }
   for (const stair of stairs) {
-    const index = parseInt(stair.attr().index || '-1');
+    const index = parseInt(stair.attr().index || '-1', 10);
     if (index < 0) continue;
 
     p.cat_stairs[index] = {
@@ -474,6 +474,7 @@ export const get_musicdata: EPR = async (info, data, send) => {
   const refid = $(data).str('refid');
   if (!refid) return send.deny();
 
+  const isForte = !info.module.includes("op")
   const scoreData = await readScores(refid);
 
   const recital_record: any[] = [];
@@ -500,6 +501,8 @@ export const get_musicdata: EPR = async (info, data, send) => {
   for (const m in scoreData.scores) {
     const mdata = m.split(':');
     const musi = scoreData.scores[m];
+
+    if (isForte && parseInt(mdata[0], 10) > 195) continue;
 
     music.push(K.ATTR({
         music_index: mdata[0],

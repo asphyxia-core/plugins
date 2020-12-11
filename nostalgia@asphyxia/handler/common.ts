@@ -75,7 +75,7 @@ export const get_common_info = async (info, data, send) => {
 };
 
 export const get_music_info: EPR = async (info, data, send) => {
-  const isForte = !info.method.includes("op")
+  const isForte = !info.module.includes("op")
 
   const music_spec: any = [];
   for (let i = 1; i < 400; ++i) {
