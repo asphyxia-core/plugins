@@ -173,9 +173,9 @@ const getPlayerData = async (refid: string, info: EamuseInfo, name?: string) => 
       flag: correct_music_list2,
     },
     last: {
-      music_index: K.ITEM('s32', forteNumericHandler(p.music, 195, 0)),
-      sheet_type: K.ITEM('s8', forteNumericHandler(p.sheet, 3, 0)),
-      brooch_index: K.ITEM('s32', forteNumericHandler(p.brooch, 147, 0)),
+      music_index: K.ITEM('s32', forteNumericHandler(isForte, p.music, 195, 0)),
+      sheet_type: K.ITEM('s8', forteNumericHandler(isForte, p.sheet, 3, 0)),
+      brooch_index: K.ITEM('s32', forteNumericHandler(isForte, p.brooch, 147, 0)),
       hi_speed_level: K.ITEM('s32', p.hispeed),
       beat_guide: K.ITEM('s8', p.beatGuide),
       headphone_volume: K.ITEM('s8', p.headphone),
@@ -526,8 +526,8 @@ export const get_musicdata: EPR = async (info, data, send) => {
   });
 };
 
-function forteNumericHandler(input: number, max: number, def: number = 0) {
-  return input > max ? def : input;
+function forteNumericHandler(isForte: boolean, input: number, max: number, def: number = 0) {
+  return isForte ? input > max ? def : input : input;
 }
 
 async function readProfile(refid: string): Promise<Profile> {
