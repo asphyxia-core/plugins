@@ -6,6 +6,7 @@ Supported Versions
 -------------------
 - pop'n music 23 Eclale
 - pop'n music 24 Usagi to Neko to Shōnen no Yume
+- pop'n music 25 peace
 
 Changelog
 =========
