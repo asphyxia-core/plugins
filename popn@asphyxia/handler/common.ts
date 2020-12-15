@@ -1,39 +1,83 @@
 import { getVersion } from './utils';
 
-const PHASE23 = [
+interface Phase {
+  id: number;
+  p: number;      
+}
+
+const PHASE23 : Phase[] = [
   { id: 0, p: 16 },
   { id: 1, p: 3 },
   { id: 2, p: 1 },
   { id: 3, p: 2 },
   { id: 4, p: 1 },
-  { id: 5, p: 1 },
+  { id: 5, p: 2 },
   { id: 6, p: 1 },
   { id: 7, p: 4 },
   { id: 8, p: 3 },
   { id: 9, p: 4 },
   { id: 10, p: 4 },
   { id: 11, p: 1 },
+  { id: 12, p: 1 },
   { id: 13, p: 4 },
 ];
 
-const PHASE24 = [
-  { id: 3, p: 1 },
-  // { id: 5, p: 1 },
+const PHASE24 : Phase[] = [
+  { id: 0, p: 11 },
+  { id: 1, p: 2 },
+  { id: 2, p: 2 },
+  { id: 3, p: 4 },
+  { id: 4, p: 1 },
+  { id: 5, p: 1 },
   { id: 6, p: 1 },
-  { id: 16, p: 1 },
-  { id: 17, p: 1 },
-  { id: 18, p: 1 },
-  { id: 19, p: 1 },
-  { id: 20, p: 1 },
+  { id: 7, p: 1 },
+  { id: 8, p: 2 },
+  { id: 9, p: 2 },
+  { id: 10, p: 15 },
+  { id: 11, p: 1 },
+  { id: 12, p: 2 },
+  { id: 13, p: 1 },
 ];
 
-export const getInfo = (req) => {
+const PHASE25 : Phase[] = [
+  { id: 0, p: 23 },
+  { id: 1, p: 4 },
+  { id: 2, p: 2 },
+  { id: 3, p: 4 },
+  { id: 4, p: 1 },
+  { id: 5, p: 1 },
+  { id: 6, p: 1 },
+  { id: 7, p: 1 },
+  { id: 8, p: 2 },
+  { id: 9, p: 2 },
+  { id: 10, p: 30 },
+  { id: 11, p: 1 },
+  { id: 12, p: 2 },
+  { id: 13, p: 1 },
+  { id: 14, p: 39 },
+  { id: 15, p: 2 },
+  { id: 16, p: 3 },
+  { id: 17, p: 8 },
+  { id: 18, p: 1 },
+  { id: 19, p: 1 },
+  { id: 20, p: 13 },
+  { id: 21, p: 20 },
+  { id: 22, p: 2 },
+  { id: 23, p: 1 },
+  { id: 24, p: 1 },
+];
+
+export const getInfo = (req: EamuseInfo) => {
   const version = getVersion(req);
 
   if (version == 'v23') {
     return getInfo23();
   } else if (version == 'v24') {
-    return getInfo24();
+    if(req.model == 'M39:J:A:A:2020092800') {
+      return getInfo24(PHASE25);
+    } else {
+      return getInfo24(PHASE24);
+    }
   }
 }
 
@@ -71,13 +115,13 @@ const getInfo23 = () => {
   return result;
 };
 
-const getInfo24 = () => {
+const getInfo24 = (phaseData : Phase[]) => {
   const result: any = {
     phase: [],
     goods: [],
   };
 
-  for (const phase of PHASE24) {
+  for (const phase of phaseData) {
     result.phase.push({
       event_id: K.ITEM('s16', phase.id),
       phase: K.ITEM('s16', phase.p),
