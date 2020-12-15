@@ -14,10 +14,6 @@ Update phase data : All versions are on latest phase.
 #### 1.0.0
 Initial Release.
 
-## TODO
-* Allows to select phase
-* Add/Fix save of phase datas
-
 ## How to import data from non-core Asphyxia
 To import data, you have to :
 * Create your popn profile in Asphyxia-core. You just have to insert your card in the game and follow the process until coming to the select mode select screen. Once here, quit the game.
