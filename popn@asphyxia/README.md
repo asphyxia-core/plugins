@@ -1,21 +1,20 @@
 # Pop'n Music
 
-Plugin Version: **v1.0.0**
+Plugin Version: **v1.1.0**
 
-Supported Versions
--------------------
+## Supported Versions
 - pop'n music 23 Eclale
 - pop'n music 24 Usagi to Neko to Shōnen no Yume
 - pop'n music 25 peace
 
-Changelog
-=========
-1.0.0
------
+## Changelog
+#### 1.1.0
+Update phase data : All versions are on latest phase.
+
+#### 1.0.0
 Initial Release.
 
-How to import data from non-core Asphyxia
-=========================================
+## How to import data from non-core Asphyxia
 To import data, you have to :
 * Create your popn profile in Asphyxia-core. You just have to insert your card in the game and follow the process until coming to the select mode select screen. Once here, quit the game.
 * Create a backup of your savedata.db file (in case something goes wrong).
