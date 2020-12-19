@@ -265,10 +265,8 @@ export const writeMusic: EPR = async (req, data, send) => {
       cnt: 1,
     };
   } else {
-    scoresData.scores[key] = {
-      score: Math.max(score, scoresData.scores[key].score),
-      cnt: scoresData.scores[key].cnt + 1,
-    };
+    scoresData.scores[key].score = Math.max(score, scoresData.scores[key].score);
+	  scoresData.scores[key].cnt = scoresData.scores[key].cnt + 1;
   }
 
   if (clear_type) {
