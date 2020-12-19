@@ -4,8 +4,18 @@ import { importPnmData } from "./handler/webui";
 
 export function register() {
   R.GameCode('M39');
+  
+  R.Config("enable_25_event", {
+    name: "PNM25 event",
+    desc: "Enable the pop'n event archive",
+    type: "boolean",
+    default: true,
+  });
 
   R.WebUIEvent('importPnmData', importPnmData);
+  R.WebUIEvent('updatePnmPlayerInfo', async (data: any) => {
+    await DB.Update(data.refid, { collection: 'profile' }, { $set: { name: data.name } });
+  });
 
   const PlayerRoute = (method: string, handler: EPR | boolean) => {
     R.Route(`player24.${method}`, handler);

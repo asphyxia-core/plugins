@@ -8,6 +8,11 @@ Plugin Version: **v1.1.0**
 - pop'n music 25 peace
 
 ## Changelog
+#### 1.2.0
+* You can change your profile name
+* You can enable/disable the pop'n 25 event archive event
+* Net Taisen disabled on 24/25 (code not implemented)
+
 #### 1.1.0
 Update phase data : All versions are on latest phase.
 

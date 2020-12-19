@@ -28,7 +28,7 @@ const PHASE24 : Phase[] = [
   { id: 2, p: 2 },
   { id: 3, p: 4 },
   { id: 4, p: 1 },
-  { id: 5, p: 1 },
+//  { id: 5, p: 1 }, // Disable Net Taisen
   { id: 6, p: 1 },
   { id: 7, p: 1 },
   { id: 8, p: 2 },
@@ -45,7 +45,7 @@ const PHASE25 : Phase[] = [
   { id: 2, p: 2 },
   { id: 3, p: 4 },
   { id: 4, p: 1 },
-  { id: 5, p: 1 },
+//  { id: 5, p: 1 }, // Disable Net Taisen
   { id: 6, p: 1 },
   { id: 7, p: 1 },
   { id: 8, p: 2 },
@@ -61,7 +61,7 @@ const PHASE25 : Phase[] = [
   { id: 18, p: 1 },
   { id: 19, p: 1 },
   { id: 20, p: 13 },
-  { id: 21, p: 20 },
+//  { id: 21, p: 20 }, // pop'n event archive
   { id: 22, p: 2 },
   { id: 23, p: 1 },
   { id: 24, p: 1 },
@@ -74,7 +74,9 @@ export const getInfo = (req: EamuseInfo) => {
     return getInfo23();
   } else if (version == 'v24') {
     if(req.model == 'M39:J:A:A:2020092800') {
-      return getInfo24(PHASE25);
+      let phase = [...PHASE25];
+      phase.push({ id: 21, p: U.GetConfig("enable_25_event") ? 20 : 0 })
+      return getInfo24(phase);
     } else {
       return getInfo24(PHASE24);
     }
