@@ -1,6 +1,6 @@
 # Pop'n Music
 
-Plugin Version: **v1.1.0**
+Plugin Version: **v1.2.0**
 
 ## Supported Versions
 - pop'n music 23 Eclale
