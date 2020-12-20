@@ -1,6 +1,6 @@
 # Pop'n Music
 
-Plugin Version: **v1.1.0**
+Plugin Version: **v1.1.1**
 
 ## Supported Versions
 - pop'n music 23 Eclale
@@ -8,6 +8,9 @@ Plugin Version: **v1.1.0**
 - pop'n music 25 peace
 
 ## Changelog
+#### 1.1.1
+Fix when updating player song rank and medal the new result always overwrite the old record, even the record result is better.
+
 #### 1.1.0
 Update phase data : All versions are on latest phase.
 
