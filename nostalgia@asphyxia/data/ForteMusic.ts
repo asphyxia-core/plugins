@@ -1,5 +1,12 @@
+import { CommonMusicDataField, readB64JSON, readXML } from "./helper";
+
 export async function processData() {
-  return await readJSONOrXML("data/forte_mdb.json", "data/forte_mdb.xml")
+  if (IO.Exists("data/forte_mdb.json.b64")) {
+    return await readB64JSON("data/forte_mdb.json.b64");
+  }
+  const data = await readJSONOrXML("data/forte_mdb.json", "data/forte_mdb.xml")
+  // await IO.WriteFile("data/forte_mdb.json.b64", Buffer.from(JSON.stringify(data)).toString("base64"))
+  return data
 }
 
 export async function processMdbData(path: string): Promise<CommonMusicData> {
@@ -43,32 +50,16 @@ export async function processMdbData(path: string): Promise<CommonMusicData> {
   });
 }
 
-
-export interface CommonMusicDataField {
-  basename: KITEM<"str">;
-  title: KITEM<"str">;
-  title_kana: KITEM<"str">;
-  artist: KITEM<"str">;
-  artist_kana: KITEM<"str">
-  priority: KITEM<"s8">;
-  category_flag: KARRAY<"s32">;
-  primary_category: KITEM<"s8">;
-  level_normal: KITEM<"s8">;
-  level_hard: KITEM<"s8">;
-  level_extreme: KITEM<"s8">;
-  demo_popular: KITEM<"bool">;
-  demo_bemani: KITEM<"bool">
-  destination_j: KITEM<"bool">;
-  destination_a: KITEM<"bool">;
-  destination_y: KITEM<"bool">;
-  destination_k: KITEM<"bool">;
-  unlock_type: KITEM<"s8">;
-  offline: KITEM<"bool">;
-  volume_bgm: KITEM<"s8">;
-  volume_key: KITEM<"s8">;
-  start_date: KITEM<"str">;
-  end_date: KITEM<"str">;
-  description: KITEM<"str">;
+export async function readJSONOrXML(jsonPath: string, xmlPath: string): Promise<CommonMusicData> {
+  if (!IO.Exists(jsonPath)) {
+    const data = await processMdbData(xmlPath)
+    await IO.WriteFile(jsonPath, JSON.stringify(data))
+    await IO.WriteFile(jsonPath.replace(".json", ".json.b64"), Buffer.from((JSON.stringify(data))).toString('base64'));
+    return data
+  } else {
+    const json = JSON.parse(await IO.ReadFile(jsonPath, 'utf-8'))
+    return json
+  }
 }
 
 interface CommonMusicData {
@@ -77,28 +68,4 @@ interface CommonMusicData {
     release_code: string
   }
   music_spec: CommonMusicDataField[]
-}
-
-export async function readXML(path: string) {
-  const xml = await IO.ReadFile(path, 'utf-8');
-  const json = U.parseXML(xml, false)
-  return json
-}
-
-export async function readJSON(path: string) {
-  const str = await IO.ReadFile(path, 'utf-8');
-  const json = JSON.parse(str)
-  return json
-}
-
-
-export async function readJSONOrXML(jsonPath: string, xmlPath: string): Promise<CommonMusicData> {
-  if (!IO.Exists(jsonPath)) {
-    const data = await processMdbData(xmlPath)
-    await IO.WriteFile(jsonPath, JSON.stringify(data))
-    return data
-  } else {
-    const json = JSON.parse(await IO.ReadFile(jsonPath, 'utf-8'))
-    return json
-  }
 }

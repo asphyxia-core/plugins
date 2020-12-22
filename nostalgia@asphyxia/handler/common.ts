@@ -1,5 +1,6 @@
 import * as path from "path";
 import { processData } from "../data/ForteMusic";
+import { readB64JSON } from "../data/helper";
 
 export const permitted_list = {
   flag: [
@@ -19,9 +20,13 @@ export const forte_permitted_list = {
 }
 
 async function ReadData(filename: string) {
-  const xml = await IO.ReadFile(`data/${filename}.xml`, { encoding: 'utf-8' });
-  const json = U.parseXML(xml, false)
-  return json
+  if (!IO.Exists(`data/${filename}.xml`)) {
+    const xml = await IO.ReadFile(`data/${filename}.xml`, 'utf-8');
+    const json = U.parseXML(xml, false)
+    // await IO.WriteFile(`data/${filename}.json.b64`, Buffer.from(JSON.stringify(json)).toString('base64'));
+    return json
+  }
+  return readB64JSON(`data/${filename}.json.b64`)
 }
 
 async function processIslandData() {
