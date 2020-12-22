@@ -21,6 +21,7 @@ Changelog
 1.1.0 (Current)
 ---------------
  - Fix saving issue with brooch, island, and kentei.
+ - Moved to Base64 encoded data base.
  - Forte support.
 
 1.0.0
