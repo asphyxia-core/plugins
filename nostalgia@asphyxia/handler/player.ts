@@ -138,26 +138,23 @@ const getPlayerData = async (refid: string, info: EamuseInfo, name?: string) => 
   }
 
   const correct_permitted_list = !isForte ? permitted_list : forte_permitted_list
-  const correct_music_list = !isForte ? [
+  const music_list = [
     K.ARRAY('s32', p.musicList.type_0, { sheet_type: '0' }),
     K.ARRAY('s32', p.musicList.type_1, { sheet_type: '1' }),
     K.ARRAY('s32', p.musicList.type_2, { sheet_type: '2' }),
     K.ARRAY('s32', p.musicList.type_3, { sheet_type: '3' }),
-  ] : [
-      K.ARRAY('s32', p.musicList.type_0, { sheet_type: '0' }),
-      K.ARRAY('s32', p.musicList.type_1, { sheet_type: '1' }),
-      K.ARRAY('s32', p.musicList.type_2, { sheet_type: '2' }),
-    ];
-  const correct_music_list2 = !isForte ? [
+  ];
+  const music_list2 = [
     K.ARRAY('s32', p.musicList2.type_0, { sheet_type: '0' }),
     K.ARRAY('s32', p.musicList2.type_1, { sheet_type: '1' }),
     K.ARRAY('s32', p.musicList2.type_2, { sheet_type: '2' }),
     K.ARRAY('s32', p.musicList2.type_3, { sheet_type: '3' }),
-  ] : [
-      K.ARRAY('s32', p.musicList2.type_0, { sheet_type: '0' }),
-      K.ARRAY('s32', p.musicList2.type_1, { sheet_type: '1' }),
-      K.ARRAY('s32', p.musicList2.type_2, { sheet_type: '2' }),
-    ];
+  ];
+
+  if(isForte) {
+    music_list.pop();
+    music_list2.pop();
+  }
 
   return {
     name: K.ITEM('str', p.name),
@@ -167,10 +164,10 @@ const getPlayerData = async (refid: string, info: EamuseInfo, name?: string) => 
     event_info_list: { event: getEventInfo(isForte) }, // Op2
     event_control_list: { event: getEventInfo(isForte) }, // Forte
     music_list: {
-      flag: correct_music_list,
+      flag: music_list,
     },
     free_for_play_music_list: {
-      flag: correct_music_list2,
+      flag: music_list2,
     },
     last: {
       music_index: K.ITEM('s32', forteNumericHandler(isForte, p.music, 195, 0)),
