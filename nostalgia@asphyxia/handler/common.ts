@@ -20,7 +20,7 @@ export const forte_permitted_list = {
 }
 
 async function ReadData(filename: string) {
-  if (!IO.Exists(`data/${filename}.xml`)) {
+  if (!IO.Exists(`data/${filename}.json.b64`)) {
     const xml = await IO.ReadFile(`data/${filename}.xml`, 'utf-8');
     const json = U.parseXML(xml, false)
     // await IO.WriteFile(`data/${filename}.json.b64`, Buffer.from(JSON.stringify(json)).toString('base64'));
