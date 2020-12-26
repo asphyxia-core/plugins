@@ -1,8 +1,11 @@
 import { get_common_info, get_music_info } from "./handler/common";
 import { get_musicdata, get_playdata, regist_playdata, set_total_result } from "./handler/player"
+import { fixIndexBug } from "./handler/webui";
 
 export function register() {
     R.GameCode('PAN');
+
+    R.WebUIEvent("nosFixIndexBug", fixIndexBug)
 
     const MultiRoute = (method: string, handler: EPR | boolean) => {
         // Helper for register multiple versions.

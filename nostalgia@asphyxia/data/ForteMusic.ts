@@ -1,12 +1,11 @@
 import { CommonMusicDataField, readB64JSON, readXML } from "./helper";
 
-export async function processData() {
+export async function processData(): Promise<CommonMusicData> {
   if (IO.Exists("data/forte_mdb.json.b64")) {
     return await readB64JSON("data/forte_mdb.json.b64");
   }
   const data = await readJSONOrXML("data/forte_mdb.json", "data/forte_mdb.xml")
-  // await IO.WriteFile("data/forte_mdb.json.b64", Buffer.from(JSON.stringify(data)).toString("base64"))
-  return data
+  return data;
 }
 
 export async function processMdbData(path: string): Promise<CommonMusicData> {
@@ -62,7 +61,7 @@ export async function readJSONOrXML(jsonPath: string, xmlPath: string): Promise<
   }
 }
 
-interface CommonMusicData {
+export interface CommonMusicData {
   "@attr": {
     revision: string,
     release_code: string
