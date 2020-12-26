@@ -51,7 +51,7 @@ const getPlayerData = async (refid: string, info: EamuseInfo, name?: string) => 
 
   const brooch: any[] = [];
   for (const b in p.brooches) {
-    if (parseInt(b, 10) > version.getBroochMaxIndex()) continue; // Forte Brooch is ~147.
+    if (parseInt(b, 10) > version.getBroochMaxIndex()) continue;
     const bData = p.brooches[b];
     brooch.push(K.ATTR({ index: b }, {
       watch_count: K.ITEM('s32', bData.watch),
@@ -63,6 +63,7 @@ const getPlayerData = async (refid: string, info: EamuseInfo, name?: string) => 
 
   // Unlock brooches
   for (let i = 101; i <= 124; ++i) {
+    if (i > version.getBroochMaxIndex()) continue;
     brooch.push(K.ATTR({ index: `${i}` }, {
       'watch_count': K.ITEM('s32', 0),
       'level': K.ITEM('s8', 1),

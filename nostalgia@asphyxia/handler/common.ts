@@ -99,10 +99,18 @@ export const get_music_info: EPR = async (info, data, send) => {
     }));
   }
 
+  const music_list = async () => {
+    const music_list = await processData()
+    music_list.music_spec = music_list.music_spec.filter( (v) => 
+      parseInt(v["@attr"].index, 10) <= version.getMusicMaxIndex()
+    )
+    return music_list;
+  }
+
   const versionObject = version.isFirstOrForte()
     ? {
       permitted_list: forte_permitted_list,
-      music_list: await processData()
+      music_list: await music_list()
     }
     : {
       permitted_list,

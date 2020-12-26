@@ -1,14 +1,14 @@
 type NostalgiaVersions = 'First' | 'Forte' | 'Op2' | 'Op3'
-type NostalgiaNumericTypes = 'music_index' | 'sheet_type' | 'brooch_index'
+type NostalgiaNumericTypes = 'music_index' | 'sheet_type' | 'brooch_index' | 'event_index'
 
 export class NosVersionHelper {
     public version: NostalgiaVersions
 
-    private table = { // FIXME: Op3 is placeholder
+    private table = { // FIXME: All of Op3 values are placeholder
         music_index:  { First: 87, Forte: 195, Op2: 315, Op3: 500 },
         brooch_index: { First: 120, Forte: 147, Op2: 148, Op3: 200 },
         sheet_type:   { First: 2, Forte: 2, Op2: 3, Op3: 3 },
-        event_index:  { First: 5, Forte: 10, Op2: 17, Op3: 20  } // FIXME: First And Op3 is placeholder
+        event_index:  { First: 10, Forte: 10, Op2: 17, Op3: 20  }
     }
 
     constructor (info: EamuseInfo) {
