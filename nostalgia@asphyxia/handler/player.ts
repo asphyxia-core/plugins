@@ -1,11 +1,7 @@
-// import { EAHandler } from '../../util/EAHandler';
-// import { get, _.isArray } from 'lodash';
-// import { Logger } from '../../util/Logger';
 import { Profile } from '../models/profile';
 import { Scores } from '../models/scores';
+import { NosVersionHelper } from '../utils';
 import { permitted_list, forte_permitted_list } from './common';
-// import { getValue, getArray, getAttr, getStr, getBigInt } from '../../util/Helper';
-
 
 // export const event_list = {
 //   event: {
@@ -18,9 +14,9 @@ import { permitted_list, forte_permitted_list } from './common';
 //   },
 // };
 
-const getEventInfo = (isForte: boolean) => {
+const getEventInfo = (version: NosVersionHelper) => {
   const event: any[] = [];
-  const event_num = isForte ? 10 : 17
+  const event_num = version.getEventMaxIndex()
   for (let i = 1; i <= event_num; ++i) {
     event.push({
       type: K.ITEM('s32', 4),
@@ -37,7 +33,7 @@ const getEventInfo = (isForte: boolean) => {
 
 const getPlayerData = async (refid: string, info: EamuseInfo, name?: string) => {
   const p = await readProfile(refid);
-  const isForte = !info.module.includes("op")
+  const version = new NosVersionHelper(info)
 
   if (name && name.length > 0) {
     p.name = name;
@@ -55,7 +51,7 @@ const getPlayerData = async (refid: string, info: EamuseInfo, name?: string) => 
 
   const brooch: any[] = [];
   for (const b in p.brooches) {
-    if (isForte && parseInt(b, 10) > 147) continue; // Forte Brooch is ~147.
+    if (parseInt(b, 10) > version.getBroochMaxIndex()) continue; // Forte Brooch is ~147.
     const bData = p.brooches[b];
     brooch.push(K.ATTR({ index: b }, {
       watch_count: K.ITEM('s32', bData.watch),
@@ -137,7 +133,7 @@ const getPlayerData = async (refid: string, info: EamuseInfo, name?: string) => 
     }));
   }
 
-  const correct_permitted_list = !isForte ? permitted_list : forte_permitted_list
+  const correct_permitted_list = !version.isFirstOrForte() ? permitted_list : forte_permitted_list
   const music_list = [
     K.ARRAY('s32', p.musicList.type_0, { sheet_type: '0' }),
     K.ARRAY('s32', p.musicList.type_1, { sheet_type: '1' }),
@@ -151,7 +147,7 @@ const getPlayerData = async (refid: string, info: EamuseInfo, name?: string) => 
     K.ARRAY('s32', p.musicList2.type_3, { sheet_type: '3' }),
   ];
 
-  if(isForte) {
+  if(version.isFirstOrForte()) {
     music_list.pop();
     music_list2.pop();
   }
@@ -161,8 +157,8 @@ const getPlayerData = async (refid: string, info: EamuseInfo, name?: string) => 
     play_count: K.ITEM('s32', p.playCount),
     today_play_count: K.ITEM('s32', p.todayPlayCount),
     permitted_list: correct_permitted_list,
-    event_info_list: { event: getEventInfo(isForte) }, // Op2
-    event_control_list: { event: getEventInfo(isForte) }, // Forte
+    event_info_list: { event: getEventInfo(version) }, // Op2
+    event_control_list: { event: getEventInfo(version) }, // Forte
     music_list: {
       flag: music_list,
     },
@@ -170,17 +166,17 @@ const getPlayerData = async (refid: string, info: EamuseInfo, name?: string) => 
       flag: music_list2,
     },
     last: {
-      music_index: K.ITEM('s32', forteNumericHandler(isForte, p.music, 195, 0)),
-      sheet_type: K.ITEM('s8', forteNumericHandler(isForte, p.sheet, 3, 0)),
-      brooch_index: K.ITEM('s32', forteNumericHandler(isForte, p.brooch, 147, 0)),
+      music_index: K.ITEM('s32', version.numericHandler('music_index', p.music, 0)),
+      sheet_type: K.ITEM('s8', version.numericHandler('sheet_type', p.sheet, 0)),
+      brooch_index: K.ITEM('s32', version.numericHandler('brooch_index', p.brooch, 0)),
       hi_speed_level: K.ITEM('s32', p.hispeed),
       beat_guide: K.ITEM('s8', p.beatGuide),
       headphone_volume: K.ITEM('s8', p.headphone),
       judge_bar_pos: K.ITEM('s32', p.judgeBar),
       music_group: K.ITEM('s32', p.group),
-      hands_mode: isForte ? K.ITEM('s32', p.mode) : K.ITEM('s8', p.mode),
+      hands_mode: version.isFirstOrForte() ? K.ITEM('s32', p.mode) : K.ITEM('s8', p.mode),
       near_setting: K.ITEM('s8', p.near),
-      judge_delay_offset: isForte ? K.ITEM('s32', p.offset) : K.ITEM('s8', p.offset),
+      judge_delay_offset: version.isFirstOrForte() ? K.ITEM('s32', p.offset) : K.ITEM('s8', p.offset),
       bingo_index: K.ITEM('s32', p.bingo),
       total_skill_value: K.ITEM('u64', BigInt(p.skill)),
       key_beam_level: K.ITEM('s8', p.keyBeam),
@@ -250,7 +246,7 @@ export const set_total_result: EPR = async (info, data, send) => {
   const refid = $(data).str('refid');
   if (!refid) return send.deny();
 
-  const isForte = !info.module.includes("op")
+  const isForte = new NosVersionHelper(info).isFirstOrForte()
   const p = await readProfile(refid);
 
   p.playCount = $(data).number('play_count', p.playCount);
@@ -471,7 +467,7 @@ export const get_musicdata: EPR = async (info, data, send) => {
   const refid = $(data).str('refid');
   if (!refid) return send.deny();
 
-  const isForte = !info.module.includes("op")
+  const version = new NosVersionHelper(info)
   const scoreData = await readScores(refid);
 
   const recital_record: any[] = [];
@@ -499,7 +495,7 @@ export const get_musicdata: EPR = async (info, data, send) => {
     const mdata = m.split(':');
     const musi = scoreData.scores[m];
 
-    if (isForte && parseInt(mdata[0], 10) > 195) continue;
+    if (parseInt(mdata[0], 10) > version.getMusicMaxIndex()) continue;
 
     music.push(K.ATTR({
       music_index: mdata[0],
@@ -522,10 +518,6 @@ export const get_musicdata: EPR = async (info, data, send) => {
     music,
   });
 };
-
-function forteNumericHandler(isForte: boolean, input: number, max: number, def: number = 0) {
-  return isForte ? input > max ? def : input : input;
-}
 
 async function readProfile(refid: string): Promise<Profile> {
   const profile = await DB.FindOne<Profile>(refid, { collection: 'profile' })

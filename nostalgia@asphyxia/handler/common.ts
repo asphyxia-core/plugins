@@ -1,6 +1,6 @@
-import * as path from "path";
 import { processData } from "../data/ForteMusic";
 import { readB64JSON } from "../data/helper";
+import { NosVersionHelper } from "../utils";
 
 export const permitted_list = {
   flag: [
@@ -80,7 +80,7 @@ export const get_common_info = async (info, data, send) => {
 };
 
 export const get_music_info: EPR = async (info, data, send) => {
-  const isForte = !info.module.includes("op")
+  const version = new NosVersionHelper(info)
 
   const music_spec: any = [];
   for (let i = 1; i < 400; ++i) {
@@ -99,7 +99,7 @@ export const get_music_info: EPR = async (info, data, send) => {
     }));
   }
 
-  const versionObject = isForte
+  const versionObject = version.isFirstOrForte()
     ? {
       permitted_list: forte_permitted_list,
       music_list: await processData()
