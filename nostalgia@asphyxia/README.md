@@ -1,25 +1,26 @@
 # Nostalgia
 
-Plugin Version: **v1.1.0**
+Plugin Version: **v1.2.0**
 
 Supported Versions
 -------------------
-- Forte (Experiment)
+- ノスタルジア　/ First Version (Experiment-Old)
+- Forte (Experiment-Old)
 - Op.2
 
-
-About Forte Support
--------------------
-Forte support is live. But since it has much difference compared to Op.2, Forte is not-primary-supported version.
-It may works unexpectedly. Forte was tested very lightly. So this feature is tagged as **Experiment**.
-
-Also, Technically, This *may* support First version of Nostalgia too.
-But It's highly not recommend to run First version with it.
+About Experiment-Old Support
+----------------------------
+A version that marked as **Experiment-Old** is _Not_ Primary supported experiment version.
+Since This plugin is mainly focused on Op.2, other versions may not work correctly.
 
 Changelog
 =========
-1.1.0 (Current)
+1.2.0 (Current)
 ---------------
+ - Nostalgia First version support.
+
+1.1.0
+-----
  - Fix saving issue with brooch, island, and kentei.
  - Moved to Base64 encoded data base.
  - Forte support.

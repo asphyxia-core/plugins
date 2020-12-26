@@ -1,4 +1,6 @@
-import { processData } from "../data/ForteMusic";
+
+import { processData as firstData } from "../data/FirstMusic";
+import { processData as forteData } from "../data/ForteMusic";
 import { readB64JSON } from "../data/helper";
 import { NosVersionHelper } from "../utils";
 
@@ -99,13 +101,7 @@ export const get_music_info: EPR = async (info, data, send) => {
     }));
   }
 
-  const music_list = async () => {
-    const music_list = await processData()
-    music_list.music_spec = music_list.music_spec.filter( (v) => 
-      parseInt(v["@attr"].index, 10) <= version.getMusicMaxIndex()
-    )
-    return music_list;
-  }
+  const music_list = async () => version.version === 'Forte' ? await forteData() : await firstData()
 
   const versionObject = version.isFirstOrForte()
     ? {
