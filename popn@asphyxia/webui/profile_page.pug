@@ -1,0 +1,24 @@
+div
+  div.notification.is-success.is-hidden#import-success
+    .field
+        label.label.is-small Data imported
+  .card
+    .card-header
+      p.card-header-title
+        span.icon
+          i.mdi.mdi-account-edit
+        | Import data
+    .card-content
+      input(type="hidden" id="refid" name="refid" value=refid)
+      .field
+        label.label Import data from previous Asphyxia (non-core)
+      .field
+        input.input(type="text" id="profile" name="profile" placeholder="Put content of popn.json")
+      .field
+        input.input(type="text" id="scores" name="scores" placeholder="Put content of popn_scores.json")
+      .field
+        label.help.is-danger /!\ Please backup your savedata.db before importing data /!\
+      .field
+        button.button.is-primary#import-click Import
+
+script(src="static/js/profile_page.js")
