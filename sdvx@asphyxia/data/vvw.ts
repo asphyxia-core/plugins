@@ -31,6 +31,7 @@ export const EVENT5 = [
   'CREW_SELECT_ABLE',
   'PREMIUM_TIME_ENABLE',
   'OMEGA_ENABLE\t1,2,3,4,5,6,7,8,9',
+  'HEXA_ENABLE\t1,2,3',
 ];
 
 export const COURSES5 = [
@@ -2461,7 +2462,7 @@ export const COURSES5 = [
       //     },
       //     {
       //       no: 2,
-      //       mid: 1462, // 666
+      //       mid: 1580, // 666
       //       mty: 4,
       //     },
       //   ],
