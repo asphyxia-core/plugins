@@ -2442,31 +2442,31 @@ export const COURSES5 = [
           },
         ],
       },
-      // {
-      //   id: 12,
-      //   type: 0,
-      //   name: 'SKILL ANALYZER Level.∞',
-      //   level: 12,
-      //   nameID: 12,
-      //   assist: 0,
-      //   tracks: [
-      //     {
-      //       no: 0,
-      //       mid: 1542,
-      //       mty: 4,
-      //     },
-      //     {
-      //       no: 1,
-      //       mid: 1498,
-      //       mty: 4,
-      //     },
-      //     {
-      //       no: 2,
-      //       mid: 1580, // 666
-      //       mty: 4,
-      //     },
-      //   ],
-      // },
+      {
+        id: 12,
+        type: 0,
+        name: 'SKILL ANALYZER Level.∞',
+        level: 12,
+        nameID: 12,
+        assist: 0,
+        tracks: [
+          {
+            no: 0,
+            mid: 1542,
+            mty: 4,
+          },
+          {
+            no: 1,
+            mid: 1498,
+            mty: 4,
+          },
+          {
+            no: 2,
+            mid: 1580, // 666
+            mty: 4,
+          },
+        ],
+      },
     ],
   },
 ];
