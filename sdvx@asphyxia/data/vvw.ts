@@ -31,6 +31,7 @@ export const EVENT5 = [
   'CREW_SELECT_ABLE',
   'PREMIUM_TIME_ENABLE',
   'OMEGA_ENABLE\t1,2,3,4,5,6,7,8,9',
+  'HEXA_ENABLE\t1,2,3',
 ];
 
 export const COURSES5 = [
@@ -2441,31 +2442,31 @@ export const COURSES5 = [
           },
         ],
       },
-      // {
-      //   id: 12,
-      //   type: 0,
-      //   name: 'SKILL ANALYZER Level.∞',
-      //   level: 12,
-      //   nameID: 12,
-      //   assist: 0,
-      //   tracks: [
-      //     {
-      //       no: 0,
-      //       mid: 1542,
-      //       mty: 4,
-      //     },
-      //     {
-      //       no: 1,
-      //       mid: 1498,
-      //       mty: 4,
-      //     },
-      //     {
-      //       no: 2,
-      //       mid: 1462, // 666
-      //       mty: 4,
-      //     },
-      //   ],
-      // },
+      {
+        id: 12,
+        type: 0,
+        name: 'SKILL ANALYZER Level.∞',
+        level: 12,
+        nameID: 12,
+        assist: 0,
+        tracks: [
+          {
+            no: 0,
+            mid: 1542,
+            mty: 4,
+          },
+          {
+            no: 1,
+            mid: 1498,
+            mty: 4,
+          },
+          {
+            no: 2,
+            mid: 1580, // 666
+            mty: 4,
+          },
+        ],
+      },
     ],
   },
 ];
