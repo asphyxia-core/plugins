@@ -253,7 +253,7 @@ export const load: EPR = async (info, data, send) => {
   const courses = await DB.Find<CourseRecord>(refid, { collection: 'course' });
   const items = await DB.Find<Item>(refid, { collection: 'item' });
   const params = await DB.Find<Param>(refid, { collection: 'param' });
-
+  const currentTime = Date.now();
   const mixes = version == 5 ? await getAutomationMixes(params) : [];
 
   send.pugFile('templates/load.pug', {
@@ -263,6 +263,7 @@ export const load: EPR = async (info, data, send) => {
       : items,
     params,
     skill,
+    currentTime,
     mixes,
     automation: version == 5 ? SDVX_AUTOMATION_SONGS : [],
     code: IDToCode(profile.id),
