@@ -1,8 +1,9 @@
 # BeatStream
 
-Plugin Version: **v0.1.0-beta**
+Plugin Version: **v1.0.0**
 
 Supported Versions:
 
 - BeatStream アニムトライヴ
-    - Back end ✔
+    - Back end ✔    
+    - Web UI ✔

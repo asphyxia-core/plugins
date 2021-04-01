@@ -7,6 +7,6 @@ export namespace UtilityHandlersWebUI {
     }
 
     export const removeWebUIMessage = async () => {
-        await DB.Remove<IWebUIMessage>({ collection: "utility.webuiMessage" })
+        await DBM.remove<IWebUIMessage>(null, { collection: "utility.webuiMessage" })
     }
 }

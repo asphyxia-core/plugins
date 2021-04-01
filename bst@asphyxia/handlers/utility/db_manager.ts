@@ -121,6 +121,7 @@ export namespace DBM {
     }
 
     async function checkData<T extends ICollection<any>>(data: T): Promise<void> {
+        for (let k in data) if (k.startsWith("__")) delete data[k]
         if (await DB.FindOne<IDBCollectionName>({ collection: "dbManager.collectionName", name: data.collection }) == null) {
             await DB.Insert<IDBCollectionName>({ collection: "dbManager.collectionName", name: data.collection })
         }
@@ -166,7 +167,7 @@ export namespace DBM {
                         break
                 }
             } catch (e) {
-                await log(Date.now().toLocaleString() + " Error: " + (e as Error).message)
+                await log(new Date().toLocaleString() + " Error: " + (e as Error).message)
             }
         }
         return result

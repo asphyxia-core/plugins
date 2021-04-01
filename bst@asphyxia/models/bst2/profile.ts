@@ -107,6 +107,7 @@ export const Bst2UnlockingInfoMap: KM<IBst2UnlockingInfo> = {
 }
 
 export interface IBst2Customization extends ICollection<"bst.bst2.player.customization"> {
+    // [rippleNote, rippleNoteColor, sfxNormalNote, sfxRippleNote, sfxSlashNote, sfxStreamNote, backgroundBrightnessTimes2, (000{sfxFine}{sfxStreamTail}{streamNoteGuide}{rippleNoteGuide}{judgeText}, ?, ?, ?, ?, ?, ?, ?, ?)]
     custom: FixedSizeArray<number, 16>
 }
 export const Bst2CustomizationMap: KM<IBst2Customization> = {

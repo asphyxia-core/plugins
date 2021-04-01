@@ -147,7 +147,7 @@ export namespace Bst2HandlersCommon {
         let query: Query<IBst2MusicRecord> = { collection: "bst.bst2.playData.musicRecord#userId", userId: stageLog.userId, musicId: stageLog.musicId, chart: stageLog.chart }
         let oldRecord = await DB.FindOne<IBst2MusicRecord>(query)
 
-        let time = Date.now() / 1000
+        let time = Date.now()
         stageLog.time = time
         stageLog.isCourseStage = isCourseStage
 
@@ -199,7 +199,7 @@ export namespace Bst2HandlersCommon {
         let query: Query<IBst2Course> = { collection: "bst.bst2.playData.course#userId", userId: courseLog.userId, courseId: courseLog.courseId }
         let oldRecord = await DB.FindOne<IBst2Course>(query)
 
-        let time = Date.now() / 1000
+        let time = Date.now()
         courseLog.time = time
 
         if (oldRecord == null) {
