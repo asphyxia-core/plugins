@@ -111,12 +111,13 @@ export namespace Bst2HandlersCommon {
             } while ((await DB.Find<IBst2Account>(null, { collection: "bst.bst2.player.account", userId: userId })).length > 0)
             oldAccount = fromMap(Bst2AccountMap)
             oldAccount.userId = userId
+        } else {
+            oldAccount.playCount++
+            if (!isToday(toBigInt(oldAccount.standardTime))) {
+                oldAccount.dayCount++
+                oldAccount.playCountToday = 1
+            } else oldAccount.playCountToday++
         }
-        oldAccount.playCount++
-        if (!isToday(toBigInt(oldAccount.standardTime))) {
-            oldAccount.dayCount++
-            oldAccount.playCountToday = 1
-        } else oldAccount.playCountToday++
         oldAccount.standardTime = BigIntProxy(BigInt(Date.now()))
         opm.upsert<IBst2Account>(refid, { collection: "bst.bst2.player.account" }, oldAccount)
         if (player.pdata.base) opm.upsert<IBst2Base>(refid, { collection: "bst.bst2.player.base" }, player.pdata.base)
@@ -130,7 +131,7 @@ export namespace Bst2HandlersCommon {
         if (player.pdata.playLog?.crysis?.length > 0) for (let c of player.pdata.playLog.crysis) opm.upsert<IBst2CrysisLog>(refid, { collection: "bst.bst2.player.event.crysis", id: c.id, stageId: c.stageId }, c)
 
         await DBM.operate(opm)
-        send.object({ uid: K.ITEM("s32", 0) })
+        send.object({ uid: K.ITEM("s32", oldAccount.userId) })
     }
 
     export const WriteStageLog: EPR = async (_, data, send) => {

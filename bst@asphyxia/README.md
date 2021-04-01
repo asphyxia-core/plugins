@@ -1,6 +1,6 @@
 # BeatStream
 
-Plugin Version: **v1.0.0**
+Plugin Version: **v1.0.1**
 
 Supported Versions:
 

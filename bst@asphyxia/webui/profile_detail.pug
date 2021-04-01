@@ -48,9 +48,9 @@
   let bst2HighestRank = -1
   for (let r of bst2Course) if ((r.courseId > bst2HighestRank) && (r.medal >= 3)) bst2HighestRank = r.courseId
   function getClearTypeDetails(record) {
-    if (record.medal == 5) return { title: "Perfect", abbr: "P", color: "#FF3860", badge: "mdi mdi-weather-sunny mdi-48px" }
+    if (record.medal == 5) return { title: "Perfect", abbr: "P", color: "#FF3860; text-shadow: 0 0 5px #FFFFFF9F;", badge: "mdi mdi-decagram mdi-48px" }
     else if (record.medal == 4) return { title: "Full Combo", abbr: "FC", color: "gold", badge: "mdi mdi-cog mdi-48px" }
-    else if (record.medal == 3) return { title: "Clear", abbr: "C", color: "#35F2BE", badge: "mdi mdi-star-circle-outline mdi-48px"}
+    else if (record.medal == 3) return { title: "Clear", abbr: "C", color: "#33E7AD", badge: "mdi mdi-star-circle-outline mdi-48px"}
     else if ((record.medal == 2) || (record.medal == 1)) return { title: "Failed", abbr: "F", color: "#837E8D", badge: "mdi mdi-close-circle-outline mdi-48px"}
     else return null
   }
