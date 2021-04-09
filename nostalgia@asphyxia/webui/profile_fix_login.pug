@@ -1,0 +1,26 @@
+div
+  .card
+    .card-header
+      p.card-header-title
+        span.icon
+          i.mdi.mdi-account-edit
+        | Fix Error with Login
+    .card-content
+      p If you unable to login after travels of between versions, This may helpful.
+      p Normally, login issue caused you played deleted song last time in previous version that not deleted time.
+      p This page is about reset of last indexes that causing login problem.
+      form(method="post" action="/emit/nosFixIndexBug")
+        .field
+          label.label ID
+          .control
+            input.input(type="text" name="refid", value=refid readonly)
+        .field
+          label.label Are you sure to reset indexes?
+          .control
+            input(type="checkbox" name="confirm")
+            |   This is not recoverable. Do this if you have a problem.
+        .field
+          button.button.is-primary(type="submit") 
+            span.icon
+              i.mdi.mdi-check
+            span Submit

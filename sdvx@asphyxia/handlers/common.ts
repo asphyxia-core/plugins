@@ -24,13 +24,15 @@ export const common: EPR = async (info, data, send) => {
   let songs = [];
 
   if (U.GetConfig('unlock_all_songs')) {
-    for (let i = 1; i < 1600; ++i) {
+    for (let i = 1; i < 1700; ++i) {
       for (let j = 0; j < 5; ++j) {
+          
         songs.push({
           music_id: K.ITEM('s32', i),
           music_type: K.ITEM('u8', j),
           limited: K.ITEM('u8', 3),
         });
+        
       }
     }
   }

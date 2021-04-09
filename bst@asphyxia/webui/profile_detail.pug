@@ -1,0 +1,750 @@
+//DATA//
+  bst2Account: DB.FindOne(refid, { collection: "bst.bst2.player.account" })
+  bst2Base: DB.FindOne(refid, { collection: "bst.bst2.player.base" })
+  bst2Customization: DB.FindOne(refid, { collection: "bst.bst2.player.customization" })
+  bst2Course: DB.Find({ collection: "bst.bst2.playData.course#userId" })
+  bst2MusicRecord: DB.Find({ collection: "bst.bst2.playData.musicRecord#userId" })
+  bst2CourseLog: DB.Find({ collection: "bst.bst2.playData.courseLog#userId" })
+  bst2StageLog: DB.Find({ collection: "bst.bst2.playData.stageLog#userId" })
+
+  webuiMessage: DB.FindOne({ collection: "utility.webuiMessage" })
+
+//- Definitions
+-
+  let defaultVersion = 2
+
+  let bstMusicsInfo = [{ musicId: 0, title: "SAVIOR OF SONG", version: 1, category: "ANIME", bpm: { min: 192, max: 192 }, chartsInfo: { light: "０２", medium: "０８", beast: "０９", nightmare: "１０" }, artist: "ナノ feat. MY FIRST STORY" }, { musicId: 1, title: "マネマネサイコトロピック", version: 1, category: "EXITTUNES", bpm: { min: 135, max: 210 }, chartsInfo: { light: "０２", medium: "０６", beast: "０９⁺" }, artist: "かいりきベア" }, { musicId: 2, title: "ミスターデジャブ", version: 1, category: "EXITTUNES", bpm: { min: 230, max: 230 }, chartsInfo: { light: "０１", medium: "０６", beast: "１０⁻" }, artist: "164 feat.MAYU" }, { musicId: 3, title: "セツナトリップ", version: 1, category: "EXITTUNES", bpm: { min: 145, max: 145 }, chartsInfo: { light: "０１", medium: "０６", beast: "０９⁻", nightmare: "１０" }, artist: "Last Note. feat. GUMI" }, { musicId: 4, title: "ラクガキスト", version: 1, category: "EXITTUNES", bpm: { min: 199, max: 199 }, chartsInfo: { light: "０５", medium: "０９⁻", beast: "０９⁺", nightmare: "10⁺" }, artist: "cosMo＠暴走P feat.GUMI" }, { musicId: 5, title: "放課後ストライド", version: 1, category: "EXITTUNES", bpm: { min: 225, max: 225 }, chartsInfo: { light: "０４", medium: "０７", beast: "０９⁻", nightmare: "１０" }, artist: "Last Note." }, { musicId: 6, title: "リズの内心革命", version: 1, category: "EXITTUNES", bpm: { min: 180, max: 180 }, chartsInfo: { light: "０３", medium: "０７", beast: "１０" }, artist: "じっぷす" }, { musicId: 7, title: "ロストワンの号哭", version: 1, category: "EXITTUNES", bpm: { min: 162, max: 162 }, chartsInfo: { light: "０３", medium: "０７", beast: "１０", nightmare: "１０" }, artist: "Neru" }, { musicId: 8, title: "HΨ=世界創造=EΨ", version: 1, category: "EXITTUNES", bpm: { min: 208, max: 208 }, chartsInfo: { light: "０３", medium: "０８", beast: "１０" }, artist: "黒猫アンティーク feat.IA,GUMI" }, { musicId: 9, title: "Nyan Cat", version: 1, category: "EXITTUNES", bpm: { min: 142, max: 142 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁻" }, artist: "daniwellP feat. 桃音モモ" }, { musicId: 10, title: "天ノ弱", version: 1, category: "EXITTUNES", bpm: { min: 200, max: 205 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁺" }, artist: "164" }, { musicId: 11, title: "恋愛勇者", version: 1, category: "EXITTUNES", bpm: { min: 190, max: 190 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁺" }, artist: "Last Note." }, { musicId: 12, title: "ねこみみスイッチ", version: 1, category: "EXITTUNES", bpm: { min: 160, max: 160 }, chartsInfo: { light: "０２", medium: "０６", beast: "０８", nightmare: "０９⁻" }, artist: "daniwellP" }, { musicId: 13, title: "にゃにゃにゃんにゃんにゃーのこねこ", version: 1, category: "EXITTUNES", bpm: { min: 184, max: 184 }, chartsInfo: { light: "０２", medium: "０６", beast: "０９⁺" }, artist: "daniwellP" }, { musicId: 14, title: "過食性:アイドル症候群", version: 1, category: "EXITTUNES", bpm: { min: 200, max: 200 }, chartsInfo: { light: "０４", medium: "０８", beast: "１０", nightmare: "１０" }, artist: "スズム" }, { musicId: 15, title: "チルノのパーフェクトさんすう教室", version: 1, category: "TOHO", bpm: { min: 175, max: 175 }, chartsInfo: { light: "０２", medium: "０７", beast: "０９⁻", nightmare: "０９⁺" }, artist: "ARM＋夕野ヨシミ feat. miko" }, { musicId: 16, title: "待チ人ハ来ズ。", version: 1, category: "TOHO", bpm: { min: 160, max: 160 }, chartsInfo: { light: "０３", medium: "０６", beast: "０８" }, artist: "豚乙女" }, { musicId: 17, title: "月に叢雲華に風", version: 1, category: "TOHO", bpm: { min: 160, max: 160 }, chartsInfo: { light: "０４", medium: "０７", beast: "０９⁻", nightmare: "10-" }, artist: "幽閉サテライト(Arranged:Iceon) feat. senya" }, { musicId: 18, title: "物凄い勢いでけーねが物凄いうた", version: 1, category: "TOHO", bpm: { min: 180, max: 180 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁻" }, artist: "Halozy feat. ななひら" }, { musicId: 19, title: "INFINITE WORLD", version: 1, category: "TOHO", bpm: { min: 167, max: 167 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９", nightmare: "１０" }, artist: "SOUND HOLIC feat. Nana Takahashi" }, { musicId: 20, title: "ウサテイ", version: 1, category: "TOHO", bpm: { min: 190, max: 190 }, chartsInfo: { light: "０３", medium: "０７", beast: "１０" }, artist: "あまね＋ビートまりお（COOL&CREATE）" }, { musicId: 21, title: "魔理沙は大変なものを盗んでいきました", version: 1, category: "TOHO", bpm: { min: 170, max: 170 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁺", nightmare: "１０" }, artist: "ARM＋夕野ヨシミ feat. 藤咲かりん" }, { musicId: 22, title: "色は匂へど 散りぬるを", version: 1, category: "TOHO", bpm: { min: 138, max: 138 }, chartsInfo: { light: "０３", medium: "０６", beast: "０８" }, artist: "幽閉サテライト(Arranged:Iceon) feat. senya" }, { musicId: 23, title: "お嫁にしなさいっ！", version: 1, category: "TOHO", bpm: { min: 180, max: 180 }, chartsInfo: { light: "０２", medium: "０６", beast: "０９⁻" }, artist: "ARM＋夕野ヨシミ" }, { musicId: 24, title: "しゅわスパ大作戦☆", version: 1, category: "TOHO", bpm: { min: 140, max: 140 }, chartsInfo: { light: "０２", medium: "０６", beast: "０９⁻" }, artist: "SOUND HOLIC feat. Nana Takahashi" }, { musicId: 25, title: "げきオコスティックファイナリアリティぷんぷんマスタースパーク", version: 1, category: "TOHO", bpm: { min: 200, max: 200 }, chartsInfo: { light: "０４", medium: "０８", beast: "０９⁺" }, artist: "ARM＋ビートまりお（COOL&CREATE）" }, { musicId: 26, title: "ケロ⑨destiny", version: 1, category: "TOHO", bpm: { min: 172, max: 172 }, chartsInfo: { light: "０２", medium: "０７", beast: "０９⁺" }, artist: "Silver Forest feat. めらみぽっぷ" }, { musicId: 27, title: "Miracle Halloween", version: 1, category: "KDE", bpm: { min: 140, max: 140 }, chartsInfo: { light: "０２", medium: "０６", beast: "０８" }, artist: "Sana" }, { musicId: 28, title: "ミライノトビラ", version: 1, category: "KDE", bpm: { min: 163, max: 163 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁻" }, artist: "Sana" }, { musicId: 29, title: "ちくわパフェだよ☆ＣＫＰ", version: 1, category: "KDE", bpm: { min: 205, max: 205 }, chartsInfo: { light: "０４", medium: "０８", beast: "０９⁺", nightmare: "１０" }, artist: "日向美ビタースイーツ♪" }, { musicId: 30, title: "Colorful Days ～NEWラブプラス メインテーマ～", version: 1, category: "KDE", bpm: { min: 128, max: 128 }, chartsInfo: { light: "０２", medium: "０６", beast: "０８" }, artist: "高嶺愛花＆小早川凛子＆姉ヶ崎寧々" }, { musicId: 31, title: "Rainbow Magic", version: 1, category: "KDE", bpm: { min: 124, max: 150 }, chartsInfo: { light: "０２", medium: "０６", beast: "０８" }, artist: "マジックアカデミー管弦楽部×劇団レコード" }, { musicId: 32, title: "チュートリアル", version: 2, category: "KDE", bpm: { min: 100, max: 100 }, chartsInfo: { light: "０１" }, artist: "-" }, { musicId: 33, title: "回レ！雪月花", version: 1, category: "ANIME", bpm: { min: 160, max: 160 }, chartsInfo: { light: "０４", medium: "０８", beast: "１０", nightmare: "１０" }, artist: "歌組雪月花" }, { musicId: 34, title: "Anicca", version: 1, category: "ANIME", bpm: { min: 175, max: 175 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁻" }, artist: "原田ひとみ" }, { musicId: 35, title: "This game", version: 1, category: "ANIME", bpm: { min: 147, max: 147 }, chartsInfo: { light: "０２", medium: "０４", beast: "０９⁻", nightmare: "０９⁺" }, artist: "鈴木このみ" }, { musicId: 36, title: "オラシオン", version: 1, category: "ANIME", bpm: { min: 166, max: 166 }, chartsInfo: { light: "０１", medium: "０４", beast: "０８", nightmare: "０９⁻" }, artist: "白（CV:茅野愛衣）" }, { musicId: 37, title: "共鳴のTrue Force", version: 1, category: "ANIME", bpm: { min: 187.5, max: 187.5 }, chartsInfo: { light: "０４", medium: "０７", beast: "０９⁺" }, artist: "原田ひとみ" }, { musicId: 38, title: "精霊剣舞祭", version: 1, category: "ANIME", bpm: { min: 187, max: 187 }, chartsInfo: { light: "０２", medium: "０６", beast: "０９⁻" }, artist: "にーそっくすす" }, { musicId: 39, title: "祝祭のエレメンタリア", version: 1, category: "ANIME", bpm: { min: 150, max: 150 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁻" }, artist: "にーそっくすす" }, { musicId: 40, title: "幻想系世界修復少女", version: 1, category: "EXITTUNES", bpm: { min: 193, max: 193 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁻" }, artist: "Last Note." }, { musicId: 41, title: "バンブーソード・ガール", version: 1, category: "EXITTUNES", bpm: { min: 208, max: 208 }, chartsInfo: { light: "０４", medium: "０８", beast: "０９" }, artist: "cosMo＠暴走P" }, { musicId: 42, title: "Idola", version: 1, category: "KDE", bpm: { min: 201, max: 201 }, chartsInfo: { light: "０４", medium: "０８", beast: "１０" }, artist: "iconoclasm feat.GUMI" }, { musicId: 43, title: "サリシノハラ", version: 1, category: "EXITTUNES", bpm: { min: 135, max: 135 }, chartsInfo: { light: "０２", medium: "０６", beast: "０８", nightmare: "０９⁻" }, artist: "みきとP" }, { musicId: 44, title: "脱出ゲヱム", version: 1, category: "EXITTUNES", bpm: { min: 134, max: 134 }, chartsInfo: { light: "０４", medium: "０７", beast: "１０⁻" }, artist: "ゆちゃP" }, { musicId: 45, title: "ケッペキショウ", version: 1, category: "EXITTUNES", bpm: { min: 190, max: 190 }, chartsInfo: { light: "０４", medium: "０８", beast: "１０⁻" }, artist: "すこっぷ" }, { musicId: 46, title: "僕は空気が嫁ない", version: 1, category: "EXITTUNES", bpm: { min: 192, max: 192 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁻" }, artist: "cosMo＠暴走P" }, { musicId: 47, title: "sweet little sister", version: 1, category: "TOHO", bpm: { min: 168, max: 168 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁺" }, artist: "Silver Forest feat. さゆり" }, { musicId: 48, title: "泡沫、哀のまほろば", version: 1, category: "TOHO", bpm: { min: 155, max: 155 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁻" }, artist: "幽閉サテライト(Arranged:Iceon,HiZuMi) feat. senya" }, { musicId: 49, title: "最終鬼畜妹フランドール・S", version: 1, category: "TOHO", bpm: { min: 200, max: 200 }, chartsInfo: { light: "０４", medium: "０７", beast: "１０⁻", nightmare: "１０" }, artist: "ビートまりお（COOL&CREATE）" }, { musicId: 50, title: "Help me, ERINNNNNN!!", version: 1, category: "TOHO", bpm: { min: 183, max: 183 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁻", nightmare: "10-" }, artist: "ビートまりお（COOL&CREATE）" }, { musicId: 51, title: "ナイト・オブ・ナイツ", version: 1, category: "TOHO", bpm: { min: 180, max: 180 }, chartsInfo: { light: "０４", medium: "０８", beast: "１０", nightmare: "１０" }, artist: "ビートまりお（COOL&CREATE）" }, { musicId: 52, title: "†渚の小悪魔ラヴリィ～レイディオ†  ", version: 1, category: "KDE", bpm: { min: 190, max: 190 }, chartsInfo: { light: "０３", medium: "０８", beast: "０９⁺" }, artist: "夏色ビキニのPrim" }, { musicId: 53, title: "恋する☆宇宙戦争っ！！", version: 1, category: "KDE", bpm: { min: 200, max: 200 }, chartsInfo: { light: "０４", medium: "０８", beast: "１０", nightmare: "ネ申" }, artist: "Prim" }, { musicId: 54, title: "狂イ咲ケ焔ノ華", version: 1, category: "KDE", bpm: { min: 206, max: 206 }, chartsInfo: { light: "０４", medium: "０８", beast: "１０⁻" }, artist: "覚醒ノPrim" }, { musicId: 55, title: "めうめうぺったんたん！！", version: 1, category: "KDE", bpm: { min: 185, max: 185 }, chartsInfo: { light: "０４", medium: "０８", beast: "１０", nightmare: "１０" }, artist: "日向美ビタースイーツ♪" }, { musicId: 56, title: "カタルシスの月", version: 1, category: "KDE", bpm: { min: 200, max: 200 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁺" }, artist: "日向美ビタースイーツ♪" }, { musicId: 57, title: "凛として咲く花の如く　～ひなビタ♪edition～", version: 1, category: "KDE", bpm: { min: 163, max: 163 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁻", nightmare: "０９⁺" }, artist: "日向美ビタースイーツ♪" }, { musicId: 58, title: "滅亡天使 † にこきゅっぴん", version: 1, category: "KDE", bpm: { min: 200, max: 200 }, chartsInfo: { light: "０３", medium: "０７", beast: "１０" }, artist: "日向美ビタースイーツ♪" }, { musicId: 59, title: "Bad Apple!! feat. nomico", version: 1, category: "TOHO", bpm: { min: 138, max: 138 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁺", nightmare: "10-" }, artist: "Alstroemeria Records" }, { musicId: 60, title: "ビビットストリーム", version: 1, category: "KDE", bpm: { min: 184, max: 184 }, chartsInfo: { light: "０３", medium: "０８", beast: "０９⁻", nightmare: "10-" }, artist: "DJ TOTTO" }, { musicId: 61, title: "groovin'", version: 1, category: "KDE", bpm: { min: 140, max: 140 }, chartsInfo: { light: "０４", medium: "０８", beast: "０９⁺" }, artist: "Sota Fujimori" }, { musicId: 62, title: "センチメンタルラブ", version: 1, category: "ANIME", bpm: { min: 138, max: 138 }, chartsInfo: { light: "０２", medium: "０６", beast: "０９⁻" }, artist: "みみめめMIMI" }, { musicId: 63, title: "sister’s noise", version: 1, category: "ANIME", bpm: { min: 144, max: 144 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁻", nightmare: "０９⁺" }, artist: "fripSide" }, { musicId: 64, title: "Daydream café", version: 1, category: "ANIME", bpm: { min: 150, max: 150 }, chartsInfo: { light: "０５", medium: "０８", beast: "０９⁺", nightmare: "１０" }, artist: "Petit Rabbit’s" }, { musicId: 65, title: "閃光の行方", version: 1, category: "ANIME", bpm: { min: 175, max: 175 }, chartsInfo: { light: "０３", medium: "１０", beast: "１０" }, artist: "Falcom Sound Team jdk" }, { musicId: 66, title: "I'll remember you", version: 1, category: "ANIME", bpm: { min: 148, max: 148 }, chartsInfo: { light: "０２", medium: "０６", beast: "０９⁻" }, artist: "Falcom Sound Team jdk" }, { musicId: 67, title: "乙女繚乱 舞い咲き誇れ", version: 1, category: "KDE", bpm: { min: 210, max: 210 }, chartsInfo: { light: "０４", medium: "０８", beast: "１０" }, artist: "日向美ビタースイーツ♪" }, { musicId: 68, title: "Harmonia", version: 1, category: "KDE", bpm: { min: 177, max: 177 }, chartsInfo: { light: "０４", medium: "０８", beast: "１０" }, artist: "ATSUMI UEDA" }, { musicId: 69, title: "青春セッション PARADISE", version: 1, category: "OTHER", bpm: { min: 150, max: 190 }, chartsInfo: { light: "０３", medium: "０７", beast: "１０", nightmare: "１０" }, artist: "A応P" }, { musicId: 70, title: "きょうもハレバレ", version: 1, category: "EXITTUNES", bpm: { min: 134, max: 134 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁻" }, artist: "ふわりP feat. GUMI's" }, { musicId: 71, title: "ノイジーラバーソウル", version: 1, category: "EXITTUNES", bpm: { min: 190, max: 190 }, chartsInfo: { light: "０４", medium: "０９⁻", beast: "１０" }, artist: "Last Note." }, { musicId: 72, title: "0", version: 1, category: "EXITTUNES", bpm: { min: 168, max: 168 }, chartsInfo: { light: "０３", medium: "０７", beast: "１０" }, artist: "cosMo＠暴走P" }, { musicId: 73, title: "いーあるふぁんくらぶ", version: 1, category: "EXITTUNES", bpm: { min: 145, max: 145 }, chartsInfo: { light: "０２", medium: "０４", beast: "０９⁻" }, artist: "みきとP" }, { musicId: 74, title: "幸せになれる隠しコマンドがあるらしい", version: 1, category: "EXITTUNES", bpm: { min: 142, max: 142 }, chartsInfo: { light: "０１", medium: "０６", beast: "０９⁺", nightmare: "０９⁺" }, artist: "うたたP feat. 結月ゆかり" }, { musicId: 75, title: "Phantasm Brigade", version: 1, category: "TOHO", bpm: { min: 168, max: 168 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁺" }, artist: "Silver Forest" }, { musicId: 76, title: "突撃!ガラスのニーソ姫!", version: 1, category: "KDE", bpm: { min: 185, max: 185 }, chartsInfo: { light: "０３", medium: "０８", beast: "１０⁻" }, artist: "山本椛 (monotone)" }, { musicId: 77, title: "キャトられ♥恋はモ～モク", version: 1, category: "KDE", bpm: { min: 196, max: 196 }, chartsInfo: { light: "０３", medium: "０７", beast: "１０" }, artist: "ギュ～っとしたい♥Prim" }, { musicId: 78, title: "即席！脳直★ミュージックシステム", version: 1, category: "KDE", bpm: { min: 197, max: 197 }, chartsInfo: { light: "０４", medium: "０８", beast: "１０" }, artist: "MOSAIC.WAV" }, { musicId: 79, title: "Synchrogazer", version: 1, category: "ANIME", bpm: { min: 159, max: 159 }, chartsInfo: { light: "０３", medium: "０７", beast: "１０⁻", nightmare: "１０" }, artist: "水樹奈々" }, { musicId: 80, title: "家出少年と迷子少女", version: 1, category: "EXITTUNES", bpm: { min: 165, max: 165 }, chartsInfo: { light: "０２", medium: "０７", beast: "０９⁻" }, artist: "cosMo＠暴走P feat. GUMI" }, { musicId: 81, title: "白い雪のプリンセスは", version: 1, category: "EXITTUNES", bpm: { min: 200, max: 200 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁻", nightmare: "０９⁺" }, artist: "のぼる↑" }, { musicId: 82, title: "命のユースティティア", version: 1, category: "EXITTUNES", bpm: { min: 156, max: 156 }, chartsInfo: { light: "０４", medium: "０８", beast: "０９⁺" }, artist: "Neru" }, { musicId: 83, title: "再教育", version: 1, category: "EXITTUNES", bpm: { min: 163, max: 163 }, chartsInfo: { light: "０２", medium: "０７", beast: "０９⁻" }, artist: "Neru" }, { musicId: 84, title: "ドロボウナイトトリック", version: 1, category: "EXITTUNES", bpm: { min: 218, max: 218 }, chartsInfo: { light: "０５", medium: "０９⁻", beast: "０９⁺" }, artist: "ゆちゃP" }, { musicId: 85, title: "茅蜩モラトリアム", version: 1, category: "EXITTUNES", bpm: { min: 189, max: 189 }, chartsInfo: { light: "０４", medium: "０９⁻", beast: "１０" }, artist: "TOTAL OBJECTION feat.GUMI" }, { musicId: 86, title: "十面相", version: 1, category: "EXITTUNES", bpm: { min: 173, max: 173 }, chartsInfo: { light: "０４", medium: "０８", beast: "０９⁺" }, artist: "YM feat. GUMI" }, { musicId: 87, title: "ハウトゥー世界征服", version: 1, category: "EXITTUNES", bpm: { min: 151, max: 151 }, chartsInfo: { light: "０２", medium: "０６", beast: "０９⁻" }, artist: "Neru" }, { musicId: 88, title: "Just Be Friends", version: 1, category: "EXITTUNES", bpm: { min: 128, max: 128 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁺" }, artist: "Dixie Flatline" }, { musicId: 89, title: "ハッタリだけで生きてる", version: 1, category: "EXITTUNES", bpm: { min: 145, max: 145 }, chartsInfo: { light: "０４", medium: "０７", beast: "０９⁻" }, artist: "recog feat. デッドボールP" }, { musicId: 90, title: "ってゐ！ ～えいえんてゐVer～", version: 1, category: "TOHO", bpm: { min: 314, max: 340 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁺" }, artist: "石鹸屋" }, { musicId: 91, title: "東方妖々夢 ～the maximum moving about～", version: 1, category: "TOHO", bpm: { min: 197, max: 205 }, chartsInfo: { light: "０２", medium: "０６", beast: "０９⁻" }, artist: "石鹸屋" }, { musicId: 92, title: "最速最高シャッターガール", version: 1, category: "TOHO", bpm: { min: 160, max: 160 }, chartsInfo: { light: "０３", medium: "０８", beast: "０９⁺" }, artist: "ビートまりお（COOL&CREATE）" }, { musicId: 93, title: "マスパでシュッ☆メイドウィッチまりさちゃん", version: 1, category: "TOHO", bpm: { min: 160, max: 160 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁺" }, artist: "ARM feat.桃井はるこ" }, { musicId: 94, title: "進捗どうですか？", version: 1, category: "TOHO", bpm: { min: 199, max: 199 }, chartsInfo: { light: "０４", medium: "０８", beast: "１０", nightmare: "１０" }, artist: "sumijun feat.ななひら" }, { musicId: 95, title: "トラウマ催眠少女さとり！", version: 1, category: "TOHO", bpm: { min: 210, max: 210 }, chartsInfo: { light: "０３", medium: "０８", beast: "１０", nightmare: "１０" }, artist: "DJ SHARPNEL feat.一ノ瀬月琉" }, { musicId: 96, title: "きゅうりバーにダイブ", version: 1, category: "TOHO", bpm: { min: 176, max: 176 }, chartsInfo: { light: "０２", medium: "０７", beast: "０９⁺" }, artist: "ゆずひこ feat.めらみぽっぷ" }, { musicId: 97, title: "ジャスティス・オブ・ザ・界隈　～ALL IS FAIR IN LOVE AND ALIMARI～", version: 1, category: "TOHO", bpm: { min: 190, max: 190 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁺" }, artist: "void feat.山本椛" }, { musicId: 98, title: "EBONY & IVORY", version: 1, category: "KDE", bpm: { min: 170, max: 170 }, chartsInfo: { light: "０２", medium: "０８", beast: "１０⁻", nightmare: "10⁺" }, artist: "OSTER project" }, { musicId: 99, title: "ツーマンライブ", version: 1, category: "KDE", bpm: { min: 174, max: 174 }, chartsInfo: { light: "０２", medium: "０７", beast: "０９⁺", nightmare: "10-" }, artist: "東雲夏陽 meets 日向美ビタースイーツ♪" }, { musicId: 100, title: "キモチコネクト", version: 1, category: "KDE", bpm: { min: 150, max: 150 }, chartsInfo: { light: "０２", medium: "０６", beast: "０９⁻", nightmare: "０９⁺" }, artist: "東雲心菜 meets 日向美ビタースイーツ♪" }, { musicId: 101, title: "パ→ピ→プ→Yeah!", version: 1, category: "KDE", bpm: { min: 160, max: 160 }, chartsInfo: { light: "０３", medium: "０７", beast: "１０⁻", nightmare: "１０" }, artist: "ヒゲドライバー join. shully & Nimo" }, { musicId: 102, title: "惑星☆ロリポップ", version: 1, category: "KDE", bpm: { min: 180, max: 180 }, chartsInfo: { light: "０２", medium: "０７", beast: "０９", nightmare: "１０" }, artist: "SOUND HOLIC feat. Nana Takahashi" }, { musicId: 103, title: "爆なな☆てすとロイヤー", version: 1, category: "KDE", bpm: { min: 200, max: 200 }, chartsInfo: { light: "０３", medium: "０８", beast: "１０⁻", nightmare: "１０" }, artist: "ARM feat.ななひら" }, { musicId: 104, title: "Stay Gold", version: 1, category: "OTHER", bpm: { min: 190, max: 190 }, chartsInfo: { light: "０２", medium: "０８", beast: "１０", nightmare: "１０" }, artist: "A応P" }, { musicId: 105, title: "メイビ～初恋！？ビスケット☆大作戦", version: 1, category: "KDE", bpm: { min: 182, max: 182 }, chartsInfo: { light: "０２", medium: "０６", beast: "０９", nightmare: "10-" }, artist: "DJ TOTTO×mitsu feat.BisCo(CV:洲崎綾)" }, { musicId: 106, title: "それは花火のような恋", version: 1, category: "KDE", bpm: { min: 182, max: 182 }, chartsInfo: { light: "０３", medium: "０７", beast: "１０", nightmare: "１０" }, artist: "夏色バーニングラブ☆Prim" }, { musicId: 107, title: "NEON WORLD", version: 1, category: "TOHO", bpm: { min: 154, max: 164 }, chartsInfo: { light: "０２", medium: "０７", beast: "０９⁺" }, artist: "SOUND HOLIC feat. Nana Takahashi" }, { musicId: 108, title: "Scarlet Moon", version: 1, category: "TOHO", bpm: { min: 180, max: 180 }, chartsInfo: { light: "０２", medium: "０４", beast: "０９⁻" }, artist: "REDALiCE feat. Ayumi Nomiya" }, { musicId: 109, title: "Russian Caravan Rhapsody", version: 1, category: "TOHO", bpm: { min: 158, max: 158 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁺" }, artist: "Power Of Nature" }, { musicId: 110, title: "ほおずき程度には赤い頭髪", version: 1, category: "TOHO", bpm: { min: 174, max: 174 }, chartsInfo: { light: "０４", medium: "０７", beast: "１０" }, artist: "Akhuta" }, { musicId: 111, title: "取り残された美術(Arranged:HiZuMi)", version: 1, category: "TOHO", bpm: { min: 160, max: 160 }, chartsInfo: { light: "０２", medium: "０６", beast: "０９⁺" }, artist: "幽閉サテライト feat. senya" }, { musicId: 112, title: "Struggle", version: 1, category: "TOHO", bpm: { min: 180, max: 180 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁻" }, artist: "Masayoshi Minoshima(ALR)" }, { musicId: 113, title: "ホメ猫☆センセーション", version: 1, category: "TOHO", bpm: { min: 200, max: 200 }, chartsInfo: { light: "０２", medium: "０７", beast: "０９⁺" }, artist: "P*Light feat. mow*2" }, { musicId: 114, title: "妖隠し -あやかしかくし-", version: 1, category: "TOHO", bpm: { min: 85, max: 85 }, chartsInfo: { light: "０２", medium: "０６", beast: "０８" }, artist: "DJ TOTTO feat.3L" }, { musicId: 115, title: "BEAT-NEW-WORLD", version: 1, category: "TOHO", bpm: { min: 190, max: 190 }, chartsInfo: { light: "０４", medium: "０９⁻", beast: "１０" }, artist: "ビートまりお（COOL&CREATE）" }, { musicId: 116, title: "プレインエイジア -PHQ remix-", version: 1, category: "TOHO", bpm: { min: 182, max: 182 }, chartsInfo: { light: "０２", medium: "０７", beast: "１０⁻" }, artist: "PHQUASE" }, { musicId: 117, title: "竹取飛翔 ～ Lunatic Princess (Ryu☆Remix)", version: 1, category: "TOHO", bpm: { min: 171, max: 171 }, chartsInfo: { light: "０２", medium: "０６", beast: "０９" }, artist: "Ryu☆" }, { musicId: 118, title: "千年ノ理", version: 1, category: "TOHO", bpm: { min: 153, max: 153 }, chartsInfo: { light: "０２", medium: "０７", beast: "０９⁺" }, artist: "猫叉Master" }, { musicId: 119, title: "Flyers", version: 1, category: "ANIME", bpm: { min: 139, max: 139 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁻" }, artist: "BRADIO" }, { musicId: 120, title: "放課後革命", version: 1, category: "ANIME", bpm: { min: 205, max: 205 }, chartsInfo: { light: "０２", medium: "０６", beast: "０９⁻" }, artist: "放課後楽園部《一宮エルナ（CV:木村珠莉）・御神楽星鎖（CV：大西沙織）・藤白おとね（CV:小澤亜李）》" }, { musicId: 121, title: "楽園ファンファーレ", version: 1, category: "ANIME", bpm: { min: 180, max: 180 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁻" }, artist: "放課後楽園部《一宮エルナ（CV:木村珠莉）・御神楽星鎖（CV：大西沙織）・藤白おとね（CV:小澤亜李）》" }, { musicId: 122, title: "FLOWER", version: 1, category: "KDE", bpm: { min: 173, max: 173 }, chartsInfo: { light: "０４", medium: "０９⁻", beast: "１０⁺" }, artist: "DJ YOSHITAKA" }, { musicId: 123, title: "海神", version: 1, category: "KDE", bpm: { min: 159, max: 159 }, chartsInfo: { light: "０４", medium: "０９⁻", beast: "１０⁺" }, artist: "兎々" }, { musicId: 124, title: "蛇神", version: 1, category: "KDE", bpm: { min: 170, max: 170 }, chartsInfo: { light: "０４", medium: "０８", beast: "１０" }, artist: "Zektbach" }, { musicId: 125, title: "Ha･lle･lu･jah", version: 1, category: "KDE", bpm: { min: 150, max: 150 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁺" }, artist: "SOUND HOLIC feat. Nana Takahashi" }, { musicId: 126, title: "Element of SPADA", version: 1, category: "KDE", bpm: { min: 170, max: 170 }, chartsInfo: { light: "０３", medium: "０６", beast: "１０" }, artist: "猫叉Master feat.霜月はるか" }, { musicId: 127, title: "ジュピターガンズノベル", version: 1, category: "KDE", bpm: { min: 156, max: 156 }, chartsInfo: { light: "０４", medium: "０８", beast: "１０" }, artist: "工藤吉三（ベイシスケイプ）" }, { musicId: 128, title: "ヤマトなでなで♡かぐや姫", version: 1, category: "KDE", bpm: { min: 160, max: 160 }, chartsInfo: { light: "０３", medium: "０８", beast: "０９⁺" }, artist: "ロマンチック♡Prim姫" }, { musicId: 129, title: "チョコレートスマイル", version: 1, category: "KDE", bpm: { min: 196, max: 196 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁻", nightmare: "10-" }, artist: "日向美ビタースイーツ♪ & ここなつ" }, { musicId: 130, title: "さよならトリップ ～夏陽 EDM edition～", version: 1, category: "KDE", bpm: { min: 135, max: 135 }, chartsInfo: { light: "０２", medium: "０６", beast: "０９⁻", nightmare: "10-" }, artist: "東雲夏陽(from ここなつ)" }, { musicId: 131, title: "魔法のたまご ～心菜 ELECTRO POP edition～", version: 1, category: "KDE", bpm: { min: 142, max: 142 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁺", nightmare: "１０" }, artist: "東雲心菜(from ここなつ)" }, { musicId: 132, title: "怪盗BisCoの予告状！！", version: 1, category: "KDE", bpm: { min: 160, max: 160 }, chartsInfo: { light: "０２", medium: "０６", beast: "０９⁻", nightmare: "１０" }, artist: "Qrispy Joybox" }, { musicId: 133, title: "リトライ☆ランデヴー", version: 1, category: "ANIME", bpm: { min: 175, max: 175 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁺" }, artist: "にゃ～たん（CV:村川梨衣）" }, { musicId: 134, title: "そるらる★とんちんかん", version: 1, category: "OTHER", bpm: { min: 195, max: 195 }, chartsInfo: { light: "０２", medium: "０６", beast: "０９⁻" }, artist: "にゃ～たん（CV:村川梨衣）" }, { musicId: 135, title: "blue moment", version: 1, category: "ANIME", bpm: { min: 149, max: 149 }, chartsInfo: { light: "０１", medium: "０６", beast: "０９⁻" }, artist: "ソルラルBOB" }, { musicId: 136, title: "ソルラルくれにゃ！", version: 1, category: "OTHER", bpm: { min: 185, max: 185 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁻" }, artist: "エトリオール（CV:村川梨衣、松井恵理子、花守ゆみり）" }, { musicId: 137, title: "In The Breeze", version: 1, category: "KDE", bpm: { min: 123, max: 142 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁺" }, artist: "96 & Sota ft. Mayumi Morinaga" }, { musicId: 138, title: "びいすと！", version: 1, category: "KDE", bpm: { min: 200, max: 200 }, chartsInfo: { light: "０４", medium: "０７", beast: "０９", nightmare: "１０" }, artist: "ビートまりおとARM" }, { musicId: 139, title: "放課後ストライド", version: 1, category: "OTHER", bpm: { min: 231, max: 231 }, chartsInfo: { light: "０４", medium: "０７", beast: "１０" }, artist: "一宮エルナ（CV.木村珠莉）" }, { musicId: 140, title: "革新的ヒロイズム", version: 1, category: "OTHER", bpm: { min: 153, max: 153 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁺" }, artist: "二宮シグレ（CV.島﨑信長）" }, { musicId: 141, title: "有頂天ビバーチェ", version: 1, category: "OTHER", bpm: { min: 133, max: 133 }, chartsInfo: { light: "０３", medium: "０７", beast: "１０⁻" }, artist: "八坂ひみ（CV.諏訪彩花）" }, { musicId: 142, title: "十六夜シーイング", version: 1, category: "OTHER", bpm: { min: 174, max: 174 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁺" }, artist: "射水アスヒ（CV.加隈亜衣）" }, { musicId: 143, title: "我楽多イノセンス", version: 1, category: "OTHER", bpm: { min: 230, max: 230 }, chartsInfo: { light: "０４", medium: "０８", beast: "０９⁺" }, artist: "九頭竜京摩（CV.細谷佳正）" }, { musicId: 144, title: "無気力クーデター", version: 1, category: "OTHER", bpm: { min: 200, max: 200 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁺" }, artist: "赤間遊兎（CV.花江夏樹）" }, { musicId: 145, title: "花吹雪リフレクト", version: 1, category: "OTHER", bpm: { min: 118, max: 118 }, chartsInfo: { light: "０２", medium: "０５", beast: "０８" }, artist: "湊川貞松（CV.古川慎）" }, { musicId: 146, title: "絵空事スパイラル", version: 1, category: "OTHER", bpm: { min: 197, max: 197 }, chartsInfo: { light: "０５", medium: "０８", beast: "０９⁺" }, artist: "御神楽星鎖（CV.大西沙織）" }, { musicId: 147, title: "赤裸々キャンディ", version: 1, category: "OTHER", bpm: { min: 193, max: 193 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁻" }, artist: "藤白おとね（CV.小澤亜李）" }, { musicId: 148, title: "不条理ルーレット", version: 1, category: "OTHER", bpm: { min: 175, max: 175 }, chartsInfo: { light: "０４", medium: "０７", beast: "０９⁺" }, artist: "ビミィ（CV.松岡禎丞）" }, { musicId: 149, title: "激メシ!!わがにゃの晩ごはん", version: 1, category: "OTHER", bpm: { min: 170, max: 170 }, chartsInfo: { light: "０２", medium: "０７", beast: "０９⁻" }, artist: "にゃ～たん（CV：村川梨衣）、モ～たん（CV：松井恵理子）、ピヨたん（CV：佐々木未来）" }, { musicId: 150, title: "これがにゃあの生きる道", version: 1, category: "OTHER", bpm: { min: 190, max: 190 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁺" }, artist: "にゃ～たん（CV：村川梨衣）" }, { musicId: 151, title: "ラヴ・グラビティ", version: 1, category: "OTHER", bpm: { min: 180, max: 180 }, chartsInfo: { light: "０２", medium: "０７", beast: "０９⁻" }, artist: "モ～たん（CV：松井恵理子）" }, { musicId: 152, title: "忘却の旅路", version: 1, category: "OTHER", bpm: { min: 110, max: 110 }, chartsInfo: { light: "０１", medium: "０６", beast: "０９⁻" }, artist: "ピヨたん（CV：佐々木未来）" }, { musicId: 153, title: "ETMファイティングクライマックス！ 本気の師匠チャレンジ編", version: 1, category: "OTHER", bpm: { min: 136, max: 136 }, chartsInfo: { light: "０３", medium: "０６", beast: "０８" }, artist: "シマたん(CV:巽悠衣子)、ドラたん(CV:内田真礼)、ウリたん(CV:花守ゆみり)" }, { musicId: 154, title: "TRY！ TRY！ TRY！", version: 1, category: "OTHER", bpm: { min: 162, max: 162 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁻" }, artist: "シマたん（CV：巽悠衣子）" }, { musicId: 155, title: "さてこそ桃源郷", version: 1, category: "OTHER", bpm: { min: 88, max: 140 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁻" }, artist: "ドラたん（CV:内田真礼）" }, { musicId: 156, title: "激凸!?ウリティ☆ウリリズム", version: 1, category: "OTHER", bpm: { min: 216, max: 216 }, chartsInfo: { light: "０４", medium: "０９⁻", beast: "１０" }, artist: "ウリたん（CV：花守ゆみり）" }, { musicId: 157, title: "最強プロデュース！めざせ干支ップ☆アイドル", version: 1, category: "OTHER", bpm: { min: 70, max: 200 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁻" }, artist: "ウサたん（CV:相坂優歌）、ウマたん（CV：小澤亜李）、キーたん（CV： 戸田めぐみ）、イヌたん（CV：本多真梨子）" }, { musicId: 158, title: "がんばれ♥ ウサ☆ウサPPプロデュース！", version: 1, category: "OTHER", bpm: { min: 186, max: 186 }, chartsInfo: { light: "０３", medium: "０７", beast: "１０⁻" }, artist: "ウサたん（CV：相坂優歌）" }, { musicId: 159, title: "笑う門に午来る！", version: 1, category: "OTHER", bpm: { min: 172, max: 172 }, chartsInfo: { light: "０２", medium: "０４", beast: "０８" }, artist: "ウマたん（CV：小澤亜李）" }, { musicId: 160, title: "ふたりマイウェイ！", version: 1, category: "OTHER", bpm: { min: 240, max: 240 }, chartsInfo: { light: "０４", medium: "０７", beast: "０９⁺" }, artist: "キーたん（CV：戸田めぐみ）、イヌたん（CV：本多真梨子）" }, { musicId: 161, title: "秘湯に願いを！今夜はホット・アンド・スイート", version: 1, category: "OTHER", bpm: { min: 128, max: 128 }, chartsInfo: { light: "０４", medium: "０８", beast: "０９⁺" }, artist: "チュウたん（CV：大原さやか）、シャアたん（CV：生天目仁美）、メイたん（CV：渕上舞）" }, { musicId: 162, title: "窮猫ハ鼠ヲモ嚙メズ", version: 1, category: "OTHER", bpm: { min: 180, max: 180 }, chartsInfo: { light: "０４", medium: "０９⁻", beast: "１０" }, artist: "チュウたん（CV：大原さやか）" }, { musicId: 163, title: "あなたの総集編", version: 1, category: "OTHER", bpm: { min: 160, max: 160 }, chartsInfo: { light: "０２", medium: "０６", beast: "０８" }, artist: "シャアたん（CV：生天目仁美）" }, { musicId: 164, title: "TwinklePeace", version: 1, category: "OTHER", bpm: { min: 128, max: 128 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁻" }, artist: "メイたん（CV：渕上舞）" }, { musicId: 165, title: "隅田川夏恋歌", version: 1, category: "KDE", bpm: { min: 180, max: 180 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁺", nightmare: "１０" }, artist: "seiya-murai feat.ALT" }, { musicId: 166, title: "Sakura Sunrise", version: 1, category: "KDE", bpm: { min: 181, max: 181 }, chartsInfo: { light: "０４", medium: "０８", beast: "１０⁻" }, artist: "Ryu☆" }, { musicId: 167, title: "虹色遊園地", version: 1, category: "KDE", bpm: { min: 165, max: 220 }, chartsInfo: { light: "０３", medium: "０９⁻", beast: "１０" }, artist: "Mutsuhiko Izumi VS DJ TOTTO" }, { musicId: 168, title: "ドッキン☆サマーあばんちゅーる", version: 1, category: "KDE", bpm: { min: 180, max: 180 }, chartsInfo: { light: "０４", medium: "０７", beast: "１０⁻" }, artist: "L.E.D.-G ⁺ Qrispy Joybox ⁺ ARM feat. ななひら" }, { musicId: 169, title: "夏色DIARY BisCoの思い出（＞▽＜）", version: 1, category: "KDE", bpm: { min: 187, max: 187 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９" }, artist: "猫叉王子 feat.Qrispy Joybox" }, { musicId: 170, title: "エクストラ・マジック・アワー ", version: 1, category: "ANIME", bpm: { min: 180, max: 180 }, chartsInfo: { light: "０３", medium: "０７", beast: "１０⁻" }, artist: "AKINO with bless4" }, { musicId: 171, title: "SPLASH FREE", version: 1, category: "ANIME", bpm: { min: 128, max: 128 }, chartsInfo: { light: "０２", medium: "０６", beast: "０９⁻" }, artist: "STYLE FIVE" }, { musicId: 172, title: "MURASAKI", version: 1, category: "OTHER", bpm: { min: 145, max: 145 }, chartsInfo: { light: "０３", medium: "０６", beast: "０８" }, artist: "蒼井翔太" }, { musicId: 173, title: "はなまるぴっぴはよいこだけ", version: 1, category: "ANIME", bpm: { min: 172, max: 172 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁺", nightmare: "10-" }, artist: "A応P" }, { musicId: 174, title: "neko＊neko", version: 1, category: "KDE", bpm: { min: 123, max: 123 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９" }, artist: "日向美ビタースイーツ♪" }, { musicId: 175, title: "漆黒のスペシャルプリンセスサンデー", version: 1, category: "KDE", bpm: { min: 200, max: 200 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁻" }, artist: "日向美ビタースイーツ♪" }, { musicId: 176, title: "残酷な天使のテーゼ", version: 2, category: "ANIME", bpm: { min: 79, max: 128 }, chartsInfo: { light: "０２", medium: "０６", beast: "０８" }, artist: "-" }, { musicId: 177, title: "紅蓮の弓矢", version: 2, category: "ANIME", bpm: { min: 180.66, max: 180.66 }, chartsInfo: { light: "０１", medium: "０６", beast: "０９⁻", nightmare: "10-" }, artist: "Linked Horizon" }, { musicId: 178, title: "太陽曰く燃えよカオス", version: 2, category: "ANIME", bpm: { min: 143, max: 143 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁻", nightmare: "１０" }, artist: "後ろから這いより隊G" }, { musicId: 179, title: "Enigmatic Feeling", version: 2, category: "ANIME", bpm: { min: 142, max: 142 }, chartsInfo: { light: "０２", medium: "０６", beast: "０９⁺" }, artist: "凛として時雨" }, { musicId: 180, title: "シュガーソングとビターステップ", version: 2, category: "ANIME", bpm: { min: 132, max: 132 }, chartsInfo: { light: "０２", medium: "０７", beast: "０９⁺", nightmare: "１０" }, artist: "UNISON SQUARE GARDEN" }, { musicId: 181, title: "COLORFUL BOX ", version: 2, category: "ANIME", bpm: { min: 161, max: 161 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁻" }, artist: "石田燿子" }, { musicId: 182, title: "宝箱-TREASURE BOX-", version: 2, category: "ANIME", bpm: { min: 162, max: 162 }, chartsInfo: { light: "０２", medium: "０６", beast: "０９⁻" }, artist: "奥井雅美" }, { musicId: 183, title: "かくしん的☆めたまるふぉ〜ぜっ！", version: 2, category: "ANIME", bpm: { min: 133, max: 139 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁺", nightmare: "１０" }, artist: "土間うまる（CV:田中あいみ）" }, { musicId: 184, title: "Twinbee's Home Town Song", version: 2, category: "KDE", bpm: { min: 168, max: 168 }, chartsInfo: { light: "０４", medium: "０７", beast: "０９⁺" }, artist: "Sota Fujimori" }, { musicId: 185, title: "トキメキストリーム", version: 2, category: "KDE", bpm: { min: 164, max: 164 }, chartsInfo: { light: "０２", medium: "０７", beast: "１０", nightmare: "10⁺" }, artist: "Qrispy Joybox" }, { musicId: 186, title: "にゃんのパレードマーチ♪", version: 2, category: "KDE", bpm: { min: 162, max: 162 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁺" }, artist: "DJ TOTTO feat.にゃん" }, { musicId: 187, title: "アキネイション", version: 2, category: "KDE", bpm: { min: 185, max: 185 }, chartsInfo: { light: "０４", medium: "０８", beast: "１０" }, artist: "ビートまりお（COOL&CREATE）" }, { musicId: 188, title: "秘密がーる♡乙女", version: 2, category: "KDE", bpm: { min: 180, max: 180 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９" }, artist: "MaMiKa（松下×mitsu×T.kakuta）" }, { musicId: 189, title: "ぱんだしんけん１、２、３ ～ちえ！おっしょさんにはかなわないや！～", version: 2, category: "KDE", bpm: { min: 158, max: 158 }, chartsInfo: { light: "０３", medium: "０８", beast: "０９⁺" }, artist: "おひさまくらぶ" }, { musicId: 190, title: "蟲の棲む処", version: 2, category: "KDE", bpm: { min: 161.51, max: 161.51 }, chartsInfo: { light: "０３", medium: "０７", beast: "１０" }, artist: "かめりあ feat. Nana Takahashi" }, { musicId: 191, title: "激アツ☆マジヤバ☆チアガール", version: 2, category: "KDE", bpm: { min: 170, max: 170 }, chartsInfo: { light: "０３", medium: "０７", beast: "０８" }, artist: "日向美ビタースイーツ♪" }, { musicId: 192, title: "打打打打打打打打打打", version: 2, category: "KDE", bpm: { min: 156, max: 156 }, chartsInfo: { light: "０３", medium: "０５", beast: "１０⁻", nightmare: "１０" }, artist: "ヒゲドライバー join. SELEN" }, { musicId: 193, title: "創聖のアクエリオン", version: 2, category: "ANIME", bpm: { min: 151, max: 151 }, chartsInfo: { light: "０１", medium: "０５", beast: "０８" }, artist: "-" }, { musicId: 194, title: "RPG", version: 2, category: "ANIME", bpm: { min: 135, max: 135 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁻" }, artist: "SEKAI NO OWARI" }, { musicId: 195, title: "患部で止まってすぐ溶ける ～ 狂気の優曇華院", version: 2, category: "TOHO", bpm: { min: 200, max: 200 }, chartsInfo: { light: "０３", medium: "０７", beast: "１０⁻" }, artist: "ARM(IOSYS)" }, { musicId: 196, title: "Grip & Break down !!", version: 2, category: "TOHO", bpm: { min: 160, max: 160 }, chartsInfo: { light: "０４", medium: "０７", beast: "１０⁻", nightmare: "１０" }, artist: "SOUND HOLIC feat. Nana Takahashi" }, { musicId: 197, title: "究極焼肉レストラン！お燐の地獄亭！", version: 2, category: "TOHO", bpm: { min: 185, max: 185 }, chartsInfo: { light: "０２", medium: "０６", beast: "０９⁻" }, artist: "ARM(IOSYS)" }, { musicId: 198, title: "楽しい夜のお茶会 - Ringo's Tea Party", version: 2, category: "TOHO", bpm: { min: 175, max: 175 }, chartsInfo: { light: "０３", medium: "０５", beast: "０９⁻" }, artist: "ARM(IOSYS)" }, { musicId: 199, title: "幻想のサテライト", version: 2, category: "TOHO", bpm: { min: 230, max: 230 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁺" }, artist: "豚乙女" }, { musicId: 200, title: "Wheel", version: 2, category: "TOHO", bpm: { min: 136, max: 136 }, chartsInfo: { light: "０２", medium: "０６", beast: "０９⁻" }, artist: "Syrufit feat.綾倉盟 / 市松椿" }, { musicId: 201, title: "Vampire Killer", version: 2, category: "KDE", bpm: { min: 128, max: 128 }, chartsInfo: { light: "０３", medium: "０８", beast: "１０" }, artist: "浅田 靖" }, { musicId: 202, title: "GRADIUS 2012", version: 2, category: "KDE", bpm: { min: 180, max: 180 }, chartsInfo: { light: "０５", medium: "０９⁻", beast: "１０" }, artist: "Sota Fujimori" }, { musicId: 203, title: "月風魔伝　～ ビーストメドレー ～", version: 2, category: "KDE", bpm: { min: 170, max: 170 }, chartsInfo: { light: "０４", medium: "０９⁻", beast: "１０" }, artist: "Akhuta" }, { musicId: 204, title: "がんばれゴエモン　～ ビーストメドレー ～", version: 2, category: "KDE", bpm: { min: 113, max: 190 }, chartsInfo: { light: "０２", medium: "０６", beast: "０９⁻" }, artist: "96" }, { musicId: 205, title: "分けるな危険！モモモモモモーイズム", version: 2, category: "KDE", bpm: { min: 200, max: 200 }, chartsInfo: { light: "０４", medium: "０８", beast: "１０⁻" }, artist: "ARM×狐夢想 feat. 桃井はるこ" }, { musicId: 206, title: "CARNIVOROUS", version: 2, category: "KDE", bpm: { min: 170, max: 170 }, chartsInfo: { light: "０５", medium: "０９⁻", beast: "１０" }, artist: "SOUND HOLIC feat. Nana Takahashi" }, { musicId: 207, title: "地方創生☆チクワクティクス", version: 2, category: "KDE", bpm: { min: 170, max: 170 }, chartsInfo: { light: "０４", medium: "０７", beast: "１０" }, artist: "日向美ビタースイーツ♪" }, { musicId: 208, title: "リリーゼと炎龍レーヴァテイン", version: 2, category: "KDE", bpm: { min: 200, max: 200 }, chartsInfo: { light: "０５", medium: "０８", beast: "１０", nightmare: "10⁺" }, artist: "黒猫ダンジョン" }, { musicId: 209, title: "smooooch・∀・", version: 2, category: "KDE", bpm: { min: 177, max: 177 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁻" }, artist: "kors k" }, { musicId: 210, title: "Twinkle Wonderland", version: 2, category: "KDE", bpm: { min: 188, max: 188 }, chartsInfo: { light: "０３", medium: "０７", beast: "１０⁻" }, artist: "Qrispy Joybox feat.Sana " }, { musicId: 211, title: "She is my wife", version: 2, category: "KDE", bpm: { min: 85, max: 170 }, chartsInfo: { light: "０３", medium: "０７", beast: "１０" }, artist: "SUPER STAR 満-MITSURU-" }, { musicId: 212, title: "ほしふり", version: 2, category: "KDE", bpm: { min: 155, max: 155 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁻" }, artist: "Sana" }, { musicId: 213, title: "梅雪夜", version: 2, category: "KDE", bpm: { min: 167, max: 167 }, chartsInfo: { light: "０４", medium: "０７", beast: "１０", nightmare: "10⁺" }, artist: "Qrispy Joybox feat.mao" }, { musicId: 214, title: "絶品☆みこみこミラクル昇天レシピ！", version: 2, category: "OTHER", bpm: { min: 204, max: 204 }, chartsInfo: { light: "０３", medium: "０７", beast: "１０" }, artist: "MOSAIC.WAV & miko(Alternative ending)" }, { musicId: 215, title: "GRADIUS Ⅱ　～ ビーストメドレー ～", version: 2, category: "KDE", bpm: { min: 190, max: 190 }, chartsInfo: { light: "０４", medium: "０８", beast: "１０" }, artist: "Sota Fujimori" }, { musicId: 216, title: "キミとワタシのオンガク", version: 2, category: "KDE", bpm: { min: 160, max: 160 }, chartsInfo: { light: "０２", medium: "０６", beast: "１０⁻" }, artist: "seiya-murai feat. ALT" }, { musicId: 217, title: "量子の海のリントヴルム", version: 2, category: "KDE", bpm: { min: 280, max: 280 }, chartsInfo: { light: "０５", medium: "０９", beast: "１０", nightmare: "10⁺" }, artist: "黒猫ダンジョン" }, { musicId: 218, title: "混ぜるな危険", version: 2, category: "ANIME", bpm: { min: 178, max: 178 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁻" }, artist: "筋肉少女帯" }, { musicId: 219, title: "Sky High", version: 2, category: "KDE", bpm: { min: 153, max: 153 }, chartsInfo: { light: "０５", medium: "０９⁺", beast: "１０⁺", nightmare: "ネ申" }, artist: "Cuvelia" }, { musicId: 220, title: "SPACE VILLAGE", version: 2, category: "KDE", bpm: { min: 170, max: 170 }, chartsInfo: { light: "０２", medium: "０６", beast: "１０⁻" }, artist: "サイバー劇レコ" }, { musicId: 221, title: "全力バタンキュー", version: 2, category: "ANIME", bpm: { min: 155, max: 155 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９" }, artist: "A応P" }, { musicId: 222, title: "きゅん×きゅんばっきゅん☆LOVE", version: 2, category: "KDE", bpm: { min: 165, max: 165 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９" }, artist: "松下feat.Sota & wac" }, { musicId: 223, title: "CHERNOBOG", version: 2, category: "KDE", bpm: { min: 200, max: 200 }, chartsInfo: { light: "０５", medium: "０９", beast: "１０⁺", nightmare: "ネ申" }, artist: "漆黒のEBONY" }, { musicId: 224, title: "spring pony", version: 2, category: "KDE", bpm: { min: 150, max: 150 }, chartsInfo: { light: "０２", medium: "０６", beast: "０９" }, artist: "S-C-U" }, { musicId: 225, title: "繚乱ヒットチャート", version: 2, category: "KDE", bpm: { min: 192, max: 192 }, chartsInfo: { light: "０３", medium: "０７", beast: "１０⁻" }, artist: "ギラギラメガネ団" }, { musicId: 226, title: "Spring Comes Around (In Like a Lion)", version: 2, category: "KDE", bpm: { min: 159.5, max: 159.5 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９" }, artist: "Sota Fujimori Rmx by wac" }, { musicId: 227, title: "アルストロメリア", version: 2, category: "KDE", bpm: { min: 144, max: 144 }, chartsInfo: { light: "０４", medium: "０８", beast: "１０" }, artist: "TAG" }, { musicId: 228, title: "Sakura Reflection", version: 2, category: "KDE", bpm: { min: 181, max: 181 }, chartsInfo: { light: "０３", medium: "０７", beast: "１０" }, artist: "Ryu☆" }, { musicId: 229, title: "黒髪乱れし修羅となりて～凛 edition～", version: 2, category: "KDE", bpm: { min: 300, max: 300 }, chartsInfo: { light: "０４", medium: "０６", beast: "０９⁺", nightmare: "１０" }, artist: "日向美ビタースイーツ♪" }, { musicId: 230, title: "Clattanoia", version: 2, category: "ANIME", bpm: { min: 190, max: 190 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９" }, artist: "OxT" }, { musicId: 231, title: "クローバー♣かくめーしょん", version: 2, category: "ANIME", bpm: { min: 145, max: 145 }, chartsInfo: { light: "０２", medium: "０５", beast: "０８" }, artist: "とりぷる♣ふぃーりんぐ(和久井 優／金澤まい／今村彩夏)" }, { musicId: 232, title: "Knew day", version: 2, category: "ANIME", bpm: { min: 150, max: 150 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁻" }, artist: "(K)NoW_NAME" }, { musicId: 233, title: "からくりピエロ", version: 2, category: "EXITTUNES", bpm: { min: 102, max: 102 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁻" }, artist: "40ｍP" }, { musicId: 234, title: "華鳥風月", version: 2, category: "TOHO", bpm: { min: 123, max: 123 }, chartsInfo: { light: "０２", medium: "０５", beast: "０９⁻" }, artist: "幽閉サテライト" }, { musicId: 235, title: "人間が大好きなこわれた妖怪の唄", version: 2, category: "TOHO", bpm: { min: 166, max: 166 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁻" }, artist: "ビートまりお（COOL&CREATE）" }, { musicId: 236, title: "忌憚騒命曲 ～ Demon tale sonata", version: 2, category: "TOHO", bpm: { min: 185, max: 185 }, chartsInfo: { light: "０３", medium: "０７", beast: "１０" }, artist: "どぶウサギ（dBu music）" }, { musicId: 237, title: "キャプテン・ムラサのケツアンカー", version: 2, category: "TOHO", bpm: { min: 190, max: 190 }, chartsInfo: { light: "０４", medium: "０７", beast: "０９⁺" }, artist: "ARM⁺夕野ヨシミ feat.山本椛" }, { musicId: 238, title: "Power of Battle（vs REDALiCE）", version: 2, category: "TOHO", bpm: { min: 178, max: 178 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁺" }, artist: "RoughSketch vs REDALiCE feat.イザベル" }, { musicId: 239, title: "鈴瑚のお団子ジャングルジム", version: 2, category: "TOHO", bpm: { min: 190, max: 190 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９" }, artist: "ARM⁺狐夢想 feat.ななひら" }, { musicId: 240, title: "wandering to sweet", version: 2, category: "TOHO", bpm: { min: 154, max: 154 }, chartsInfo: { light: "０３", medium: "０５", beast: "０９⁻" }, artist: "平茸⁺夕野ヨシミ feat.山本椛" }, { musicId: 241, title: "Lost wing at.0", version: 2, category: "KDE", bpm: { min: 185, max: 185 }, chartsInfo: { light: "０４", medium: "０７", beast: "１０" }, artist: "猫叉Master⁺" }, { musicId: 242, title: "ロプノールの商隊", version: 2, category: "KDE", bpm: { min: 186, max: 186 }, chartsInfo: { light: "０２", medium: "０６", beast: "１０" }, artist: "Akhuta" }, { musicId: 243, title: "Phlox", version: 2, category: "KDE", bpm: { min: 185, max: 185 }, chartsInfo: { light: "０４", medium: "０８", beast: "１０⁻" }, artist: "Sota Fujimori 2nd Season" }, { musicId: 244, title: "Dynasty", version: 2, category: "KDE", bpm: { min: 189, max: 189 }, chartsInfo: { light: "０３", medium: "０７", beast: "１０" }, artist: "Yooh" }, { musicId: 245, title: "じゅーじゅー♥焼肉の火からフェニックス！？～再誕の†炭火焼き～", version: 2, category: "KDE", bpm: { min: 180, max: 180 }, chartsInfo: { light: "０４", medium: "０９⁻", beast: "１０" }, artist: "かめりあ feat. ななひら" }, { musicId: 246, title: "雪女", version: 2, category: "KDE", bpm: { min: 200, max: 200 }, chartsInfo: { light: "０２", medium: "０７", beast: "１０" }, artist: "かねこちはる" }, { musicId: 247, title: "フラッター現象の顛末と単一指向性の感情論", version: 2, category: "KDE", bpm: { min: 206, max: 206 }, chartsInfo: { light: "０２", medium: "０６", beast: "０９" }, artist: "日向美ビタースイーツ♪" }, { musicId: 248, title: "Good bye, Summer～さよならは言わない～", version: 2, category: "KDE", bpm: { min: 165, max: 165 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９" }, artist: "私立BEMANI学園軽音部 OB" }, { musicId: 249, title: "スカイダイバー", version: 2, category: "KDE", bpm: { min: 180, max: 180 }, chartsInfo: { light: "０５", medium: "０７", beast: "０９" }, artist: "ヒゲドライバー feat.ヒゲドライVAN" }, { musicId: 250, title: "週替わりの奇跡の神話", version: 2, category: "ANIME", bpm: { min: 169, max: 169 }, chartsInfo: { light: "０２", medium: "０６", beast: "０９" }, artist: "筋肉少女帯" }, { musicId: 251, title: "GO! GO! MANIAC", version: 2, category: "ANIME", bpm: { min: 250, max: 250 }, chartsInfo: { light: "０４", medium: "０８", beast: "０９⁺" }, artist: "放課後ティータイム" }, { musicId: 252, title: "最高速 Fall in Love", version: 2, category: "ANIME", bpm: { min: 132, max: 175 }, chartsInfo: { light: "０３", medium: "０７", beast: "１０⁻" }, artist: "ミーア、パピ、セントレア、スー、メロ、ラクネラ" }, { musicId: 253, title: "ハッピーシンセサイザ", version: 2, category: "OTHER", bpm: { min: 127, max: 127 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁺" }, artist: "EasyPop" }, { musicId: 254, title: "東京テディベア", version: 2, category: "OTHER", bpm: { min: 204, max: 204 }, chartsInfo: { light: "０３", medium: "０７", beast: "０９⁺" }, artist: "Neru" }, { musicId: 255, title: "ケンぱ！ケンぱ！拳拳ぱん打！", version: 2, category: "KDE", bpm: { min: 200, max: 200 }, chartsInfo: { light: "０３", medium: "０６", beast: "１０⁻" }, artist: "ぱんぱんぱん打" }, { musicId: 256, title: "Lost wing at.0", version: 2, category: "KDE", bpm: { min: 185, max: 185 }, chartsInfo: { light: "０４", medium: "０７", beast: "１０" }, artist: "猫叉Master⁺" }, { musicId: 257, title: "朧", version: 2, category: "KDE", bpm: { min: 149, max: 149 }, chartsInfo: { light: "０３", medium: "０７", beast: "１０" }, artist: "HHH×MM×ST" }, { musicId: 258, title: "恋はどう？モロ◎波動OK☆方程式！！", version: 2, category: "KDE", bpm: { min: 128, max: 128 }, chartsInfo: { light: "０５", medium: "０９⁻", beast: "１０" }, artist: "あべにゅうぷろじぇくと feat.佐倉紗織 produced by ave;new" }, { musicId: 259, title: "恋歌疾風！かるたクイーンいろは", version: 2, category: "KDE", bpm: { min: 120, max: 168 }, chartsInfo: { light: "０４", medium: "０９", beast: "１０⁺" }, artist: "ねこまんまチーム！" }, { musicId: 260, title: "SAKURAスキップ", version: 2, category: "ANIME", bpm: { min: 165, max: 165 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９" }, artist: "fourfolium" }, { musicId: 261, title: "Now Loading!!!!", version: 2, category: "ANIME", bpm: { min: 193, max: 193 }, chartsInfo: { light: "０３", medium: "０５", beast: "０９⁻" }, artist: "fourfolium" }, { musicId: 262, title: "カケラ", version: 2, category: "KDE", bpm: { min: 182, max: 182 }, chartsInfo: { light: "０５", medium: "０７", beast: "０９⁺" }, artist: "豚乙女" }, { musicId: 263, title: "怒りと共に去りぬ！！", version: 2, category: "KDE", bpm: { min: 190, max: 190 }, chartsInfo: { light: "０３", medium: "０７", beast: "１０⁻" }, artist: "96 feat.すわひでお" }, { musicId: 264, title: "在るが儘に", version: 2, category: "KDE", bpm: { min: 181, max: 181 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁺" }, artist: "Des-ROW・組スペシアルr" }, { musicId: 265, title: "Daisuke", version: 2, category: "KDE", bpm: { min: 157, max: 157 }, chartsInfo: { light: "０４", medium: "０７", beast: "１０" }, artist: "Y&Co." }, { musicId: 266, title: "JOMANDA", version: 2, category: "KDE", bpm: { min: 90, max: 300 }, chartsInfo: { light: "０５", medium: "０９", beast: "１０⁺" }, artist: "DJ YOSHITAKA" }, { musicId: 267, title: "サヨナラ・ヘヴン", version: 2, category: "KDE", bpm: { min: 111, max: 111 }, chartsInfo: { light: "０２", medium: "０６", beast: "０９⁺" }, artist: "猫叉Master" }, { musicId: 268, title: "轟け！恋のビーンボール！！", version: 2, category: "KDE", bpm: { min: 180, max: 180 }, chartsInfo: { light: "０３", medium: "０７", beast: "１０⁻", nightmare: "10⁺" }, artist: "ダイナミック野球兄弟 v.s. クロスファイヤーPrim" }, { musicId: 269, title: "少年リップルズ", version: 2, category: "KDE", bpm: { min: 210, max: 210 }, chartsInfo: { light: "０４", medium: "０７", beast: "１０⁻" }, artist: "常盤ゆう" }, { musicId: 270, title: "たまゆら", version: 2, category: "KDE", bpm: { min: 180, max: 180 }, chartsInfo: { light: "０４", medium: "０６", beast: "０９⁺" }, artist: "佐々木博史" }, { musicId: 271, title: "quaver♪", version: 2, category: "KDE", bpm: { min: 182, max: 186 }, chartsInfo: { light: "０５", medium: "０８", beast: "１０⁺" }, artist: "Risk Junk" }, { musicId: 272, title: "SigSig", version: 2, category: "KDE", bpm: { min: 179, max: 179 }, chartsInfo: { light: "０３", medium: "０６", beast: "０９⁺" }, artist: "kors k" }]
+  let courseTitle = ["RANK 01","RANK 02","RANK 03","RANK 04","RANK 05","RANK 06","RANK 07","RANK 08","RANK 09","RANK 10","RANK 11","RANK 12","RANK 13","RANK 14","RANK 15","RANK ネ申"]
+  let bstChartTypeDetails = [{title:"Light",color:"#2EBECC",colorInvert:"#2EBECC"},{title:"Medium",color:"#F2C40B",colorInvert:"#F2C40B"},{title:"Beast",color:"#FF3860",colorInvert:"#FF3860"},{title:"Nightmare",color:"#000000",colorInvert:"#00DDDD"},]
+
+  let defaultPageSize = 20
+
+//- Processing
+-
+  bst2Course.sort((l, r) => r.courseId - l.courseId)
+  bst2StageLog.sort((l, r) => r.time - l.time)
+  if (bst2Account != null) {
+    let checkUserId = (col) => {
+      let removeList = []
+      for (i = 0; i < col.length; i++) if (col[i].userId != bst2Account.userId) removeList.push(i)
+      for (let i of removeList) col.splice(i, 1)
+    }
+    checkUserId(bst2Course)
+    checkUserId(bst2MusicRecord)
+    checkUserId(bst2CourseLog)
+    checkUserId(bst2StageLog)
+  }
+  
+  let bst2MusicRecordOrganized = []
+  for (let r of bst2MusicRecord) {
+    let o = bst2MusicRecordOrganized[r.musicId]
+    if (o == null) o = {}
+    o[r.chart] = r
+    bst2MusicRecordOrganized[r.musicId] = o
+  }
+
+//- Play data
+-
+  let bst2HighestRank = -1
+  for (let r of bst2Course) if ((r.courseId > bst2HighestRank) && (r.medal >= 3)) bst2HighestRank = r.courseId
+  function getClearTypeDetails(record) {
+    if (record.medal == 5) return { title: "Perfect", abbr: "P", color: "#FF3860; text-shadow: 0 0 5px #FFFFFF9F;", badge: "mdi mdi-decagram mdi-48px" }
+    else if (record.medal == 4) return { title: "Full Combo", abbr: "FC", color: "gold", badge: "mdi mdi-cog mdi-48px" }
+    else if (record.medal == 3) return { title: "Clear", abbr: "C", color: "#33E7AD", badge: "mdi mdi-star-circle-outline mdi-48px"}
+    else if ((record.medal == 2) || (record.medal == 1)) return { title: "Failed", abbr: "F", color: "#837E8D", badge: "mdi mdi-close-circle-outline mdi-48px"}
+    else return null
+  }
+  function getRank(score, version) {
+    if ((score >= 970000) && (version == 2)) return { title: "AAA", color: "#FF3860", colorInvert: "#FF3860" }
+    else if (score >= 950000) return { title: "AAA", color: "black", colorInvert: "gold" }
+    else if (score >= 850000) return { title: "AA", color: "black", colorInvert: "gold" }
+    else if (score >= 700000) return { title: "A", color: "black", colorInvert: "gold" }
+    else if (score >= 600000) return { title: "B", color: "black", colorInvert: "#40FEAA" }
+    else if (score >= 500000) return { title: "C", color: "black", colorInvert: "#40FEAA" }
+    else return { title: "D", color: "black", colorInvert: "#837E8D" }
+  }
+
+link(rel="stylesheet", href="static/css/webui_util.css", type="text/css")
+script(src = "static/js/webui_util.js")
+.modal.loading.is-active
+  .modal-background(style = "opacity: 50%")
+  p(style = "position: fixed; bottom: 40px; right: 40px; color: white")
+    span Now Loading...
+    i.mdi.mdi-refresh-circle.mdi-spin
+div
+  if (webuiMessage != null) && ((webuiMessage.refid == null) || (webuiMessage.refid == refid)) 
+    div(class = "notification temporary" + ((webuiMessage.type == 0) ? " is-info" : (webuiMessage.type == 1) ? " is-success" : " is-danger"), style = "display: block")
+      .delete(style = "margin-top: 10px")
+      span #{webuiMessage.message}
+      form.start(method="post" action="/emit/removeWebUIMessage", style = "display: none")
+  .columns.is-mobile.is-vcentered(style = "overflow-x: auto")
+    .column
+    .column.is-narrow
+      p.is-size-7 Select game version
+    .column.is-narrow
+      style.
+        .tabs.is-toggle li a, .tabs.is-toggle li a span, .tabs.is-toggle li a span span, .tabs.is-toggle li a div, .tabs.is-toggle li a .background {
+          transition: .2s linear, font-weight 0s linear;
+        }
+        .tabs.is-toggle ul li.is-active[tab-group="version"][tab-index="2"] a {
+          background-color: black;
+          color: white;
+          font-weight: bold;
+          text-shadow: 0 1.5px 0 #D0D09A;
+          border-color: black;
+        }
+        .tabs.is-toggle ul li.is-active[tab-group="version"][tab-index="2"] a span {
+          transform: skewX(-12deg);
+        }
+      .tabs.is-toggle.is-toggle-rounded.is-small#tabs
+        ul(style = "margin: 0")
+          li.disabled(tab-group = "version", tab-index = "1", style = "width: 112px", title = "Coming s∞n...")
+            a BeatStream
+          li(tab-group = "version", tab-index = "2", style = "width: 112px", class = (defaultVersion == 2) ? "is-active" : "")
+            a
+              span アニムトライヴ
+  .card
+    header.card-header
+      p.card-header-title
+        span.icon
+          i.mdi.mdi-account-circle
+        | Play Data
+        a.card-header-icon.card-toggle(card = "play-data")
+          span.icon
+            i.mdi.mdi-chevron-down
+    .card-content(card = "play-data")
+      #tab-content(tab-group = "version", tab-index = "2", class = (defaultVersion == 2) ? "is-active" : "")
+        if bst2Account == null
+          .has-text-grey.has-text-centered
+            p
+              span.icon.is-large
+                i.mdi.mdi-emoticon-happy.mdi-48px
+            p Nothing's here yet. Let's play!
+        else
+          .tabs#tabs
+            ul
+              li.is-active(tab-group = "bst2-play-data", tab-index = "0")
+                a Overview
+              li(tab-group = "bst2-play-data", tab-index = "1")
+                a Scores
+              li(tab-group = "bst2-play-data", tab-index = "2")
+                a Course
+              li(tab-group = "bst2-play-data", tab-index = "3")
+                a Play History
+          #tab-content.is-active(tab-group = "bst2-play-data", tab-index = "0")
+            .field.is-horizontal
+              .field-label
+                label.label User ID
+              .field-body
+                span #{bst2Account.userId.toString().padStart(8, "0").slice(0, 4)}-#{bst2Account.userId.toString().padStart(8, "0").slice(4, 8)}
+            .field.is-horizontal
+              .field-label
+                label.label Name
+              .field-body
+                span #{bst2Base.name}
+            .field.is-horizontal
+              .field-label
+                label.label Play Count
+              .field-body
+                span #{bst2Account.playCount}
+            .field.is-horizontal
+              .field-label
+                label.label Beast Rank
+              .field-body
+                if bst2Base.brnk == 0
+                  span -
+                else
+                  span #{courseTitle[bst2Base.brnk - 1]}
+          #tab-content(tab-group = "bst2-play-data", tab-index = "1", style = "overflow-x: auto; overflow-y: hidden")
+            if bst2MusicRecord.length == 0
+              .has-text-grey.has-text-centered
+                p
+                  span.icon.is-large
+                    i.mdi.mdi-emoticon-happy.mdi-48px
+                p Nothing's here yet. Let's play!
+            else
+              .paginated-container(pagination-group = "bst2-scores")
+                input.page-size(type = "hidden", value = defaultPageSize)
+                .hidden-wrapper
+                  .pagination
+                    a.pagination-previous
+                      i.mdi.mdi-chevron-left
+                      | Previous
+                    a.pagination-next
+                      | Next
+                      i.mdi.mdi-chevron-right
+                    ul.pagination-list#tabs
+                .scrolling-x-wrapper.hidden-y-wrapper
+                  table.table(style = "vertical-align: middle")
+                    thead 
+                      tr 
+                        th ID
+                        th(stye = "width: 250px") Title
+                        th Scores
+                    tbody
+                      each r in bst2MusicRecordOrganized
+                        if r != null
+                          - let easiestChart = 4
+                          - for (let k in r) if ((parseInt(k).toString() == k) && (parseInt(k) < easiestChart)) easiestChart = parseInt(k)
+                          - let info = bstMusicsInfo[r[easiestChart].musicId]
+                          tr.is-vcentered.paginated-content
+                            td(style = "white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: middle;") #{r[easiestChart].musicId}
+                            td(style = "width: 250px; vertical-align: middle")
+                              .marquee-label-container(style = "max-width: 250px;") 
+                                span.modal-trigger
+                                  a.marquee-label(style = "display: inline-block") #{info.title}
+                                  .modal.is-mobile
+                                    .modal-background.is-mobile#close
+                                    .modal-card.is-mobile(style = "vertical-align: middle; margin-top: 65px")
+                                      header.modal-card-head
+                                        p.modal-card-title(style = "margin-bottom: 0") Details
+                                        button.delete#close
+                                      section.modal-card-body
+                                        table.table 
+                                          thead 
+                                            tr 
+                                              th
+                                              each i in [0, 1, 2, 3]
+                                                th(style = "width: 120px; color: " + bstChartTypeDetails[i].color) #{bstChartTypeDetails[i].title}
+                                          tbody 
+                                            tr
+                                              th Music ID
+                                              td(colspan = "4") #{info.musicId}
+                                            tr
+                                              th Title
+                                              td(colspan = "4", style = "white-space: normal;") #{info.title}
+                                            tr
+                                              th Artist
+                                              td(colspan = "4", style = "white-space: normal;") #{info.artist}
+                                            tr
+                                              th BPM
+                                              td(colspan = "4") #{info.bpm.min + ((info.bpm.max == info.bpm.min) ? "" : (" - " + info.bpm.max))}
+                                            tr
+                                              th Level
+                                              each i in [0, 1, 2, 3]
+                                                - let t = bstChartTypeDetails[i]
+                                                if info.chartsInfo[t.title.toLowerCase()] != null
+                                                  td(style = "color: " + ((info.chartsInfo[t.title.toLowerCase()] == "ネ申") ? "gold; text-shadow: 0 0 3px gold;" : t.color)) #{info.chartsInfo[t.title.toLowerCase()]}
+                                                else 
+                                                  td
+                                            tr 
+                                              th State
+                                              each i in [0, 1, 2, 3]
+                                                if (r[i] != null) && (getClearTypeDetails(r[i]) != null)
+                                                  - let c = r[i]
+                                                  - let d = getClearTypeDetails(c)
+                                                  - let t = bstChartTypeDetails[c.chartType]
+                                                  td
+                                                    abbr(title = d.title) #{d.abbr}
+                                                else 
+                                                  td
+                                            tr 
+                                              th Rank
+                                              each i in [0, 1, 2, 3]
+                                                if (r[i] != null) && (getClearTypeDetails(r[i]) != null)
+                                                  - let c = r[i]
+                                                  - let d = getClearTypeDetails(c)
+                                                  - let t = bstChartTypeDetails[c.chartType]
+                                                  - let rank = getRank(c.score, 2)
+                                                  td(style = "color: " + rank.color) #{rank.title}
+                                                else 
+                                                  td
+                                            tr 
+                                              th Score
+                                              each i in [0, 1, 2, 3]
+                                                if (r[i] != null) && (getClearTypeDetails(r[i]) != null)
+                                                  - let c = r[i]
+                                                  - let d = getClearTypeDetails(c)
+                                                  - let t = bstChartTypeDetails[c.chartType]
+                                                  td #{c.score}
+                                                else 
+                                                  td
+                                            tr 
+                                              th Combo
+                                              each i in [0, 1, 2, 3]
+                                                if (r[i] != null) && (getClearTypeDetails(r[i]) != null)
+                                                  - let c = r[i]
+                                                  - let d = getClearTypeDetails(c)
+                                                  - let t = bstChartTypeDetails[c.chartType]
+                                                  td #{c.combo}
+                                                else 
+                                                  td
+                                            tr 
+                                              th Update
+                                              each i in [0, 1, 2, 3]
+                                                if (r[i] != null) && (getClearTypeDetails(r[i]) != null)
+                                                  - let c = r[i]
+                                                  - let d = getClearTypeDetails(c)
+                                                  - let t = bstChartTypeDetails[c.chartType]
+                                                  td #{new Date(c.updateTime).toLocaleString().split(" ")[0]}
+                                                else 
+                                                  td
+                                            tr 
+                                              th Last Play
+                                              each i in [0, 1, 2, 3]
+                                                if (r[i] != null) && (getClearTypeDetails(r[i]) != null)
+                                                  - let c = r[i]
+                                                  - let d = getClearTypeDetails(c)
+                                                  - let t = bstChartTypeDetails[c.chartType]
+                                                  td #{new Date(c.lastPlayTime).toLocaleString().split(" ")[0]}
+                                                else 
+                                                  td
+                                      footer.modal-card-foot
+                            td
+                              .columns.is-mobile
+                                each i in [0, 1, 2, 3]
+                                  if (r[i] != null) && (getClearTypeDetails(r[i]) != null)
+                                    - let c = r[i]
+                                    - let d = getClearTypeDetails(c)
+                                    - let t = bstChartTypeDetails[c.chart]
+                                    .column.is-one-quarter.modal-trigger(style = "vertical-align: middle;")
+                                      a.one-quarter#forwide(style = "min-width: 120px")
+                                        .heading.has-text-centered(style = "white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: " + t.color) #{t.title}
+                                        .title.has-text-centered(style = "white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: " + t.color) #{c.score}
+                                      a.one-quarter.has-text-centered#fornarrow(style = "white-space: nowrap; overflow: hidden; min-width: 60px; color: " + t.color) #{c.score}
+                                      .modal.is-mobile
+                                        .modal-background.is-mobile#close
+                                        .modal-card.is-mobile(style = "vertical-align: middle; margin-top: 65px")
+                                          header.modal-card-head
+                                            p.modal-card-title(style = "margin-bottom: 0") Details
+                                            button.delete#close
+                                          section.modal-card-body
+                                            .form
+                                              .field.is-horizontal
+                                                .field-label
+                                                  label.label Music ID 
+                                                .field-body
+                                                  span #{c.musicId}
+                                              .field.is-horizontal
+                                                .field-label
+                                                  label.label Music Title
+                                                .field-body
+                                                  span #{info.title}
+                                              .field.is-horizontal
+                                                .field-label
+                                                  label.label Artist
+                                                .field-body
+                                                  span #{info.artist}
+                                              .field.is-horizontal
+                                                .field-label
+                                                  label.label BPM
+                                                .field-body
+                                                  span #{info.bpm.min + ((info.bpm.max == info.bpm.min) ? "" : (" - " + info.bpm.max))}
+                                              .field.is-horizontal
+                                                .field-label
+                                                  label.label Chart
+                                                .field-body
+                                                  .level.is-mobile
+                                                    .level-left
+                                                      .level-item
+                                                        span(style = "color: " + t.color) #{t.title}
+                                                      .level-item
+                                                        p(style = "color: " + ((info.chartsInfo[t.title.toLowerCase()] == "ネ申") ? "gold; text-shadow: 0 0 3px gold;" : t.color)) #{info.chartsInfo[t.title.toLowerCase()]}
+                                              .field.is-horizontal
+                                                .field-label
+                                                  label.label State
+                                                .field-body
+                                                  span #{d.title}
+                                              .field.is-horizontal
+                                                .field-label
+                                                  label.label Rank
+                                                .field-body
+                                                  span(style = "color: " + getRank(c.score, 2).color) #{getRank(c.score, 2).title}
+                                              .field.is-horizontal
+                                                .field-label
+                                                  label.label Score
+                                                .field-body
+                                                  span #{c.score}
+                                              .field.is-horizontal
+                                                .field-label
+                                                  label.label Combo
+                                                .field-body
+                                                  span #{c.combo}
+                                              .field.is-horizontal
+                                                .field-label
+                                                  label.label(style = "white-space: nowrap; vertical-align: middle;") Update Time
+                                                .field-body
+                                                  span #{new Date(c.updateTime).toLocaleString()}
+                                              .field.is-horizontal
+                                                .field-label
+                                                  label.label(style = "white-space: nowrap; vertical-align: middle;") Last Play
+                                                .field-body
+                                                  span #{new Date(c.lastPlayTime).toLocaleString()}
+                                          footer.modal-card-foot
+                                  else
+                                    .column.is-one-quarter
+                                      a.one-quarter#forwide(style = "min-width: 120px")
+                                      a.one-quarter#fornarrow(style = "min-width: 120px")
+                .hidden-wrapper
+                  .pagination
+                    a.pagination-previous
+                      i.mdi.mdi-chevron-left
+                      | Previous
+                    a.pagination-next
+                      | Next
+                      i.mdi.mdi-chevron-right
+                    ul.pagination-list#tabs
+          #tab-content(tab-group = "bst2-play-data", tab-index = "2", style = "overflow-x: auto")
+            if bst2Course.length == 0
+              .has-text-grey.has-text-centered
+                p
+                  span.icon.is-large
+                    i.mdi.mdi-emoticon-happy.mdi-48px
+                p Nothing's here yet. Let's play!
+            else
+              table.table
+                thead
+                  tr
+                    th Course
+                    th State
+                    th Score 
+                    th Combo
+                    th Gauge
+                    th Play Count 
+                    th Update Time 
+                    th Last Play Time
+                tbody
+                  each c in bst2Course
+                    tr
+                      td(style = "white-space: nowrap;") #{courseTitle[c.courseId]}
+                      td #{getClearTypeDetails(c).title}
+                      td #{c.score}
+                      td #{c.combo}
+                      td #{(c.gauge / 10).toFixed(1)}%
+                      td #{c.playCount}
+                      td #{new Date(c.updateTime).toLocaleString()}
+                      td #{new Date(c.lastPlayTime).toLocaleString()}
+          #tab-content(tab-group = "bst2-play-data", tab-index = "3", style = "overflow-x: auto")
+            if bst2StageLog.length == 0
+              .has-text-grey.has-text-centered
+                p
+                  span.icon.is-large
+                    i.mdi.mdi-emoticon-happy.mdi-48px
+                p Nothing's here yet. Let's play!
+            else
+              .paginated-container(pagination-group = "bst2-play-history")
+                input.page-size(type = "hidden", value = defaultPageSize)
+                .hidden-wrapper
+                  .pagination
+                    a.pagination-previous
+                      i.mdi.mdi-chevron-left
+                      | Newer
+                    a.pagination-next
+                      | Older
+                      i.mdi.mdi-chevron-right
+                    ul.pagination-list#tabs
+                .scrolling-wrapper
+                  table.table
+                    thead
+                        th ID
+                        th(style = "max-width: 200px") Title
+                        th Chart
+                        th Level
+                        th State
+                        th Score 
+                        th Scene
+                        th Time
+                    tbody
+                      -
+                        let progresspattern = ""
+                        for (i = 0; i <= 24; i++) progresspattern += "transparent " + (i * 4 + 2) + "%, #FFFFFF4F " + (i * 4 + 2) + "%, #FFFFFF4F " + (i * 4 + 3) + "%, transparent " + (i * 4 + 3) + ((i != 24) ? "%, " : "%")
+                      each s in bst2StageLog
+                        - let info = bstMusicsInfo[s.musicId]
+                        - let chart = bstChartTypeDetails[s.chart]
+                        - let level = info.chartsInfo[chart.title.toLowerCase()]
+                        - let rank = getRank(s.score, 2)
+                        - let clearType = getClearTypeDetails(s)
+                        tr.paginated-content
+                          td #{s.musicId}
+                          td(style = "max-width: 250px")
+                            .marquee-label-container(style = "max-width: 250px;")
+                              span.modal-trigger
+                                a.marquee-label #{info.title}
+                                .modal.is-mobile(style = "x-overflow: auto;")
+                                  .modal-background.is-mobile#close
+                                  .modal-content
+                                    .box(style = "background-color: black; color: white; border-radius: 12px; min-width: 600px")
+                                      p.has-text-centered(style = "border-bottom: 3px solid grey") #{info.title}
+                                      .columns.is-mobile
+                                        .column.is-narrow
+                                          .has-text-centered(style = "width: 256px; height: 256px; background-color: lightgrey; color: darkgray; border-radius: 3%; border: 3px solid " + chart.colorInvert)
+                                            p Should be a jacket here...
+                                          .level.is-mobile
+                                            .level-left
+                                            .level-right
+                                              .level-item(style = "color: " + chart.colorInvert) #{chart.title}
+                                              .level-item.is-size-4(style = (level == "ネ申") ? "color: gold; text-shadow: 0 0 5px gold" : "") #{level}
+                                        .column
+                                          .columns.is-vcentered.is-mobile(style = "margin-bottom: 0")
+                                            .column
+                                              -
+                                                let leftProgress = (s.gaugeTimes10 >= 700) ? "70%" : ((s.gaugeTimes10 / 10) + "%")
+                                                let rightProgress = (s.gaugeTimes10 < 700) ? "0" : (((s.gaugeTimes10 - 700) / 10) + "%")
+                                              .mulprogress(style = "width: 100%; height: 16px; border-radius: 8px; overflow: hidden; position: relative;")
+                                                .leftprogress(style = "float: left; height: 100%; border-radius: 8px 0 0 8px; background-color: #2EBECC; width: " + leftProgress)
+                                                .rightprogress(style = "float: left; height: 100%; background-color: #F151F1; width: " + rightProgress)
+                                                .forepattern(style = "position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(315deg, " + progresspattern + ")")
+                                            .column.is-narrow 
+                                              p(style = "width: 60px") #{(s.gaugeTimes10 / 10).toFixed(1)}%
+                                          div(style = "margin-bottom: 28px; border-bottom: 3px dashed grey;")
+                                            .columns.is-vcentered.is-mobile
+                                              .column.is-narrow
+                                                p Score
+                                              .column.has-text-right
+                                                p.is-size-1 #{s.score.toString().padStart(7, "0")}
+                                          .box.is-size-7(style = "margin-bottom: 0; padding: 8px; background: black; color: white; box-shadow: 0 3px 4px #FFFFFF9F, 0 0 0 2px #FFFFFF3F;")
+                                            .columns.is-vcentered.is-mobile.has-text-centered(style = "margin-bottom: 0")
+                                              - let f = (bst2Customization.custom[7] | 0b00000001) == bst2Customization.custom[7]
+                                              .column.is-one-quarter
+                                                if f
+                                                  span(style = "color: #FF6FC9") F
+                                                  span(style = "color: #FFC90A") a
+                                                  span(style = "color: #E7FF18") n
+                                                  span(style = "color: #57FD4D") t
+                                                  span(style = "color: #1BFCD7") a
+                                                  span(style = "color: #1CD2FF") s
+                                                  span(style = "color: #7255FB") t
+                                                  span(style = "color: #A835F9") i
+                                                  span(style = "color: #D512E8") c
+                                                else
+                                                  span(style = "color: #EF005B") サ
+                                                  span(style = "color: #37FFC8") イ
+                                                  span(style = "color: #FFEE5F") コ
+                                                  span(style = "color: #EF005B") ー
+                                                  span(style = "color: #37FFC8") ！
+                                                p #{(s.fantasticCount != null) ? s.fantasticCount.toString().padStart(4, "0") : "----"}
+                                              .column.is-one-quarter
+                                                if f
+                                                  span(style = "color: #33E7AD") Great
+                                                else
+                                                  span(style = "color: #37FFC8") ヨッシャー
+                                                p #{(s.greatCount != null) ? s.greatCount.toString().padStart(4, "0") : "----"}
+                                              .column.is-one-quarter
+                                                if f
+                                                  span(style = "color: #FFC500") Fine
+                                                else
+                                                  span(style = "color: #FFEE5F") オシイ
+                                                p #{(s.fineCount != null) ? s.fineCount.toString().padStart(4, "0") : "----"}
+                                              .column.is-one-quarter
+                                                if f
+                                                  span(style = "color: #EF005B") miss
+                                                else
+                                                  span(style = "color: #FF1D48; font-weight: bold; -webkit-text-stroke: 0.8px black; text-shadow: 0 0 1px #FF1D48, 0 0 1px #FF1D48, 0 0 1px #FF1D48, 0 0 1px #FF1D48") スカッ
+                                                p #{(s.missCount != null) ? s.missCount.toString().padStart(4, "0") : "----"}
+                                            .columns.is-vcentered.is-mobile 
+                                              .column.is-one-quarter
+                                              .column.is-half.has-text-right
+                                                p Max Combo
+                                              .column.is-one-quarter.has-text-centered
+                                                p #{s.combo.toString().padStart(4, "0")}
+                                          .columns.is-vcentered.is-mobile 
+                                            .column
+                                            .column.is-half.has-text-right(style = "position: relative")
+                                              div.has-text-centered(style = "position: absolute; transform: rotate(20deg) scale(0.7); top: 28px; right: -8px; color: " + clearType.color)
+                                                span(style = "position: relative; z-index: 1; background: white; padding: 0 8px; clip-path: polygon(0 10%, 100% 10%, 90% 47%, 100% 85%, 0 85%, 10% 47%);") #{clearType.title}
+                                                i(class = clearType.badge, style = "position: absolute; top: -22px; left: 2px; right: 2px; z-index: 0;")
+                                              p(style = "font-size: 3.8rem; color: " + rank.colorInvert) #{rank.title}
+                          td(style = "color: " + chart.color) #{chart.title}
+                          td(style = (level == "ネ申") ? "color: gold; text-shadow: 0 0 5px gold" : ("color: " + chart.color)) #{level}
+                          td
+                            abbr(title = clearType.title) #{clearType.abbr}
+                          td #{s.score}
+                          td #{s.stageId + 1}
+                          td #{new Date(s.time).toLocaleString()}
+                .hidden-wrapper
+                  .pagination
+                    a.pagination-previous
+                      i.mdi.mdi-chevron-left
+                      | Newer
+                    a.pagination-next
+                      | Older
+                      i.mdi.mdi-chevron-right
+                    ul.pagination-list#tabs
+  .card
+    .card-header
+      p.card-header-title
+        span.icon
+          i.mdi.mdi-account-edit
+        | Player Settings
+        a.card-header-icon.card-toggle(card = "edit-settings")
+          span.icon
+            i.mdi.mdi-chevron-down
+    .card-content(card = "edit-settings")
+      #tab-content(tab-group = "version", tab-index = "2", class = (defaultVersion == 2) ? "is-active" : "")
+        if bst2Account == null
+          .has-text-grey.has-text-centered
+            p
+              span.icon.is-large
+                i.mdi.mdi-emoticon-happy.mdi-48px
+            p Nothing's here yet. Let's play!
+        else    
+          form#validatable(method="post" action="/emit/bst2UpdateSettings")
+            input(type = "hidden", name = "refid", value = refid)
+            .field.is-horizontal#validatable
+              .field-label.is-normal
+                label.label Name
+              .field-body
+                .control
+                  input.input#validatable(type = "text", name = "name", min-length = "1", max-length = "8", min-pattern = "^[a-zA-Z0-9\.\-_·・&!\?/\*#♯♭★@♪↓↑→←()∞◆●▼￥∀^ ]{1,8}$", value = bst2Base.name)
+                  p.help 1~8 letter(s) and symbol(s).
+            .field.is-horizontal
+              .field-label.is-normal
+                label.label Ripple Note
+              .field-body
+                .control#form-select
+                  input#form-select-input(type = "hidden", name = "rippleNote", value = bst2Customization.custom[0])
+                  .select 
+                    select#form-select-select
+                      option Default
+                      option Biggger
+                      option Drop
+                      option Shutter
+            .field.is-horizontal
+              .field-label.is-normal
+                label.label Normal Note Sound
+              .field-body
+                .control#form-select
+                  input#form-select-input(type = "hidden", name = "sfxNormalNote", value = bst2Customization.custom[2])
+                  .select 
+                    select#form-select-select
+                      option Normal Set A
+                      option Ripple Set A
+                      option Slash Set A
+                      option Stream Set A
+                      option Normal Set B
+                      option Ripple Set B
+                      option Slash Set B
+                      option Stream Set B
+                      option Normal Set C
+                      option Ripple Set C
+                      option Slash Set C
+                      option Stream Set C
+            .field.is-horizontal
+              .field-label.is-normal
+                label.label Ripple Note Sound
+              .field-body
+                .control#form-select
+                  input#form-select-input(type = "hidden", name = "sfxRippleNote", value = bst2Customization.custom[3])
+                  .select 
+                    select#form-select-select
+                      option Normal Set A
+                      option Ripple Set A
+                      option Slash Set A
+                      option Stream Set A
+                      option Normal Set B
+                      option Ripple Set B
+                      option Slash Set B
+                      option Stream Set B
+                      option Normal Set C
+                      option Ripple Set C
+                      option Slash Set C
+                      option Stream Set C
+            .field.is-horizontal
+              .field-label.is-normal
+                label.label Slash Note Sound
+              .field-body
+                .control#form-select
+                  input#form-select-input(type = "hidden", name = "sfxSlashNote", value = bst2Customization.custom[4])
+                  .select 
+                    select#form-select-select
+                      option Normal Set A
+                      option Ripple Set A
+                      option Slash Set A
+                      option Stream Set A
+                      option Normal Set B
+                      option Ripple Set B
+                      option Slash Set B
+                      option Stream Set B
+                      option Normal Set C
+                      option Ripple Set C
+                      option Slash Set C
+                      option Stream Set C
+            .field.is-horizontal
+              .field-label.is-normal
+                label.label Stream Note Sound
+              .field-body
+                .control#form-select
+                  input#form-select-input(type = "hidden", name = "sfxStreamNote", value = bst2Customization.custom[5])
+                  .select 
+                    select#form-select-select
+                      option Normal Set A
+                      option Ripple Set A
+                      option Slash Set A
+                      option Stream Set A
+                      option Normal Set B
+                      option Ripple Set B
+                      option Slash Set B
+                      option Stream Set B
+                      option Normal Set C
+                      option Ripple Set C
+                      option Slash Set C
+                      option Stream Set C
+            .field.is-horizontal
+              .field-label.is-normal
+                label.label Background Brightness
+              .field-body
+                .field.has-addons#form-numeric
+                  .control
+                    button.button.is-light#form-numeric-sub(type = "button") ＋
+                  .control
+                    input.input#form-numeric-input(name = "backgroundBrightness", type = "hidden", min-value = "0", max-value = "200", step = "1", value = bst2Customization.custom[6] readonly)
+                    input.input#form-numeric-input(style = "width: 72px; text-align: center", min-value = "100.0", max-value = "0.0", step = "-0.5", digit-count = "1", value = 100 - bst2Customization.custom[6] * 0.5, readonly)
+                  .control
+                    button.button.is-light#form-numeric-add(type = "button") －
+            .field.is-horizontal
+              .field-label.is-normal
+                label.label Judge Text
+              .field-body
+                .control#form-select
+                  input#form-select-input(type = "hidden", name = "judgeText", value = ((bst2Customization.custom[7] | 0b00000001) == bst2Customization.custom[7]) ? 1 : 0)
+                  .select 
+                    select#form-select-select
+                      option Bst2 // サイコー！
+                      option Bst1 // Fantastic
+            .field.is-horizontal
+              .field-label.is-normal
+                label.label Ripple Note Prompt
+              .field-body
+                .control#form-select
+                  input#form-select-input(type = "hidden", name = "rippleNoteGuide", value = ((bst2Customization.custom[7] | 0b00000010) == bst2Customization.custom[7]) ? 1 : 0)
+                  .select 
+                    select#form-select-select
+                      option On
+                      option Off
+            .field.is-horizontal
+              .field-label.is-normal
+                label.label Stream Note Prompt
+              .field-body
+                .control#form-select
+                  input#form-select-input(type = "hidden", name = "streamNoteGuide", value = ((bst2Customization.custom[7] | 0b00000100) == bst2Customization.custom[7]) ? 1 : 0)
+                  .select 
+                    select#form-select-select
+                      option On
+                      option Off
+            .field.is-horizontal
+              .field-label.is-normal
+                label.label Stream Note Tail SFX
+              .field-body
+                .control#form-select
+                  input#form-select-input(type = "hidden", name = "sfxStreamNoteTail", value = ((bst2Customization.custom[7] | 0b00001000) == bst2Customization.custom[7]) ? 1 : 0)
+                  .select 
+                    select#form-select-select
+                      option On
+                      option Off
+            .field.is-horizontal
+              .field-label.is-normal
+                label.label Inaccurate SFX
+              .field-body
+                .control#form-select
+                  input#form-select-input(type = "hidden", name = "sfxFine", value = ((bst2Customization.custom[7] | 0b00010000) == bst2Customization.custom[7]) ? 1 : 0)
+                  .select 
+                    select#form-select-select
+                      option On
+                      option Off
+            .field.is-horizontal
+              .field-label 
+              .field-body
+                button.button.is-primary#validatable(type = "submit") 
+                  span.icon
+                    i.mdi.mdi-check
+                  span Submit

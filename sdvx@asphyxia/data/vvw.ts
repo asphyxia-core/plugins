@@ -13,6 +13,7 @@ export const EVENT5 = [
   'FACTORY\t10',
   'CONTINUATION',
   'APPEAL_CARD_GEN_NEW_PRICE',
+  'APPEAL_CARD_UNLOCK\t0,30170914,0,30171014,0,30171116,0,30180201,0,30180607,0,30181206,0,30200326,0,30200611',
   'FAVORITE_APPEALCARD_MAX\t100',
   'FAVORITE_MUSIC_MAX\t500',
   'EVENTDATE_APRILFOOL',
@@ -31,6 +32,7 @@ export const EVENT5 = [
   'CREW_SELECT_ABLE',
   'PREMIUM_TIME_ENABLE',
   'OMEGA_ENABLE\t1,2,3,4,5,6,7,8,9',
+  'HEXA_ENABLE\t1,2,3',
 ];
 
 export const COURSES5 = [
@@ -2164,7 +2166,7 @@ export const COURSES5 = [
   {
     id: 12,
     name: 'SKILL ANALYZER 第4回',
-    isNew: 1,
+    isNew: 0,
     courses: [
       {
         id: 1,
@@ -2441,31 +2443,645 @@ export const COURSES5 = [
           },
         ],
       },
-      // {
-      //   id: 12,
-      //   type: 0,
-      //   name: 'SKILL ANALYZER Level.∞',
-      //   level: 12,
-      //   nameID: 12,
-      //   assist: 0,
-      //   tracks: [
-      //     {
-      //       no: 0,
-      //       mid: 1542,
-      //       mty: 4,
-      //     },
-      //     {
-      //       no: 1,
-      //       mid: 1498,
-      //       mty: 4,
-      //     },
-      //     {
-      //       no: 2,
-      //       mid: 1462, // 666
-      //       mty: 4,
-      //     },
-      //   ],
-      // },
+      {
+        id: 12,
+        type: 0,
+        name: 'SKILL ANALYZER Level.∞',
+        level: 12,
+        nameID: 12,
+        assist: 0,
+        tracks: [
+          {
+            no: 0,
+            mid: 1542,
+            mty: 4,
+          },
+          {
+            no: 1,
+            mid: 1498,
+            mty: 4,
+          },
+          {
+            no: 2,
+            mid: 1580, // 666
+            mty: 4,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 13,
+    name: 'SKILL ANALYZER 第5回',
+    isNew: 1,
+    courses:[
+      {
+        id: 1,
+        type: 0,
+        name: 'SKILL ANALYZER Level.01',
+        level: 1,
+        nameID: 1,
+        assist: 0,
+        tracks: [
+          {
+            no: 0,
+            mid: 1383,
+            mty: 0,
+          },
+          {
+            no: 1,
+            mid: 303,
+            mty: 0,
+          },
+          {
+            no: 2,
+            mid: 1136,
+            mty: 0,
+          },
+        ],
+      },
+      {
+        id: 2,
+        type: 0,
+        name: 'SKILL ANALYZER Level.02',
+        level: 2,
+        nameID: 2,
+        assist: 0,
+        tracks: [
+          {
+            no: 0,
+            mid: 768,
+            mty: 1,
+          },
+          {
+            no: 1,
+            mid: 138,
+            mty: 1,
+          },
+          {
+            no: 2,
+            mid: 984,
+            mty: 1,
+          },
+        ],
+      },
+      {
+        id: 3,
+        type: 0,
+        name: 'SKILL ANALYZER Level.03',
+        level: 3,
+        nameID: 3,
+        assist: 0,
+        tracks: [
+          {
+            no: 0,
+            mid: 1132,
+            mty: 1,
+          },
+          {
+            no: 1,
+            mid: 608,
+            mty: 1,
+          },
+          {
+            no: 2,
+            mid: 1080,
+            mty: 1,
+          },
+        ],
+      },
+      {
+        id: 4,
+        type: 0,
+        name: 'SKILL ANALYZER Level.04',
+        level: 4,
+        nameID: 4,
+        assist: 0,
+        tracks: [
+          {
+            no: 0,
+            mid: 1387,
+            mty: 1,
+          },
+          {
+            no: 1,
+            mid: 752,
+            mty: 1,
+          },
+          {
+            no: 2,
+            mid: 1342,
+            mty: 1,
+          },
+        ],
+      },
+      {
+        id: 5,
+        type: 0,
+        name: 'SKILL ANALYZER Level.05',
+        level: 5,
+        nameID: 5,
+        assist: 0,
+        tracks: [
+          {
+            no: 0,
+            mid: 1472,
+            mty: 1,
+          },
+          {
+            no: 1,
+            mid: 552,
+            mty: 1,
+          },
+          {
+            no: 2,
+            mid: 1373,
+            mty: 1,
+          },
+        ],
+      },
+      {
+        id: 6,
+        type: 0,
+        name: 'SKILL ANALYZER Level.06',
+        level: 6,
+        nameID: 6,
+        assist: 0,
+        tracks: [
+          {
+            no: 0,
+            mid: 1422,
+            mty: 2,
+          },
+          {
+            no: 1,
+            mid: 184,
+            mty: 2,
+          },
+          {
+            no: 2,
+            mid: 1151,
+            mty: 2,
+          },
+        ],
+      },
+      {
+        id: 7,
+        type: 0,
+        name: 'SKILL ANALYZER Level.07',
+        level: 7,
+        nameID: 7,
+        assist: 0,
+        tracks: [
+          {
+            no: 0,
+            mid: 1449,
+            mty: 2,
+          },
+          {
+            no: 1,
+            mid: 850,
+            mty: 2,
+          },
+          {
+            no: 2,
+            mid: 1007,
+            mty: 2,
+          },
+        ],
+      },
+      {
+        id: 8,
+        type: 0,
+        name: 'SKILL ANALYZER Level.08',
+        level: 8,
+        nameID: 8,
+        assist: 0,
+        tracks: [
+          {
+            no: 0,
+            mid: 553,
+            mty: 2,
+          },
+          {
+            no: 1,
+            mid: 1069,
+            mty: 4,
+          },
+          {
+            no: 2,
+            mid: 1298,
+            mty: 2,
+          },
+        ],
+      },
+      {
+        id: 9,
+        type: 0,
+        name: 'SKILL ANALYZER Level.09',
+        level: 9,
+        nameID: 9,
+        assist: 0,
+        tracks: [
+          {
+            no: 0,
+            mid: 647,
+            mty: 2,
+          },
+          {
+            no: 1,
+            mid: 908,
+            mty: 2,
+          },
+          {
+            no: 2,
+            mid: 1355,
+            mty: 4,
+          },
+        ],
+      },
+      {
+        id: 10,
+        type: 0,
+        name: 'SKILL ANALYZER Level.10',
+        level: 10,
+        nameID: 10,
+        assist: 0,
+        tracks: [
+          {
+            no: 0,
+            mid: 1399,
+            mty: 4,
+          },
+          {
+            no: 1,
+            mid: 836,
+            mty: 2,
+          },
+          {
+            no: 2,
+            mid: 1053,
+            mty: 4,
+          },
+        ],
+      },
+      {
+        id: 11,
+        type: 0,
+        name: 'SKILL ANALYZER Level.11',
+        level: 11,
+        nameID: 11,
+        assist: 0,
+        tracks: [
+          {
+            no: 0,
+            mid: 1308,
+            mty: 4,
+          },
+          {
+            no: 1,
+            mid: 1108,
+            mty: 4,
+          },
+          {
+            no: 2,
+            mid: 1240,
+            mty: 4,
+          },
+        ],
+      },
+      {
+        id: 12,
+        type: 0,
+        name: 'SKILL ANALYZER Level.∞',
+        level: 12,
+        nameID: 12,
+        assist: 0,
+        tracks: [
+          {
+            no: 0,
+            mid: 1583,
+            mty: 4,
+          },
+          {
+            no: 1,
+            mid: 1104,
+            mty: 4,
+          },
+          {
+            no: 2,
+            mid: 1584,
+            mty: 4,
+          },
+        ],
+      }
+    ],
+  },
+  {
+    id: 14,
+    name: 'SKILL ANALYZER 第6回',
+    isNew: 1,
+    courses:[
+      {
+        id: 1,
+        type: 0,
+        name: 'SKILL ANALYZER Level.01',
+        level: 1,
+        nameID: 1,
+        assist: 0,
+        tracks: [
+          {
+            no: 0,
+            mid: 1488,
+            mty: 0,
+          },
+          {
+            no: 1,
+            mid: 266,
+            mty: 1,
+          },
+          {
+            no: 2,
+            mid: 51,
+            mty: 2,
+          },
+        ],
+      },
+      {
+        id: 2,
+        type: 0,
+        name: 'SKILL ANALYZER Level.02',
+        level: 2,
+        nameID: 2,
+        assist: 0,
+        tracks: [
+          {
+            no: 0,
+            mid: 167,
+            mty: 1,
+          },
+          {
+            no: 1,
+            mid: 1330,
+            mty: 1,
+          },
+          {
+            no: 2,
+            mid: 923,
+            mty: 1,
+          },
+        ],
+      },
+      {
+        id: 3,
+        type: 0,
+        name: 'SKILL ANALYZER Level.03',
+        level: 3,
+        nameID: 3,
+        assist: 0,
+        tracks: [
+          {
+            no: 0,
+            mid: 419,
+            mty: 1,
+          },
+          {
+            no: 1,
+            mid: 1455,
+            mty: 1,
+          },
+          {
+            no: 2,
+            mid: 1075,
+            mty: 1,
+          },
+        ],
+      },
+      {
+        id: 4,
+        type: 0,
+        name: 'SKILL ANALYZER Level.04',
+        level: 4,
+        nameID: 4,
+        assist: 0,
+        tracks: [
+          {
+            no: 0,
+            mid: 597,
+            mty: 1,
+          },
+          {
+            no: 1,
+            mid: 952,
+            mty: 1,
+          },
+          {
+            no: 2,
+            mid: 1391,
+            mty: 1,
+          },
+        ],
+      },
+      {
+        id: 5,
+        type: 0,
+        name: 'SKILL ANALYZER Level.05',
+        level: 5,
+        nameID: 5,
+        assist: 0,
+        tracks: [
+          {
+            no: 0,
+            mid: 103,
+            mty: 2,
+          },
+          {
+            no: 1,
+            mid: 565,
+            mty: 2,
+          },
+          {
+            no: 2,
+            mid: 933,
+            mty: 2,
+          },
+        ],
+      },
+      {
+        id: 6,
+        type: 0,
+        name: 'SKILL ANALYZER Level.06',
+        level: 6,
+        nameID: 6,
+        assist: 0,
+        tracks: [
+          {
+            no: 0,
+            mid: 1313,
+            mty: 2,
+          },
+          {
+            no: 1,
+            mid: 1469,
+            mty: 2,
+          },
+          {
+            no: 2,
+            mid: 559,
+            mty: 2,
+          },
+        ],
+      },
+      {
+        id: 7,
+        type: 0,
+        name: 'SKILL ANALYZER Level.07',
+        level: 7,
+        nameID: 7,
+        assist: 0,
+        tracks: [
+          {
+            no: 0,
+            mid: 480,
+            mty: 3,
+          },
+          {
+            no: 1,
+            mid: 1540,
+            mty: 2,
+          },
+          {
+            no: 2,
+            mid: 1393,
+            mty: 2,
+          },
+        ],
+      },
+      {
+        id: 8,
+        type: 0,
+        name: 'SKILL ANALYZER Level.08',
+        level: 8,
+        nameID: 8,
+        assist: 0,
+        tracks: [
+          {
+            no: 0,
+            mid: 78,
+            mty: 2,
+          },
+          {
+            no: 1,
+            mid: 576,
+            mty: 2,
+          },
+          {
+            no: 2,
+            mid: 1351,
+            mty: 4,
+          },
+        ],
+      },
+      {
+        id: 9,
+        type: 0,
+        name: 'SKILL ANALYZER Level.09',
+        level: 9,
+        nameID: 9,
+        assist: 0,
+        tracks: [
+          {
+            no: 0,
+            mid: 63,
+            mty: 2,
+          },
+          {
+            no: 1,
+            mid: 228,
+            mty: 2,
+          },
+          {
+            no: 2,
+            mid: 641,
+            mty: 4,
+          },
+        ],
+      },
+      {
+        id: 10,
+        type: 0,
+        name: 'SKILL ANALYZER Level.10',
+        level: 10,
+        nameID: 10,
+        assist: 0,
+        tracks: [
+          {
+            no: 0,
+            mid: 1523,
+            mty: 4,
+          },
+          {
+            no: 1,
+            mid: 1457,
+            mty: 4,
+          },
+          {
+            no: 2,
+            mid: 1061,
+            mty: 4,
+          },
+        ],
+      },
+      {
+        id: 11,
+        type: 0,
+        name: 'SKILL ANALYZER Level.11',
+        level: 11,
+        nameID: 11,
+        assist: 0,
+        tracks: [
+          {
+            no: 0,
+            mid: 1192,
+            mty: 4,
+          },
+          {
+            no: 1,
+            mid: 304,
+            mty: 3,
+          },
+          {
+            no: 2,
+            mid: 679,
+            mty: 2,
+          },
+        ],
+      },
+      {
+        id: 12,
+        type: 0,
+        name: 'SKILL ANALYZER Level.∞',
+        level: 12,
+        nameID: 12,
+        assist: 0,
+        tracks: [
+          {
+            no: 0,
+            mid: 1593,
+            mty: 4,
+          },
+          {
+            no: 1,
+            mid: 1177,
+            mty: 4,
+          },
+          {
+            no: 2,
+            mid: 1660,
+            mty: 4,
+          },
+        ],
+      }
     ],
   },
 ];

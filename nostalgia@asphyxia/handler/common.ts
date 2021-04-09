@@ -1,4 +1,8 @@
-import * as path from "path";
+
+import { processData as firstData } from "../data/FirstMusic";
+import { processData as forteData } from "../data/ForteMusic";
+import { readB64JSON } from "../data/helper";
+import { NosVersionHelper } from "../utils";
 
 export const permitted_list = {
   flag: [
@@ -9,10 +13,22 @@ export const permitted_list = {
   ],
 };
 
+export const forte_permitted_list = {
+  flag: [
+    K.ARRAY('s32', Array(32).fill(-1), { sheet_type: '0' }),
+    K.ARRAY('s32', Array(32).fill(-1), { sheet_type: '1' }),
+    K.ARRAY('s32', Array(32).fill(-1), { sheet_type: '2' }),
+  ],
+}
+
 async function ReadData(filename: string) {
-    const xml = await IO.ReadFile(`data/${filename}.xml`, { encoding: 'utf-8'});
+  if (!IO.Exists(`data/${filename}.json.b64`)) {
+    const xml = await IO.ReadFile(`data/${filename}.xml`, 'utf-8');
     const json = U.parseXML(xml, false)
+    // await IO.WriteFile(`data/${filename}.json.b64`, Buffer.from(JSON.stringify(json)).toString('base64'));
     return json
+  }
+  return readB64JSON(`data/${filename}.json.b64`)
 }
 
 async function processIslandData() {
@@ -56,7 +72,7 @@ async function processCourseData() {
   return { course_data: courseData };
 }
 
-export const get_common_info = async (req, data, send) => {
+export const get_common_info = async (info, data, send) => {
   send.object({
     permitted_list,
     olupdate: {
@@ -65,10 +81,12 @@ export const get_common_info = async (req, data, send) => {
   });
 };
 
-export const get_music_info: EPR = async (req, data, send) => {
+export const get_music_info: EPR = async (info, data, send) => {
+  const version = new NosVersionHelper(info)
+
   const music_spec: any = [];
   for (let i = 1; i < 400; ++i) {
-    music_spec.push(K.ATTR({ index: `${i}`}, {
+    music_spec.push(K.ATTR({ index: `${i}` }, {
       jk_jpn: K.ITEM('bool', 1),
       jk_asia: K.ITEM('bool', 1),
       jk_kor: K.ITEM('bool', 1),
@@ -83,18 +101,27 @@ export const get_music_info: EPR = async (req, data, send) => {
     }));
   }
 
-  send.object({
-    permitted_list,
+  const music_list = async () => version.version === 'Forte' ? await forteData() : await firstData()
 
-    island_data_list: await processIslandData(),
-    course_data_list: await processCourseData(),
+  const versionObject = version.isFirstOrForte()
+    ? {
+      permitted_list: forte_permitted_list,
+      music_list: await music_list()
+    }
+    : {
+      permitted_list,
+      island_data_list: await processIslandData(),
+      course_data_list: await processCourseData(),
 
-    overwrite_music_list: K.ATTR({
+      overwrite_music_list: K.ATTR({
         revision: '16706',
         release_code: '2019100200',
       }, {
-      music_spec: music_spec,
-    }),
+        music_spec: music_spec,
+      }),
+    };
+  send.object({
+    ...versionObject,
 
     gamedata_flag_list: {
       event: {
