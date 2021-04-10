@@ -11,6 +11,8 @@ Plugin Version: **v2.0.0**
 - pop'n music Usagi to Neko to Shōnen no Yume
 - pop'n music peace
 
+Important : require minimum Asphyxia Core **v1.31**
+
 ## Changelog
 
 ### 2.0.0

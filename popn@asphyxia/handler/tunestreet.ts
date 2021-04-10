@@ -45,9 +45,9 @@ export const getProfile = async (refid: string, name?: string) => {
     const params = await utils.readParams(refid, version);
 
     let binary_profile = Array(2200).fill(0);
-    let name_binary = profile.name.substr(0, 12);
-    for (let i = 0; i < name_binary.length; i++) {
-        binary_profile[i] = name_binary.charAt(i);
+    let name_binary = U.EncodeString(profile.name, 'shift_jis');
+    for (let i = 0; i < name_binary.length || i < 12; i++) {
+        binary_profile[i] = name_binary[i];
     }
 
     binary_profile[13] = {
