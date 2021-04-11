@@ -267,7 +267,26 @@ const getProfile = async (refid: string, version: string, name?: string) => {
         await utils.writeProfile(refid, profile);
     }
 
-    const achievements = <AchievementsUsaneko>await utils.readAchievements(refid, version, {...defaultAchievements, version});
+    let myBest = Array(10).fill(-1);
+    const scores = await utils.readScores(refid, version, true);
+    if(Object.entries(scores.scores).length > 0) {
+        const playCount = new Map();
+        for(const key in scores.scores) {
+            const keyData = key.split(':');
+            const music = parseInt(keyData[0], 10);
+            playCount.set(music, (playCount.get(music) || 0) + scores.scores[key].cnt);
+        }
+
+        const sortedPlayCount = new Map([...playCount.entries()].sort((a, b) => b[1] - a[1]));
+        let i = 0;
+        for (const value of sortedPlayCount.keys()) {
+            if(i >= 10) {
+                break;
+            }
+            myBest[i] = value;
+            i++;
+        }
+    }
 
     let player: any = {
         result: K.ITEM('s8', 0),
@@ -279,6 +298,7 @@ const getProfile = async (refid: string, version: string, name?: string) => {
             item_id: K.ITEM('s16', 0),
             is_conv: K.ITEM('s8', 0),
             license_data: K.ARRAY('s16', Array(20).fill(-1)),
+            my_best: K.ARRAY('s16', myBest),
 
             // TODO: replace with real data
             total_play_cnt: K.ITEM('s16', 100),
@@ -286,9 +306,6 @@ const getProfile = async (refid: string, version: string, name?: string) => {
             consecutive_days: K.ITEM('s16', 365),
             total_days: K.ITEM('s16', 366),
             interval_day: K.ITEM('s16', 1),
-
-            // TODO: replace with real data
-            my_best: K.ARRAY('s16', Array(10).fill(-1)),
             latest_music: K.ARRAY('s16', [-1, -1, -1, -1, -1]),
             active_fr_num: K.ITEM('u8', 0),
         },
@@ -353,6 +370,8 @@ const getProfile = async (refid: string, version: string, name?: string) => {
         chara_param: [],
         stamp: [],
     };
+
+    const achievements = <AchievementsUsaneko>await utils.readAchievements(refid, version, {...defaultAchievements, version});
 
     const profileCharas = achievements.charas || {};
     for (const chara_id in profileCharas) {

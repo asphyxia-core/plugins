@@ -229,6 +229,27 @@ const getProfile = async (refid: string, name?: string) => {
         await utils.writeProfile(refid, profile);
     }
 
+    let myBest = Array(10).fill(-1);
+    const scores = await utils.readScores(refid, version, true);
+    if(Object.entries(scores.scores).length > 0) {
+        const playCount = new Map();
+        for(const key in scores.scores) {
+            const keyData = key.split(':');
+            const music = parseInt(keyData[0], 10);
+            playCount.set(music, (playCount.get(music) || 0) + scores.scores[key].cnt);
+        }
+
+        const sortedPlayCount = new Map([...playCount.entries()].sort((a, b) => b[1] - a[1]));
+        let i = 0;
+        for (const value of sortedPlayCount.keys()) {
+            if(i >= 10) {
+                break;
+            }
+            myBest[i] = value;
+            i++;
+        }
+    }
+
     let player: any = {
         result: K.ITEM('s8', 0),
         account: {
@@ -247,7 +268,7 @@ const getProfile = async (refid: string, name?: string) => {
             consecutive_days: K.ITEM('s16', 365),
             total_days: K.ITEM('s16', 366),
             interval_day: K.ITEM('s16', 1),
-            my_best: K.ARRAY('s16', Array(10).fill(-1)),
+            my_best: K.ARRAY('s16', myBest),
             latest_music: K.ARRAY('s16', [-1, -1, -1, -1, -1]),
             active_fr_num: K.ITEM('u8', 0),
         },

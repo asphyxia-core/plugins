@@ -71,6 +71,7 @@ export const getProfile = async (refid: string, name?: string) => {
     let clear_medal_sub = Array(GAME_MAX_MUSIC_ID).fill(0);
 
     const scoresData = await utils.readScores(refid, version);
+    const playCount = new Map();
     for (const key in scoresData.scores) {
         const keyData = key.split(':');
         const score = scoresData.scores[key];
@@ -106,6 +107,19 @@ export const getProfile = async (refid: string, name?: string) => {
         hiscore_array[hiscore_byte_pos] = hiscore_array[hiscore_byte_pos] | (hiscore_value & 0xFF);
         hiscore_array[hiscore_byte_pos + 1] = hiscore_array[hiscore_byte_pos + 1] | ((hiscore_value >> 8) & 0xFF);
         hiscore_array[hiscore_byte_pos + 2] = hiscore_array[hiscore_byte_pos + 2] | ((hiscore_value >> 16) & 0xFF);
+
+        playCount.set(music, (playCount.get(music) || 0) + score.cnt);
+    }
+
+    let myBest = Array(20).fill(-1);
+    const sortedPlayCount = new Map([...playCount.entries()].sort((a, b) => b[1] - a[1]));
+    let i = 0;
+    for (const value of sortedPlayCount.keys()) {
+        if (i >= 20) {
+            break;
+        }
+        myBest[i] = value;
+        i++;
     }
 
     let player: any = {
@@ -114,16 +128,16 @@ export const getProfile = async (refid: string, name?: string) => {
             g_pm_id: K.ITEM('str', '1234-5678'),
             staff: K.ITEM('s8', 0),
             is_conv: K.ITEM('s8', -1),
+            my_best: K.ARRAY('s16', myBest),
+            clear_medal: K.ARRAY('u16', clear_medal),
+            clear_medal_sub: K.ARRAY('u8', clear_medal_sub),
 
             // TODO: replace with real data
             total_play_cnt: K.ITEM('s32', 100),
             today_play_cnt: K.ITEM('s16', 50),
             consecutive_days: K.ITEM('s16', 365),
-            my_best: K.ARRAY('s16', Array(20).fill(-1)),
             latest_music: K.ARRAY('s16', [-1, -1, -1]),
             active_fr_num: K.ITEM('u8', 0),
-            clear_medal: K.ARRAY('u16', clear_medal),
-            clear_medal_sub: K.ARRAY('u8', clear_medal_sub),
         },
         player_card: {
             // TODO: replace with real data
@@ -154,6 +168,8 @@ export const getProfile = async (refid: string, name?: string) => {
     // Add version specific datas
     const params = await utils.readParams(refid, version);
     utils.addExtraData(player, params, extraData);
+
+    player.player_card.best_music = myBest.slice(0, 3);
 
     return player;
 }

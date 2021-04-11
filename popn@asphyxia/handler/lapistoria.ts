@@ -133,7 +133,6 @@ const getProfile = async (refid: string, name?: string) => {
             consecutive_days: K.ITEM('s16', 365),
             total_days: K.ITEM('s16', 366),
             interval_day: K.ITEM('s16', 1),
-            my_best: K.ARRAY('s16', Array(10).fill(-1)),
             latest_music: K.ARRAY('s16', [-1, -1, -1, -1, -1]),
             active_fr_num: K.ITEM('u8', 0),
         },
@@ -174,6 +173,7 @@ const getProfile = async (refid: string, name?: string) => {
 
     // Add Score
     const scoresData = await utils.readScores(refid, version);
+    const playCount = new Map();
     for (const key in scoresData.scores) {
         const keyData = key.split(':');
         const score = scoresData.scores[key];
@@ -208,7 +208,21 @@ const getProfile = async (refid: string, name?: string) => {
             old_score: K.ITEM('s32', 0),
             old_clear_type: K.ITEM('u8', 0),
         });
+
+        playCount.set(music, (playCount.get(music) || 0) + score.cnt);
     }
+
+    let myBest = Array(10).fill(-1);
+    const sortedPlayCount = new Map([...playCount.entries()].sort((a, b) => b[1] - a[1]));
+    let i = 0;
+    for (const value of sortedPlayCount.keys()) {
+        if (i >= 10) {
+            break;
+        }
+        myBest[i] = value;
+        i++;
+    }
+    player.account.my_best = K.ARRAY('s16', myBest);
 
     // Add achievements
     const achievements = <AchievementsLapistoria>await utils.readAchievements(refid, version, defaultAchievements);

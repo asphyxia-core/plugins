@@ -76,6 +76,7 @@ export const getProfile = async (refid: string, name?: string) => {
     let hiscore_array = Array(Math.floor((((GAME_MAX_MUSIC_ID * 7) * 17) + 7) / 8)).fill(0);
 
     const scoresData = await utils.readScores(refid, version);
+    const playCount = new Map();
     for (const key in scoresData.scores) {
         const keyData = key.split(':');
         const score = scoresData.scores[key];
@@ -114,6 +115,26 @@ export const getProfile = async (refid: string, name?: string) => {
         hiscore_array[hiscore_byte_pos] = hiscore_array[hiscore_byte_pos] | (hiscore_value & 0xFF);
         hiscore_array[hiscore_byte_pos + 1] = hiscore_array[hiscore_byte_pos + 1] | ((hiscore_value >> 8) & 0xFF);
         hiscore_array[hiscore_byte_pos + 2] = hiscore_array[hiscore_byte_pos + 2] | ((hiscore_value >> 16) & 0xFF);
+
+        playCount.set(music, (playCount.get(music) || 0) + score.cnt);
+    }
+
+    let myBest = Array(20).fill(-1);
+    const sortedPlayCount = new Map([...playCount.entries()].sort((a, b) => b[1] - a[1]));
+    let i = 0;
+    for (const value of sortedPlayCount.keys()) {
+        if (i >= 20) {
+            break;
+        }
+        myBest[i] = value;
+        i++;
+    }
+
+    let profile_pos = 68
+    for (const musicid of myBest) {
+        binary_profile[profile_pos] = musicid & 0xFF
+        binary_profile[profile_pos + 1] = (musicid >> 8) & 0xFF
+        profile_pos = profile_pos + 2
     }
 
     const player = {
@@ -169,7 +190,7 @@ export const write = async (req: EamuseInfo, data: any, send: EamuseSend): Promi
     if (!refid) return send.deny();
 
     const params = await utils.readParams(refid, version);
-    
+
     params.params['play_mode'] = parseInt($(data).attr()['play_mode']);
     params.params['chara'] = parseInt($(data).attr()['chara_num']);
     params.params['option'] = parseInt($(data).attr()['option']);
@@ -193,7 +214,7 @@ export const write = async (req: EamuseInfo, data: any, send: EamuseSend): Promi
             continue;
         }
 
-        if(params.params['play_mode'] == 4) {
+        if (params.params['play_mode'] == 4) {
             if ([2, 6, 7].indexOf(sheet) != -1) {
                 continue;
             }
