@@ -169,7 +169,7 @@ export const getProfile = async (refid: string, name?: string) => {
     const params = await utils.readParams(refid, version);
     utils.addExtraData(player, params, extraData);
 
-    player.player_card.best_music = myBest.slice(0, 3);
+    player.player_card.best_music = K.ARRAY('s16', myBest.slice(0, 3));
 
     return player;
 }
