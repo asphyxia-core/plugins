@@ -48,7 +48,7 @@ export function register() {
 
   R.WebUIEvent('addRival', async (data: any) => {
     const refid = data.refid.trim();
-    const profile = await DB.FindOne(refid, { collection: 'profile'});
+    const profile = await DB.FindOne(data.rivalid, { collection: 'profile'});
     if(profile != undefined && profile != null) {
       const rivals = await DB.FindOne<Rivals>(refid, { collection: 'rivals' }) || {collection: 'rivals', rivals: []};
       if(rivals.rivals.length < 4) {
