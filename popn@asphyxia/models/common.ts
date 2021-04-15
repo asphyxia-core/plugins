@@ -28,6 +28,11 @@ export interface Params {
   };
 }
 
+export interface Rivals {
+  collection: 'rivals',
+  rivals: string[]
+}
+
 export interface Scores {
   collection: 'scores',
   version: string,

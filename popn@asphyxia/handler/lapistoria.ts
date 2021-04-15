@@ -8,6 +8,7 @@ export const setRoutes = () => {
     R.Route(`player22.read`, read);
     R.Route(`player22.write_music`, writeScore);
     R.Route(`player22.write`, write);
+    R.Route(`player22.friend`, friend);
 }
 
 /**
@@ -110,6 +111,7 @@ const writeScore = async (req: EamuseInfo, data: any, send: EamuseSend): Promise
  */
 const getProfile = async (refid: string, name?: string) => {
     const profile = await utils.readProfile(refid);
+    const rivals = await utils.readRivals(refid);
 
     if (name && name.length > 0) {
         profile.name = name;
@@ -126,6 +128,7 @@ const getProfile = async (refid: string, name?: string) => {
             item_type: K.ITEM('s16', 0),
             item_id: K.ITEM('s16', 0),
             license_data: K.ARRAY('s16', [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1]),
+            active_fr_num: K.ITEM('u8', rivals.rivals.length),
 
             // TODO: replace with real data
             total_play_cnt: K.ITEM('s16', 100),
@@ -134,7 +137,6 @@ const getProfile = async (refid: string, name?: string) => {
             total_days: K.ITEM('s16', 366),
             interval_day: K.ITEM('s16', 1),
             latest_music: K.ARRAY('s16', [-1, -1, -1, -1, -1]),
-            active_fr_num: K.ITEM('u8', 0),
         },
         netvs: {
             rank_point: K.ITEM('s32', 0),
@@ -371,6 +373,70 @@ const write = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any>
 
     send.success();
 };
+
+const friend = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> => {
+    const refid = $(data).attr()['ref_id'];
+    const no = parseInt($(data).attr()['no'], -1);
+
+    const rivals = await utils.readRivals(refid);
+
+    if(no < 0 || no >= rivals.rivals.length) {
+        send.object({result : K.ITEM('s8', 2)});
+        return;
+    }
+
+    const profile = await utils.readProfile(rivals.rivals[no]);
+    const params = await utils.readParams(rivals.rivals[no], version);
+
+    // Add Score
+    const scoresData = await utils.readScores(rivals.rivals[no], version);
+    const scores = [];
+    for (const key in scoresData.scores) {
+        const keyData = key.split(':');
+        const score = scoresData.scores[key];
+        const music = parseInt(keyData[0], 10);
+        const sheet = parseInt(keyData[1], 10);
+
+        if (music > GAME_MAX_MUSIC_ID) {
+            continue;
+        }
+        if ([0, 1, 2, 3].indexOf(sheet) == -1) {
+            continue;
+        }
+
+        scores.push(K.ATTR({
+            music_num: music.toString(),
+            sheet_num: sheet.toString(),
+            score: score.score.toString(),
+            clearmedal: {
+                100: 1,
+                200: 2,
+                300: 3,
+                400: 4,
+                500: 5,
+                600: 6,
+                700: 7,
+                800: 8,
+                900: 9,
+                1000: 10,
+                1100: 11,
+            }[score.clear_type].toString(),
+        }));
+    }
+
+    const friend = {
+        friend: {
+            no: K.ITEM('s16', no),
+            g_pm_id: K.ITEM('str', 'ASPHYXIAPLAY'),
+            name: K.ITEM('str', profile.name),
+            chara: K.ITEM('s16', params.params.chara || -1),
+            is_open: K.ITEM('s8', 1),
+            music: scores,
+        }
+    }
+
+    send.object(friend);
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

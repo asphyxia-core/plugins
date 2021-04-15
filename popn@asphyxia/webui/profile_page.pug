@@ -1,5 +1,6 @@
 //DATA//
   profile: DB.FindOne(refid, { collection: 'profile' })
+  rivals: DB.FindOne(refid, { collection: 'rivals' })
 
 div
   div.notification.is-success.is-hidden#import-success
@@ -23,6 +24,44 @@ div
             span.icon
               i.mdi.mdi-check
             span Submit
+  .card
+    .card-header
+      p.card-header-title
+        span.icon
+          i.mdi.mdi-account-edit
+        | Rivals
+    .card-content
+      .columns.is-multiline
+        if rivals != null
+          - for (const rival of rivals.rivals)
+            form(method="post" action="/emit/deleteRival").column.is-4
+              .box
+                input(type="hidden" id="refid" name="refid" value=refid)
+                input(type="hidden" id="rivalid" name="rivalid" value=rival)
+                .field
+                  input.input(type="text" value=rival disabled="disabled")
+                .field
+                  button.button.is-primary
+                      span.icon
+                        i.mdi.mdi-file-import-outline
+                      span Delete
+        if rivals == null || rivals.rivals.length < 4
+          form(method="post" action="/emit/addRival").column.is-4
+            .box
+              input(type="hidden" id="refid" name="refid" value=refid)
+              .field
+                input.input(type="text" id="rivalid" name="rivalid" placeholder="Rival ID (ex. AAB56E7436549D83)")
+              .field
+                button.button.is-primary
+                    span.icon
+                      i.mdi.mdi-file-import-outline
+                    span Add
+      div
+        label To add a rival, use the profile ID located on the POPN Profiles page.
+      div
+        label There is a limit of 4 rivals maximum (only the 2 firsts will be used for Sunny Park and lower).
+      div
+        label The score sharing option also affect scores get from rivals.
   .card
     .card-header
       p.card-header-title
