@@ -1,5 +1,4 @@
-import { Profile } from "../models/profile";
-import { Scores } from "../models/scores";
+import { Profile, Scores } from "../models/common";
 
 export const importPnmData = async (data: {
   refid: string;
