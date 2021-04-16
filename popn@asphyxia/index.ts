@@ -38,9 +38,9 @@ export function register() {
 
   // Rivals UI management
   R.WebUIEvent('deleteRival', async (data: any) => {
-    const rivals = await DB.FindOne<Rivals>(data.refid, { collection: 'rivals' }) || {collection: 'rivals', rivals: []};
+    const rivals = await DB.FindOne<Rivals>(data.refid, { collection: 'rivals' }) || { collection: 'rivals', rivals: [] };
     const idx = rivals.rivals.indexOf(data.rivalid);
-    if(idx >= 0) {
+    if (idx >= 0) {
       rivals.rivals.splice(idx, 1);
       await DB.Update(data.refid, { collection: 'rivals' }, rivals);
     }
@@ -48,10 +48,10 @@ export function register() {
 
   R.WebUIEvent('addRival', async (data: any) => {
     const refid = data.refid.trim();
-    const profile = await DB.FindOne(data.rivalid, { collection: 'profile'});
-    if(profile != undefined && profile != null) {
-      const rivals = await DB.FindOne<Rivals>(refid, { collection: 'rivals' }) || {collection: 'rivals', rivals: []};
-      if(rivals.rivals.length < 4) {
+    const profile = await DB.FindOne(data.rivalid, { collection: 'profile' });
+    if (profile != undefined && profile != null) {
+      const rivals = await DB.FindOne<Rivals>(refid, { collection: 'rivals' }) || { collection: 'rivals', rivals: [] };
+      if (rivals.rivals.length < 4) {
         rivals.rivals.push(data.rivalid);
         await DB.Upsert(refid, { collection: 'rivals' }, rivals);
       }
@@ -64,6 +64,7 @@ export function register() {
   R.Route(`playerdata.conversion`, async (req, data, send) => getVersion(req).newPlayer(req, data, send));
   R.Route(`playerdata.get`, async (req, data, send) => getVersion(req).read(req, data, send));
   R.Route(`playerdata.set`, async (req, data, send) => getVersion(req).write(req, data, send));
+  R.Route(`playerdata.friend`, async (req, data, send) => getVersion(req).friend(req, data, send));
 
   // For Pnm >= 22, each game set his own route
   lapistoria.setRoutes();

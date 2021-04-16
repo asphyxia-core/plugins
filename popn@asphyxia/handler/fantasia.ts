@@ -2,7 +2,7 @@ import { ExtraData } from "../models/common";
 import * as utils from "./utils";
 
 /**
- * Return the current phases of the game.
+ * Handler for getting the current state of the game.
  */
 export const getInfo = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> => {
     const result = {
@@ -31,7 +31,7 @@ export const getInfo = async (req: EamuseInfo, data: any, send: EamuseSend): Pro
 };
 
 /**
- * Create a new profile and send it.
+ * Handler for new profile
  */
 export const newPlayer = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> => {
     const refid = $(data).str('ref_id');
@@ -43,7 +43,7 @@ export const newPlayer = async (req: EamuseInfo, data: any, send: EamuseSend): P
 };
 
 /**
- * Read a profile and send it.
+ * Handler for existing profile
  */
 export const read = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> => {
     const refid = $(data).str('ref_id');
@@ -59,6 +59,7 @@ export const read = async (req: EamuseInfo, data: any, send: EamuseSend): Promis
  */
 export const getProfile = async (refid: string, name?: string) => {
     const profile = await utils.readProfile(refid);
+    const rivals = await utils.readRivals(refid);
 
     if (name && name.length > 0) {
         profile.name = name;
@@ -66,53 +67,11 @@ export const getProfile = async (refid: string, name?: string) => {
     }
 
     // Get Score
-    let hiscore_array = Array(Math.floor((((GAME_MAX_MUSIC_ID * 4) * 17) + 7) / 8)).fill(0);
-    let clear_medal = Array(GAME_MAX_MUSIC_ID).fill(0);
+    const scores = await getScores(refid);
     let clear_medal_sub = Array(GAME_MAX_MUSIC_ID).fill(0);
 
-    const scoresData = await utils.readScores(refid, version);
-    const playCount = new Map();
-    for (const key in scoresData.scores) {
-        const keyData = key.split(':');
-        const score = scoresData.scores[key];
-        const music = parseInt(keyData[0], 10);
-        const sheet = parseInt(keyData[1], 10);
-
-        if (music > GAME_MAX_MUSIC_ID) {
-            continue;
-        }
-        if ([0, 1, 2, 3].indexOf(sheet) == -1) {
-            continue;
-        }
-
-        const medal = {
-            100: 1,
-            200: 2,
-            300: 3,
-            400: 5,
-            500: 5,
-            600: 6,
-            700: 7,
-            800: 9,
-            900: 10,
-            1000: 11,
-            1100: 15,
-        }[score.clear_type];
-        clear_medal[music] = clear_medal[music] | (medal << (sheet * 4));
-
-        const hiscore_index = (music * 4) + sheet;
-        const hiscore_byte_pos = Math.floor((hiscore_index * 17) / 8);
-        const hiscore_bit_pos = ((hiscore_index * 17) % 8);
-        const hiscore_value = score.score << hiscore_bit_pos;
-        hiscore_array[hiscore_byte_pos] = hiscore_array[hiscore_byte_pos] | (hiscore_value & 0xFF);
-        hiscore_array[hiscore_byte_pos + 1] = hiscore_array[hiscore_byte_pos + 1] | ((hiscore_value >> 8) & 0xFF);
-        hiscore_array[hiscore_byte_pos + 2] = hiscore_array[hiscore_byte_pos + 2] | ((hiscore_value >> 16) & 0xFF);
-
-        playCount.set(music, (playCount.get(music) || 0) + score.cnt);
-    }
-
     let myBest = Array(20).fill(-1);
-    const sortedPlayCount = new Map([...playCount.entries()].sort((a, b) => b[1] - a[1]));
+    const sortedPlayCount = new Map([...scores.playCount.entries()].sort((a, b) => b[1] - a[1]));
     let i = 0;
     for (const value of sortedPlayCount.keys()) {
         if (i >= 20) {
@@ -129,15 +88,15 @@ export const getProfile = async (refid: string, name?: string) => {
             staff: K.ITEM('s8', 0),
             is_conv: K.ITEM('s8', -1),
             my_best: K.ARRAY('s16', myBest),
-            clear_medal: K.ARRAY('u16', clear_medal),
+            clear_medal: K.ARRAY('u16', scores.clear_medal),
             clear_medal_sub: K.ARRAY('u8', clear_medal_sub),
+            active_fr_num: K.ITEM('u8', rivals.rivals.length),
 
             // TODO: replace with real data
             total_play_cnt: K.ITEM('s32', 100),
             today_play_cnt: K.ITEM('s16', 50),
             consecutive_days: K.ITEM('s16', 365),
             latest_music: K.ARRAY('s16', [-1, -1, -1]),
-            active_fr_num: K.ITEM('u8', 0),
         },
         player_card: {
             // TODO: replace with real data
@@ -162,7 +121,7 @@ export const getProfile = async (refid: string, name?: string) => {
             set_recommend: K.ARRAY('s8', [0, 0, 0]),
             jewelry: K.ARRAY('s8', Array(15).fill(0)),
         },
-        hiscore: K.ITEM('bin', Buffer.from(hiscore_array))
+        hiscore: K.ITEM('bin', Buffer.from(scores.hiscore_array))
     };
 
     // Add version specific datas
@@ -175,7 +134,7 @@ export const getProfile = async (refid: string, name?: string) => {
 }
 
 /**
- * Unformat and write the end game data into DB
+ * Handler for saving profile ans scores
  */
 export const write = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> => {
     const refid = $(data).attr()['ref_id'];
@@ -237,6 +196,91 @@ export const write = async (req: EamuseInfo, data: any, send: EamuseSend): Promi
 
     send.object(result);
 };
+
+/**
+ * Handler for sending rivals
+ */
+export const friend = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> => {
+    const refid = $(data).attr()['ref_id'];
+    const rivals = await utils.readRivals(refid);
+    let result = {
+        friend: []
+    }
+
+    for (const rival of rivals.rivals.slice(0, 2)) {
+        const profile = await utils.readProfile(rival);
+        const params = await utils.readParams(rival, version);
+
+        const scores = await getScores(refid);
+
+        result.friend.push({
+            open: K.ITEM('s8', 1),
+            g_pm_id: K.ITEM('str', 'ASPHYXIAPLAY'),
+            name: K.ITEM('str', profile.name),
+            chara: K.ITEM('s16', params.params.chara || -1),
+            clear_medal: K.ARRAY('u16', scores.clear_medal),
+            hiscore: K.ITEM('bin', Buffer.from(scores.hiscore_array))
+        });
+    }
+
+    send.object(result);
+}
+
+/**
+ * Read the user scores and format them
+ * @param refid ID of the user
+ */
+const getScores = async (refid: string) => {
+    let hiscore_array = Array(Math.floor((((GAME_MAX_MUSIC_ID * 4) * 17) + 7) / 8)).fill(0);
+    let clear_medal = Array(GAME_MAX_MUSIC_ID).fill(0);
+
+    const scoresData = await utils.readScores(refid, version);
+    const playCount = new Map();
+    for (const key in scoresData.scores) {
+        const keyData = key.split(':');
+        const score = scoresData.scores[key];
+        const music = parseInt(keyData[0], 10);
+        const sheet = parseInt(keyData[1], 10);
+
+        if (music > GAME_MAX_MUSIC_ID) {
+            continue;
+        }
+        if ([0, 1, 2, 3].indexOf(sheet) == -1) {
+            continue;
+        }
+
+        const medal = {
+            100: 1,
+            200: 2,
+            300: 3,
+            400: 5,
+            500: 5,
+            600: 6,
+            700: 7,
+            800: 9,
+            900: 10,
+            1000: 11,
+            1100: 15,
+        }[score.clear_type];
+        clear_medal[music] = clear_medal[music] | (medal << (sheet * 4));
+
+        const hiscore_index = (music * 4) + sheet;
+        const hiscore_byte_pos = Math.floor((hiscore_index * 17) / 8);
+        const hiscore_bit_pos = ((hiscore_index * 17) % 8);
+        const hiscore_value = score.score << hiscore_bit_pos;
+        hiscore_array[hiscore_byte_pos] = hiscore_array[hiscore_byte_pos] | (hiscore_value & 0xFF);
+        hiscore_array[hiscore_byte_pos + 1] = hiscore_array[hiscore_byte_pos + 1] | ((hiscore_value >> 8) & 0xFF);
+        hiscore_array[hiscore_byte_pos + 2] = hiscore_array[hiscore_byte_pos + 2] | ((hiscore_value >> 16) & 0xFF);
+
+        playCount.set(music, (playCount.get(music) || 0) + score.cnt);
+    }
+
+    return {
+        hiscore_array,
+        clear_medal,
+        playCount
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -12,7 +12,7 @@ export const setRoutes = () => {
 }
 
 /**
- * Return info22.common informations (phase, etc...)
+ * Handler for getting current state of the game.
  */
 const getInfo = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> => {
     const result: any = {
@@ -39,7 +39,7 @@ const getInfo = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<an
 };
 
 /**
- * Create a new profile and send it.
+ * Handler for new profile
  */
 const newPlayer = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> => {
     const refid = $(data).str('ref_id');
@@ -51,7 +51,7 @@ const newPlayer = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<
 };
 
 /**
- * Read a profile and send it.
+ * Handler for existing profile
  */
 const read = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> => {
     const refid = $(data).str('ref_id');
@@ -60,6 +60,9 @@ const read = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> 
     send.object(await getProfile(refid));
 };
 
+/**
+ * Handler for saving the scores
+ */
 const writeScore = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> => {
     const refid = $(data).str('ref_id');
     if (!refid) return send.deny();
@@ -107,7 +110,6 @@ const writeScore = async (req: EamuseInfo, data: any, send: EamuseSend): Promise
  * Get/create the profile based on refid
  * @param refid the profile refid
  * @param name if defined, create/update the profile with the given name
- * @returns 
  */
 const getProfile = async (refid: string, name?: string) => {
     const profile = await utils.readProfile(refid);
@@ -280,6 +282,9 @@ const getProfile = async (refid: string, name?: string) => {
     return player;
 }
 
+/**
+ * Handler for saving the profile
+ */
 const write = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> => {
     const refid = $(data).str('ref_id');
     if (!refid) return send.deny();
@@ -374,14 +379,17 @@ const write = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any>
     send.success();
 };
 
+/**
+ * Handler for sending rivals
+ */
 const friend = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> => {
     const refid = $(data).attr()['ref_id'];
     const no = parseInt($(data).attr()['no'], -1);
 
     const rivals = await utils.readRivals(refid);
 
-    if(no < 0 || no >= rivals.rivals.length) {
-        send.object({result : K.ITEM('s8', 2)});
+    if (no < 0 || no >= rivals.rivals.length) {
+        send.object({ result: K.ITEM('s8', 2) });
         return;
     }
 

@@ -16,8 +16,8 @@ Important : require minimum Asphyxia Core **v1.31**
 ## Changelog
 
 ### 2.1.0
-* Add rivals support
-* Various fixes
+* Add rivals support (except for Tune Street)
+* Some fixes
 
 ### 2.0.0
 * Big rewrite/reorganization of the code
