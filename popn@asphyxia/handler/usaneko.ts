@@ -638,7 +638,7 @@ const write = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any>
  */
 const friend = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> => {
     const refid = $(data).attr()['ref_id'];
-    const no = parseInt($(data).attr()['no'], -1);
+    const no = parseInt($(data).attr()['no'], 10);
     const version = getVersion(req);
 
     const rivals = await utils.readRivals(refid);
