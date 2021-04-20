@@ -1,5 +1,5 @@
 import { Achievements } from "../models/achievements";
-import { Profile, Scores, ExtraData, Params } from "../models/common";
+import { Profile, Scores, ExtraData, Params, Rivals } from "../models/common";
 
 const CURRENT_DATA_VERSION = 2;
 
@@ -66,6 +66,11 @@ export const readProfile = async (refid: string): Promise<Profile> => {
 
 export const writeProfile = async (refid: string, profile: Profile) => {
     await DB.Upsert<Profile>(refid, { collection: 'profile' }, profile);
+}
+
+export const readRivals = async (refid: string): Promise<Rivals> => {
+    const rivals = await DB.FindOne<Rivals>(refid, { collection: 'rivals' });
+    return rivals || { collection: 'rivals', rivals: [] };
 }
 
 export const readParams = async (refid: string, version: string): Promise<Params> => {

@@ -1,6 +1,6 @@
 # Pop'n Music
 
-Plugin Version: **v2.0.0**
+Plugin Version: **v2.1.0**
 
 ## Supported Versions
 - pop'n music 19 Tune Street
@@ -14,6 +14,10 @@ Plugin Version: **v2.0.0**
 Important : require minimum Asphyxia Core **v1.31**
 
 ## Changelog
+
+### 2.1.0
+* Add rivals support (except for Tune Street)
+* Some fixes
 
 ### 2.0.0
 * Big rewrite/reorganization of the code

@@ -11,8 +11,12 @@ export const setRoutes = () => {
     R.Route(`player23.read_score`, readScore);
     R.Route(`player23.write_music`, writeScore);
     R.Route(`player23.write`, write);
+    R.Route(`player23.friend`, friend);
 }
 
+/**
+ * Return current state of the game (phase, good prices, etc...)
+ */
 const getInfoCommon = (req: EamuseInfo) => {
     const result: any = {
         phase: [],
@@ -79,7 +83,7 @@ const start = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any>
 };
 
 /**
- * Create a new profile and send it.
+ * Handler for new profile
  */
 const newPlayer = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> => {
     const refid = $(data).str('ref_id');
@@ -91,7 +95,7 @@ const newPlayer = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<
 };
 
 /**
- * Read a profile and send it.
+ * Handler for existing profile
  */
 const read = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> => {
     const refid = $(data).str('ref_id');
@@ -100,6 +104,9 @@ const read = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> 
     send.object(await getProfile(refid));
 };
 
+/**
+ * Handler fo buying goods with lumina
+ */
 const buy = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> => {
     const refid = $(data).str('ref_id');
     if (!refid) return send.deny();
@@ -126,20 +133,43 @@ const buy = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> =
     send.success();
 };
 
+/**
+ * Handler for getting the user scores
+ */
 const readScore = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> => {
     const refid = $(data).str('ref_id');
     if (!refid) return send.deny();
 
+    send.object({ music: await getScores(refid) });
+};
+
+/**
+ * Read the user scores and format them (profile/friend)
+ * @param refid ID of the user
+ * @param forFriend If true, format the output for friend request.
+ */
+const getScores = async (refid: string, forFriend: boolean = false) => {
     const scoresData = await utils.readScores(refid, version);
-    const result: any = {
-        music: [],
-    };
+    const result = [];
 
     for (const key in scoresData.scores) {
         const keyData = key.split(':');
         const score = scoresData.scores[key];
         const music = parseInt(keyData[0], 10);
         const sheet = parseInt(keyData[1], 10);
+        const clearType = {
+            100: 1,
+            200: 2,
+            300: 3,
+            400: 4,
+            500: 5,
+            600: 6,
+            700: 7,
+            800: 8,
+            900: 9,
+            1000: 10,
+            1100: 11,
+        }[score.clear_type];
 
         if (music > GAME_MAX_MUSIC_ID) {
             continue;
@@ -148,30 +178,29 @@ const readScore = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<
             continue;
         }
 
-        result.music.push({
-            music_num: K.ITEM('s16', music),
-            sheet_num: K.ITEM('u8', sheet),
-            score: K.ITEM('s32', score.score),
-            clear_type: K.ITEM('u8', {
-                100: 1,
-                200: 2,
-                300: 3,
-                400: 4,
-                500: 5,
-                600: 6,
-                700: 7,
-                800: 8,
-                900: 9,
-                1000: 10,
-                1100: 11,
-            }[score.clear_type]),
-            cnt: K.ITEM('s16', score.cnt),
-        });
+        if (forFriend) {
+            result.push(K.ATTR({
+                music_num: music.toString(),
+                sheet_num: sheet.toString(),
+                score: score.score.toString(),
+                clearmedal: clearType.toString()
+            }));
+        } else {
+            result.push({
+                music_num: K.ITEM('s16', music),
+                sheet_num: K.ITEM('u8', sheet),
+                score: K.ITEM('s32', score.score),
+                clear_type: K.ITEM('u8', clearType),
+                cnt: K.ITEM('s16', score.cnt),
+            });
+        }
     }
-
-    send.object(result);
+    return result;
 };
 
+/**
+ * Handler for saving the scores
+ */
 const writeScore = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> => {
     const refid = $(data).str('ref_id');
     if (!refid) return send.deny();
@@ -219,10 +248,10 @@ const writeScore = async (req: EamuseInfo, data: any, send: EamuseSend): Promise
  * Get/create the profile based on refid
  * @param refid the profile refid
  * @param name if defined, create/update the profile with the given name
- * @returns 
  */
 const getProfile = async (refid: string, name?: string) => {
     const profile = await utils.readProfile(refid);
+    const rivals = await utils.readRivals(refid);
 
     if (name && name.length > 0) {
         profile.name = name;
@@ -231,9 +260,9 @@ const getProfile = async (refid: string, name?: string) => {
 
     let myBest = Array(10).fill(-1);
     const scores = await utils.readScores(refid, version, true);
-    if(Object.entries(scores.scores).length > 0) {
+    if (Object.entries(scores.scores).length > 0) {
         const playCount = new Map();
-        for(const key in scores.scores) {
+        for (const key in scores.scores) {
             const keyData = key.split(':');
             const music = parseInt(keyData[0], 10);
             playCount.set(music, (playCount.get(music) || 0) + scores.scores[key].cnt);
@@ -242,7 +271,7 @@ const getProfile = async (refid: string, name?: string) => {
         const sortedPlayCount = new Map([...playCount.entries()].sort((a, b) => b[1] - a[1]));
         let i = 0;
         for (const value of sortedPlayCount.keys()) {
-            if(i >= 10) {
+            if (i >= 10) {
                 break;
             }
             myBest[i] = value;
@@ -261,6 +290,7 @@ const getProfile = async (refid: string, name?: string) => {
             is_conv: K.ITEM('s8', 0),
             meteor_flg: K.ITEM('bool', true),
             license_data: K.ARRAY('s16', Array(20).fill(-1)),
+            active_fr_num: K.ITEM('u8', rivals.rivals.length),
 
             // TODO: replace with real data
             total_play_cnt: K.ITEM('s16', 100),
@@ -270,7 +300,6 @@ const getProfile = async (refid: string, name?: string) => {
             interval_day: K.ITEM('s16', 1),
             my_best: K.ARRAY('s16', myBest),
             latest_music: K.ARRAY('s16', [-1, -1, -1, -1, -1]),
-            active_fr_num: K.ITEM('u8', 0),
         },
         netvs: {
             record: K.ARRAY('s16', [0, 0, 0, 0, 0, 0]),
@@ -347,6 +376,9 @@ const getProfile = async (refid: string, name?: string) => {
     return player;
 }
 
+/**
+ * Handler for saving the profile
+ */
 const write = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> => {
     const refid = $(data).str('ref_id');
     if (!refid) return send.deny();
@@ -423,6 +455,37 @@ const write = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any>
 
     send.success();
 };
+
+/**
+ * Handler for sending rivals
+ */
+const friend = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> => {
+    const refid = $(data).attr()['ref_id'];
+    const no = parseInt($(data).attr()['no'], 10);
+
+    const rivals = await utils.readRivals(refid);
+
+    if (no < 0 || no >= rivals.rivals.length) {
+        send.object({ result: K.ITEM('s8', 2) });
+        return;
+    }
+
+    const profile = await utils.readProfile(rivals.rivals[no]);
+    const params = await utils.readParams(rivals.rivals[no], version);
+
+    const friend = {
+        friend: {
+            no: K.ITEM('s16', no),
+            g_pm_id: K.ITEM('str', 'ASPHYXIAPLAY'),
+            name: K.ITEM('str', profile.name),
+            chara: K.ITEM('s16', params.params.chara || -1),
+            is_open: K.ITEM('s8', 1),
+            music: await getScores(rivals.rivals[no], true),
+        }
+    }
+
+    send.object(friend);
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

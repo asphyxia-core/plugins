@@ -5,6 +5,7 @@ import * as lapistoria from "./handler/lapistoria";
 import * as eclale from "./handler/eclale";
 import * as usaneko from "./handler/usaneko";
 import { importPnmData } from "./handler/webui";
+import { Rivals } from "./models/common";
 
 const getVersion = (req: any) => {
   switch (req.gameCode) {
@@ -24,7 +25,7 @@ export function register() {
 
   R.Config("enable_score_sharing", {
     name: "Score sharing",
-    desc: "Enable sharing scores between versions",
+    desc: "Enable sharing scores between versions. This also affect rivals scores.",
     type: "boolean",
     default: true,
   });
@@ -35,16 +36,37 @@ export function register() {
     await DB.Update(data.refid, { collection: 'profile' }, { $set: { name: data.name } });
   });
 
-  // Route management for PnM <= 21
+  // Rivals UI management
+  R.WebUIEvent('deleteRival', async (data: any) => {
+    const rivals = await DB.FindOne<Rivals>(data.refid, { collection: 'rivals' }) || { collection: 'rivals', rivals: [] };
+    const idx = rivals.rivals.indexOf(data.rivalid);
+    if (idx >= 0) {
+      rivals.rivals.splice(idx, 1);
+      await DB.Update(data.refid, { collection: 'rivals' }, rivals);
+    }
+  });
 
+  R.WebUIEvent('addRival', async (data: any) => {
+    const refid = data.refid.trim();
+    const profile = await DB.FindOne(data.rivalid, { collection: 'profile' });
+    if (profile != undefined && profile != null) {
+      const rivals = await DB.FindOne<Rivals>(refid, { collection: 'rivals' }) || { collection: 'rivals', rivals: [] };
+      if (rivals.rivals.length < 4) {
+        rivals.rivals.push(data.rivalid);
+        await DB.Upsert(refid, { collection: 'rivals' }, rivals);
+      }
+    }
+  });
+
+  // Route management for PnM <= 21
   R.Route(`game.get`, async (req, data, send) => getVersion(req).getInfo(req, data, send));
   R.Route(`playerdata.new`, async (req, data, send) => getVersion(req).newPlayer(req, data, send));
   R.Route(`playerdata.conversion`, async (req, data, send) => getVersion(req).newPlayer(req, data, send));
   R.Route(`playerdata.get`, async (req, data, send) => getVersion(req).read(req, data, send));
   R.Route(`playerdata.set`, async (req, data, send) => getVersion(req).write(req, data, send));
+  R.Route(`playerdata.friend`, async (req, data, send) => getVersion(req).friend(req, data, send));
 
   // For Pnm >= 22, each game set his own route
-
   lapistoria.setRoutes();
   eclale.setRoutes();
   usaneko.setRoutes();

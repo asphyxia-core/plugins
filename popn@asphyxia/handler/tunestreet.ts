@@ -1,5 +1,8 @@
 import * as utils from "./utils";
 
+/**
+ * Handler for getting the current state of the game (phase, good prices, etc...)
+ */
 export const getInfo = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> => {
     const result = K.ATTR({ game_phase: "2", psp_phase: "2" });
 
@@ -7,7 +10,7 @@ export const getInfo = async (req: EamuseInfo, data: any, send: EamuseSend): Pro
 };
 
 /**
- * Create a new profile and send it.
+ * Handler for new profile
  */
 export const newPlayer = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> => {
     const refid = $(data).attr()['ref_id'];
@@ -19,7 +22,7 @@ export const newPlayer = async (req: EamuseInfo, data: any, send: EamuseSend): P
 };
 
 /**
- * Read a profile and send it.
+ * Handler for existing profile
  */
 export const read = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> => {
     const refid = $(data).attr()['ref_id'];
@@ -29,10 +32,9 @@ export const read = async (req: EamuseInfo, data: any, send: EamuseSend): Promis
 };
 
 /**
- * Get/create the profile based on refid
+ * Get/create the profile and scores based on refid
  * @param refid the profile refid
  * @param name if defined, create/update the profile with the given name
- * @returns 
  */
 export const getProfile = async (refid: string, name?: string) => {
     const profile = await utils.readProfile(refid);
@@ -185,6 +187,9 @@ const __format_flags_for_score = (sheet: number, clear_type: number) => {
     return (flags << shift) | playedflag
 }
 
+/**
+ * Handler for saving profile and scores
+ */
 export const write = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> => {
     const refid = $(data).attr()['ref_id'];
     if (!refid) return send.deny();
@@ -287,6 +292,11 @@ export const write = async (req: EamuseInfo, data: any, send: EamuseSend): Promi
 
     send.object(result);
 };
+
+export const friend = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any> => {
+    // No rivals support for Tune street :(
+    send.deny();
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
