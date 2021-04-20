@@ -1,5 +1,5 @@
-import { common } from './handlers/common';
-import { hiscore, rival, saveMix, loadMix } from './handlers/features';
+import {common} from './handlers/common';
+import {hiscore, rival, saveMix, loadMix} from './handlers/features';
 import {
   updateProfile,
   updateMix,
@@ -29,6 +29,7 @@ export function register() {
 
   const MultiRoute = (method: string, handler: EPR | boolean) => {
     // Helper for register multiple versions.
+    R.Route(`game.${method}`, handler);
     R.Route(`game.sv4_${method}`, handler);
     R.Route(`game.sv5_${method}`, handler);
   };
@@ -53,8 +54,12 @@ export function register() {
   MultiRoute('load_ap', loadMix);
 
   // Lazy
-  MultiRoute('lounge', false);
-  MultiRoute('shop', true);
+  MultiRoute('lounge', (_, __, send) => send.object({
+    interval: K.ITEM('u32', 30)
+  }));
+  MultiRoute('shop', (_, __, send) => send.object({
+    nxt_time: K.ITEM('u32', 1000 * 5 * 60)
+  }));
   MultiRoute('save_e', true);
   MultiRoute('play_e', true);
   MultiRoute('play_s', true);
