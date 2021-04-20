@@ -1,5 +1,6 @@
 # Editor configs
 .vscode
+.idea
 
 # External modules
 node_modules

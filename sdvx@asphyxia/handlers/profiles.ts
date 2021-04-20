@@ -1,18 +1,12 @@
-import { Skill } from '../models/skill';
-import { SDVX_AUTOMATION_SONGS } from '../data/vvw';
-import { Item } from '../models/item';
-import { Param } from '../models/param';
-import { MusicRecord } from '../models/music_record';
-import { CourseRecord } from '../models/course_record';
-import { Profile } from '../models/profile';
-import { IDToCode } from '../utils';
-import { Mix } from '../models/mix';
-
-function getVersion(info: EamuseInfo) {
-  if (info.method.startsWith('sv4')) return 4;
-  if (info.method.startsWith('sv5')) return 5;
-  return 0;
-}
+import {Skill} from '../models/skill';
+import {SDVX_AUTOMATION_SONGS} from '../data/vvw';
+import {Item} from '../models/item';
+import {Param} from '../models/param';
+import {MusicRecord} from '../models/music_record';
+import {CourseRecord} from '../models/course_record';
+import {Profile} from '../models/profile';
+import {getVersion, IDToCode} from '../utils';
+import {Mix} from '../models/mix';
 
 async function getAutomationMixes(params: Param[]) {
   const mixids = params
@@ -30,12 +24,37 @@ function unlockNavigators(items: Partial<Item>[]) {
 }
 
 export const loadScore: EPR = async (info, data, send) => {
-  const refid = $(data).str('refid');
+  const refid = $(data).str('refid', $(data).attr().dataid);
   if (!refid) return send.deny();
 
   const records = await DB.Find<MusicRecord>(refid, { collection: 'music' });
 
-  send.object({
+  const version = getVersion(info);
+
+  if (version === 1) {
+    return send.object({
+      music: records.map(r => (K.ATTR({ music_id: String(r.mid) }, {
+        type: (() => {
+          const records = [];
+
+          for (let i = 1; i <= 3; i++) {
+            if (r.type != i) continue;
+            records.push(K.ATTR({
+              type_id: String(i),
+              score: String(r.score),
+              clear_type: String(r.clear),
+              score_grade: String(r.grade),
+              cnt: "0"
+            }));
+          }
+
+          return records;
+        })()
+      })))
+    });
+  }
+
+  return send.object({
     music: {
       info: records.map(r => ({
         param: K.ARRAY('u32', [
@@ -62,8 +81,56 @@ export const loadScore: EPR = async (info, data, send) => {
 };
 
 export const saveScore: EPR = async (info, data, send) => {
-  const refid = $(data).str('refid');
+  const refid = $(data).str('refid', $(data).attr().dataid);
   if (!refid) return send.deny();
+
+  const version = getVersion(info);
+
+  // Booth - Save score
+  if (version === 1) {
+    try {
+      const mid = parseInt($(data).attr().music_id);
+      const type = parseInt($(data).attr().music_type);
+
+      if (_.isNil(mid) || _.isNil(type)) return send.deny();
+
+      const record = (await DB.FindOne<MusicRecord>(refid, {
+        collection: 'music',
+        mid,
+        type,
+      })) || {
+        collection: 'music',
+        mid,
+        type,
+        score: 0,
+        clear: 0,
+        grade: 0,
+        buttonRate: 0,
+        longRate: 0,
+        volRate: 0,
+      };
+
+      const score = $(data).attr().score ? parseInt($(data).attr().score) : 0;
+      const clear = $(data).attr().clear_type ? parseInt($(data).attr().clear_type) : 0;
+      const grade = $(data).attr().score_grade ? parseInt($(data).attr().score_grade) : 0;
+      if (score > record.score) {
+        record.score = score;
+      }
+
+      record.clear = Math.max(clear, record.clear);
+      record.grade = Math.max(grade, record.grade);
+
+      await DB.Upsert<MusicRecord>(
+        refid,
+        { collection: 'music', mid, type },
+        record
+      );
+
+      return send.success();
+    } catch {
+      return send.deny();
+    }
+  }
 
   const mid = $(data).number('music_id');
   const type = $(data).number('music_type');
@@ -103,7 +170,7 @@ export const saveScore: EPR = async (info, data, send) => {
     record
   );
 
-  send.success();
+  return send.success();
 };
 
 export const saveCourse: EPR = async (info, data, send) => {
@@ -134,15 +201,46 @@ export const saveCourse: EPR = async (info, data, send) => {
     }
   );
 
-  send.success();
+  return send.success();
 };
 
 export const save: EPR = async (info, data, send) => {
-  const refid = $(data).str('refid');
+  const refid = $(data).str('refid', $(data).attr().refid);
   if (!refid) return send.deny();
 
   const version = getVersion(info);
   if (version == 0) return send.deny();
+
+  if (version === 1) {
+    try {
+      // Save Profile
+      await DB.Update<Profile>(
+        refid,
+        { collection: 'profile' },
+        {
+          $set: {
+            headphone: $(data).number('headphone'),
+            hiSpeed: $(data).number('hispeed'),
+            appeal: $(data).number('appeal_id'),
+            boothFrame: [$(data).number('frame0'), $(data).number('frame1'), $(data).number('frame2'), $(data).number('frame3'), $(data).number('frame4')],
+            musicID: parseInt($(data).attr("last").music_id),
+            musicType: parseInt($(data).attr("last").music_type),
+            sortType: parseInt($(data).attr("last").sort_type),
+            mUserCnt: $(data).number('m_user_cnt'),
+          },
+          $inc: {
+            expPoint: $(data).number('gain_exp'),
+            packets: $(data).number('earned_gamecoin_packet'),
+            blocks: $(data).number('earned_gamecoin_block'),
+          },
+        }
+      );
+
+      return send.success();
+    } catch {
+      return send.deny();
+    }
+  }
 
   // Save Profile
   await DB.Update<Profile>(
@@ -226,11 +324,11 @@ export const save: EPR = async (info, data, send) => {
     }
   );
 
-  send.success();
+  return send.success();
 };
 
 export const load: EPR = async (info, data, send) => {
-  const refid = $(data).str('refid');
+  const refid = $(data).str('refid', $(data).attr().dataid);
   if (!refid) return send.deny();
 
   const version = getVersion(info);
@@ -241,8 +339,8 @@ export const load: EPR = async (info, data, send) => {
   });
 
   if (!profile) {
-    send.object({ result: K.ITEM('u8', 1) });
-    return;
+    if (version === 1) return send.object(K.ATTR({ none: "1" }));
+    return send.object({ result: K.ITEM('u8', 1) });
   }
 
   let skill = (await DB.FindOne<Skill>(refid, {
@@ -263,7 +361,11 @@ export const load: EPR = async (info, data, send) => {
   const currentTime = time.getTime();
   const mixes = version == 5 ? await getAutomationMixes(params) : [];
 
-  send.pugFile('templates/load.pug', {
+  if (version === 1) {
+    return send.pugFile('templates/booth/load.pug', { code: IDToCode(profile.id), ...profile });
+  }
+
+  return send.pugFile('templates/load.pug', {
     courses,
     items: U.GetConfig('unlock_all_navigators')
       ? unlockNavigators(items)
@@ -279,10 +381,10 @@ export const load: EPR = async (info, data, send) => {
 };
 
 export const create: EPR = async (info, data, send) => {
-  const refid = $(data).str('refid');
+  const refid = $(data).str('refid', $(data).attr().refid);
   if (!refid) return send.deny();
 
-  const name = $(data).str('name', 'GUEST');
+  const name = $(data).str('name', $(data).attr().name ? $(data).attr().name : 'GUEST');
   let id = _.random(0, 99999999);
   while (await DB.FindOne<Profile>(null, { collecttion: 'profile', id })) {
     id = _.random(0, 99999999);
@@ -314,10 +416,13 @@ export const create: EPR = async (info, data, send) => {
     musicID: 0,
     musicType: 0,
     sortType: 0,
+    expPoint: 0,
+    mUserCnt: 0,
+    boothFrame: [0, 0, 0, 0, 0]
   };
 
   await DB.Upsert(refid, { collection: 'profile' }, profile);
-  send.object({ result: K.ITEM('u8', 0) });
+  return send.object({ result: K.ITEM('u8', 0) });
 };
 
 export const buy: EPR = async (info, data, send) => {
@@ -356,11 +461,11 @@ export const buy: EPR = async (info, data, send) => {
       );
     }
 
-    send.object({
+    return send.object({
       gamecoin_packet: K.ITEM('u32', updated.docs[0].packets),
       gamecoin_block: K.ITEM('u32', updated.docs[0].blocks),
     });
   } else {
-    send.success();
+    return send.success();
   }
 };
