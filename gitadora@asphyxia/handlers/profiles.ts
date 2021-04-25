@@ -45,6 +45,7 @@ export const check: EPR = async (info, data, send) => {
 
   const playerInfo = await DB.FindOne<PlayerInfo>(refid, {
     collection: 'playerinfo',
+    version
   })
 
   if (playerInfo) {
@@ -90,6 +91,7 @@ export const getPlayer: EPR = async (info, data, send) => {
 
   const name = await DB.FindOne<PlayerInfo>(refid, {
     collection: 'playerinfo',
+    version
   })
   const dmProfile = await getProfile(refid, version, 'dm')
   const gfProfile = await getProfile(refid, version, 'gf')
@@ -512,6 +514,20 @@ export const getPlayer: EPR = async (info, data, send) => {
         unlock_status_6: K.ITEM('s32', 0),
         unlock_status_7: K.ITEM('s32', 0),
       },
+      thanksgiving: {
+        term: K.ITEM("u8", 0),
+        score: {
+          one_day_play_cnt: K.ITEM("s32", 0),
+          one_day_lottery_cnt: K.ITEM("s32", 0),
+          lucky_star: K.ITEM("s32", 0),
+          bear_mark: K.ITEM("s32", 0),
+          play_date_ms: K.ITEM("u64", BigInt(0))
+        },
+        lottery_result: {
+          unlock_bit: K.ITEM("u64", BigInt(0))
+        }
+      },
+      lotterybox: {},
       ...addition,
       ...playerData,
       finish: K.ITEM('bool', 1),
@@ -742,6 +758,7 @@ async function registerUser(refid: string, version: string, id = _.random(0, 999
 export const savePlayer: EPR = async (info, data, send) => {
   const refid = $(data).str('player.refid');
   if (!refid) return send.deny();
+  console.debug(JSON.stringify(data.obj, null, 4))
 
   const no = getPlayerNo(data);
   const version = getVersion(info);

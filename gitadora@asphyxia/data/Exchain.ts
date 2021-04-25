@@ -4,9 +4,9 @@ export async function processData() {
   if (IO.Exists("data/mdb_ex.b64")) {
     return await readB64JSON("data/mdb_ex.b64");
   }
-  const data = await readJSONOrXML('data/mdb_nt.json', 'data/mdb_nt.xml', processRawData)
-  // await IO.WriteFile("data/mdb_ex.b64", Buffer.from(JSON.stringify(data)).toString("base64"))
-  return data
+  const { music } = await readJSONOrXML('data/mdb_ex.json', 'data/mdb_ex.xml', processRawData)
+  await IO.WriteFile("data/mdb_ex.b64", Buffer.from(JSON.stringify({music})).toString("base64"))
+  return { music };
 }
 
 export async function processRawData(path: string): Promise<CommonMusicData> {

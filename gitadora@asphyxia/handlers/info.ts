@@ -19,6 +19,7 @@ export const gameInfoGet: EPR = async (info, data, send) => {
       bonus_musicid: K.ITEM('s32', 0),
     },
     bear_fes: {},
+    nextadium: {},
   };
   const time = BigInt(31536000);
   for (let i = 1; i <= 20; ++i) {
@@ -41,6 +42,18 @@ export const gameInfoGet: EPR = async (info, data, send) => {
       addition['sticker_campaign'] = {
         term: K.ITEM('u8', 0),
         sticker_list: {},
+      };
+      addition['thanksgiving'] = {
+        ...obj,
+        box_term: {
+          state: K.ITEM('u8', 0)
+        }
+      };
+      addition['lotterybox'] = {
+        ...obj,
+        box_term: {
+          state: K.ITEM('u8', 0)
+        }
       };
     } else {
       addition[`phrase_combo_challenge_${i}`] = obj;
