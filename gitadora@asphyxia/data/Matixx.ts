@@ -5,7 +5,7 @@ export async function processData() {
     return await readB64JSON("data/mdb_mt.b64");
   }
   const { music } = await readJSONOrXML('data/mdb_mt.json', 'data/mdb_mt.xml', processRawData)
-  await IO.WriteFile("data/mdb_mt.b64", Buffer.from(JSON.stringify({music})).toString("base64"))
+  // await IO.WriteFile("data/mdb_mt.b64", Buffer.from(JSON.stringify({music})).toString("base64"))
   return { music };
 }
 

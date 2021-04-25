@@ -758,7 +758,6 @@ async function registerUser(refid: string, version: string, id = _.random(0, 999
 export const savePlayer: EPR = async (info, data, send) => {
   const refid = $(data).str('player.refid');
   if (!refid) return send.deny();
-  console.debug(JSON.stringify(data.obj, null, 4))
 
   const no = getPlayerNo(data);
   const version = getVersion(info);
