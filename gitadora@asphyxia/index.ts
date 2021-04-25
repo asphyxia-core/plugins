@@ -30,7 +30,7 @@ export function register() {
     // Helper for register multiple versions.
     R.Route(`exchain_${method}`, handler);
     R.Route(`matixx_${method}`, handler);
-    // TODO: NEXTAGE
+    R.Route(`nextage_${method}`, handler)
     // TODO: TB, TBRE and more older version?
   };
 

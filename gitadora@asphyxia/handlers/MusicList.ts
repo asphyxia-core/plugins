@@ -1,6 +1,7 @@
 import { getVersion } from "../utils";
 import { processData as ExchainMusic } from "../data/Exchain"
 import { processData as MatixxMusic } from "../data/Matixx"
+import { processData as NextageMusic } from "../data/Nextage"
 import { CommonMusicDataField, readJSONOrXML, readXML } from "../data/helper";
 
 export const playableMusic: EPR = async (info, data, send) => {
@@ -60,7 +61,9 @@ export const playableMusic: EPR = async (info, data, send) => {
   }
 
   if (music.length == 0) {
-    if (version == 'exchain') {
+    if (version == 'nextage') {
+      music = _.get(await NextageMusic(), 'music', []);
+    } else if (version == 'exchain') {
       music = _.get(await ExchainMusic(), 'music', []);
     } else {
       music = _.get(await MatixxMusic(), 'music', []);
