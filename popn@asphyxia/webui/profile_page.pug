@@ -1,7 +1,67 @@
+//DATA//
+  profile: DB.FindOne(refid, { collection: 'profile' })
+  rivals: DB.FindOne(refid, { collection: 'rivals' })
+
 div
   div.notification.is-success.is-hidden#import-success
     .field
-        label.label.is-small Data imported
+        label.label.is-small Data imported  
+  .card
+    .card-header
+      p.card-header-title
+        span.icon
+          i.mdi.mdi-account-edit
+        | User Detail
+    .card-content
+      form(method="post" action="/emit/updatePnmPlayerInfo")
+        input(type="hidden" id="refid" name="refid" value=refid)
+        .field
+          label.label Name
+          .control
+            input.input(type="text" name="name" maxlength="6", value=profile.name)
+        .field
+          button.button.is-primary(type="submit")
+            span.icon
+              i.mdi.mdi-check
+            span Submit
+  .card
+    .card-header
+      p.card-header-title
+        span.icon
+          i.mdi.mdi-account-edit
+        | Rivals
+    .card-content
+      .columns.is-multiline
+        if rivals != null
+          - for (const rival of rivals.rivals)
+            form(method="post" action="/emit/deleteRival").column.is-4
+              .box
+                input(type="hidden" id="refid" name="refid" value=refid)
+                input(type="hidden" id="rivalid" name="rivalid" value=rival)
+                .field
+                  input.input(type="text" value=rival disabled="disabled")
+                .field
+                  button.button.is-primary
+                      span.icon
+                        i.mdi.mdi-file-import-outline
+                      span Delete
+        if rivals == null || rivals.rivals.length < 4
+          form(method="post" action="/emit/addRival").column.is-4
+            .box
+              input(type="hidden" id="refid" name="refid" value=refid)
+              .field
+                input.input(type="text" id="rivalid" name="rivalid" placeholder="Rival ID (ex. AAB56E7436549D83)")
+              .field
+                button.button.is-primary
+                    span.icon
+                      i.mdi.mdi-file-import-outline
+                    span Add
+      div
+        label To add a rival, use the profile ID located on the POPN Profiles page.
+      div
+        label There is a limit of 4 rivals maximum (only the 2 firsts will be used for Sunny Park and lower).
+      div
+        label The score sharing option also affect scores get from rivals.
   .card
     .card-header
       p.card-header-title
@@ -9,7 +69,6 @@ div
           i.mdi.mdi-account-edit
         | Import data
     .card-content
-      input(type="hidden" id="refid" name="refid" value=refid)
       .field
         label.label Import data from previous Asphyxia (non-core)
       .field
@@ -19,6 +78,9 @@ div
       .field
         label.help.is-danger /!\ Please backup your savedata.db before importing data /!\
       .field
-        button.button.is-primary#import-click Import
+        button.button.is-primary#import-click
+            span.icon
+              i.mdi.mdi-file-import-outline
+            span Import
 
 script(src="static/js/profile_page.js")

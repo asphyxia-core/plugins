@@ -11,6 +11,9 @@ export interface Profile {
   packets: number;
   blocks: number;
 
+  expPoint: number;
+  mUserCnt: number;
+
   musicID: number;
   musicType: number;
   sortType: number;
@@ -28,4 +31,6 @@ export interface Profile {
   effCLeft: number;
   effCRight: number;
   narrowDown: number;
+
+  boothFrame: number[];
 }
