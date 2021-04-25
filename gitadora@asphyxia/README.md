@@ -6,10 +6,15 @@ Supported Versions
 ==================
  - Matixx
  - Exchain
-
+ - NEX+AGE (Work In Progress)
 
 Release Notes
 =============
-v1.0.0 (Current)
+
+v1.1.0 (Current)
 ----------------
+ * NEX+AGE Support (WIP)
+ 
+v1.0.0
+------
  * Initial release for public

@@ -34,3 +34,8 @@ export async function readJSONOrXML(jsonPath: string, xmlPath: string, processHa
     return json
   }
 }
+
+export async function readB64JSON(b64path: string) {
+  const buff = await IO.ReadFile(b64path, 'utf-8');
+  return JSON.parse(Buffer.from(buff, 'base64').toString('utf-8'));
+}

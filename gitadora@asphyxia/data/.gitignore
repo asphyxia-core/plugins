@@ -1,7 +1,7 @@
 mdb_ex.xml
 mdb_mt.xml
 mdb_nt.xml
-mdb_ex.b64
-mdb_mt.b64
-mdb.nt.b64
+mdb_ex.json
+mdb_mt.json
+mdb_nt.json
 custom_mdb.xml
