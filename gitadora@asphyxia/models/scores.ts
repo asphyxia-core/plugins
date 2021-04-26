@@ -2,7 +2,7 @@ export interface Scores {
   collection: 'scores';
 
   game: 'gf' | 'dm';
-  version: string;
+  version?: string;
   pluginVer: number
 
   scores: {

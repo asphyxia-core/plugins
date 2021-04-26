@@ -1,13 +1,17 @@
 GITADORA Plugin for Asphyxia-Core
 =================================
-This plugin is converted from public-exported Asphyxia's Routes.
+This plugin is based on converted from public-exported Asphyxia's Routes.
 
 Supported Versions
 ==================
  - Matixx
  - Exchain
- - NEX+AGE (Beta)
+ - NEX+AGE
 
+
+Profile sharing between version (WIP)
+-------------------------------------
+Only scores are shared between versions. As It's planned to support some Version-specific features.
 
 Note about newer version of Asphyxia Core
 -----------------------------------------
@@ -16,8 +20,13 @@ Since newer version of Core separate the save db per each plugin, Seems there wa
 Release Notes
 =============
 
-v1.1.0 (Current)
-----------------
+v2.0.0 (Current, WIP)
+---------------------
+* Support score shares between versions.
+
+
+v1.1.0-beta
+------------
  * NEX+AGE Support (Beta)
  
 v1.0.0

@@ -2,12 +2,15 @@ import { gameInfoGet, shopInfoRegist } from "./handlers/info";
 import { playableMusic } from "./handlers/MusicList"
 import { getPlayer, check, regist, savePlayer } from "./handlers/profiles";
 import { updatePlayerInfo } from "./handlers/webui";
-import { isRequiredVersion } from "./utils";
+import { isRequiredCoreVersion } from "./utils";
+import { initialze as migrationInitialize } from "./utils/migration"
 
 export function register() {
-  if(!isRequiredVersion(1, 20)) {
+  if(!isRequiredCoreVersion(1, 20)) {
     console.error("You need newer version of Core. v1.20 or newer required.")
   }
+
+  migrationInitialize()
 
   R.GameCode('M32');
 

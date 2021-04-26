@@ -11,7 +11,7 @@ export const getVersion = (info: EamuseInfo) => {
   return moduleName.match(/([^_]*)_(.*)/)[1];
 };
 
-export function isRequiredVersion(major: number, minor: number) {
+export function isRequiredCoreVersion(major: number, minor: number) {
   // version value exposed since Core v1.19
   const core_major = typeof CORE_VERSION_MAJOR === "number" ? CORE_VERSION_MAJOR : 1
   const core_minor = typeof CORE_VERSION_MINOR === "number" ? CORE_VERSION_MINOR : 18   
