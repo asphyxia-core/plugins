@@ -13,9 +13,10 @@ export interface CommonMusicData {
 }
 
 export enum DATAVersion {
-  NEXTAGE = "nt",
-  EXCHAIN = "ex",
-  MATTIX  = "mt"
+  HIGHVOLTAGE = "hv",
+  NEXTAGE     = "nt",
+  EXCHAIN     = "ex",
+  MATTIX      = "mt"
 }
 
 type processRawDataHandler = (path: string) => Promise<CommonMusicData>
@@ -50,6 +51,8 @@ export async function readB64JSON(b64path: string) {
 
 export function gameVerToDataVer(ver: string): DATAVersion {
   switch(ver) {
+    case 'highvoltage':
+      return DATAVersion.HIGHVOLTAGE
     case 'nextage':
       return DATAVersion.NEXTAGE
     case 'excahin':
