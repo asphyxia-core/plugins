@@ -1,6 +1,11 @@
 export const check: EPR = (info, data, send) => {
   const enter = $(data).bool('data.enter');
   const time = $(data).number('data.time');
+
+  // enter
+  // 0 - game is loading
+  // 1 - music select screen
+
   return send.object({
     data: {
       entrant_nr: K.ITEM('u32', 1, { time: String(time) }),

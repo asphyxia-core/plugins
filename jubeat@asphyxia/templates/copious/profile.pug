@@ -1,0 +1,83 @@
+gametop
+  data
+    player
+      name(__type="str") #{name}
+      jid(__type="s32") #{jubeatId}
+      session_id(__type="s32") 1
+
+      info
+        inherit(__type="bool") #{migration ? 1 : 0}
+        jubility(__type="s16") #{jubility}
+        jubility_yday(__type="s16") #{jubilityYday}
+        acv_point(__type="s32") 0
+        acv_state(__type="s8") 0
+        acv_throw(__type="s32") 0
+        acv_own(__type="s32") 0
+        tune_cnt(__type="s32") #{tuneCount}
+        save_cnt(__type="s32") #{saveCount}
+        saved_cnt(__type="s32") #{savedCount}
+        fc_cnt(__type="s32") #{fullcomboCount}
+        ex_cnt(__type="s32") #{excellentCount}
+        match_cnt(__type="s32") #{matchCount}
+        beat_cnt(__type="s32") #{beatCount}
+        mynews_cnt(__type="s32") #{mynewsCount}
+        mtg_entry_cnt(__type="s32") 0
+        mtg_hold_cnt(__type="s32") 0
+        mtg_result(__type="u8") 0
+
+      last
+        play_time(__type="s64") #{last.playTime || 0}
+        shopname(__type="str") #{last.shopname}
+        areaname(__type="str") #{last.areaname}
+        title(__type="s16") #{last.title}
+        parts(__type="s16") #{last.parts || 0}
+        theme(__type="s8") #{last.theme}
+        marker(__type="s8") #{last.marker}
+        rank_sort(__type="s8") #{last.showRank}
+        combo_disp(__type="s8") #{last.showCombo}
+        music_id(__type="s32") #{last.musicId}
+        seq_id(__type="s8") #{last.seqId}
+        sort(__type="s8") #{last.sort}
+        category(__type="s8") #{last.category || 0}
+        msel_stat(__type="s8") #{last.mselStat}
+
+      item
+        secret_list(__type="s32" __count="12") #{Array(1).fill(0)}
+        theme_list(__type="s16") 0
+        marker_list(__type="s32" __count="2") #{Array(1).fill(0)}
+        title_list(__type="s32" __count="32") #{Array(1).fill(0)}
+        parts_list(__type="s32" __count="32") #{Array(1).fill(0)}
+        new
+          secret_list(__type="s32" __count="12") #{Array(1).fill(0)}
+            theme_list(__type="s16") 0
+            marker_list(__type="s32" __count="2") #{Array(1).fill(0)}
+            title_list(__type="s32" __count="32") #{Array(1).fill(0)}
+
+      challenge
+        today
+          music_id(__type="s32") 0
+        onlynow
+          magic_no(__type="s32") 0
+          cycle(__type="s16") 0
+        group
+          music_id(__type="s32") 0
+          rate(__type="float") 1.0
+          reward
+            total(__type="s32") 0
+            point(__type="s32") 0
+
+      news
+        checked(__type="s16") 0
+
+      rivallist(count="0")
+
+      group
+        group_id(__type="s32") 0
+
+      bingo
+        music_id(__type="s32") 0
+        reward
+          total(__type="s32") 0
+          point(__type="s32") 0
+
+    history(count="0")

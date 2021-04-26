@@ -8,6 +8,7 @@ export function register() {
     return;
   }
   R.GameCode("J44");
+  R.GameCode("K44");
 
   R.Config("unlock_all_songs", {
     name: "Unlock All Songs",
@@ -31,6 +32,8 @@ export function register() {
     range: [15, 99],
   });
 
+  R.Route("shopinfo.regist", shopinfo);
+
   R.Route("gametop.regist", profile);
   R.Route("gametop.get_pdata", profile);
   R.Route("gametop.get_mdata", loadScore);
@@ -50,6 +53,8 @@ export function register() {
   R.Route("lobby.entry", entry);
   R.Route("lobby.refresh", refresh);
   R.Route("lobby.report", report);
+
+  R.Route("logger.report", true);
 
   R.Unhandled((info, data, send) => {
     console.log(info.module, info.method);

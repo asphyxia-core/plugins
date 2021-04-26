@@ -1,20 +1,22 @@
 import {getVersion} from "../utils";
 
 export const shopinfo: EPR = (info, data, send) => {
-  const locId = $(data.shop).content("locationid");
+  const locId = $(data).content("shop.locationid");
   const version = getVersion(info);
   if (version === 0) return send.deny();
 
-  if (version === 3) return send.object({
-    data: {
-      cabid: K.ITEM('u32', 1),
-      locationid: K.ITEM('str', locId),
-      is_send: K.ITEM("u8", 1)
-    }
-  })
+  if (version === 3 || version === 4) {
+    return send.object({
+      data: {
+        cabid: K.ITEM('u32', 1),
+        locationid: K.ITEM('str', locId),
+        is_send: K.ITEM("u8", 1)
+      }
+    });
+  }
 
   return send.deny();
-}
+};
 
 export const demodata = {
   getNews: (_, __, send) => send.object({ data: { officialnews: K.ATTR({ count: "0" }) } }),
@@ -47,4 +49,4 @@ export const netlog: EPR = (info, data, send) => {
   const errMsg = $(data).str('msg');
   console.error(errMsg);
   return send.success();
-}
+};

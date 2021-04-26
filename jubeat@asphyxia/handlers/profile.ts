@@ -16,10 +16,12 @@ export const profile: EPR = async (info, data, send) => {
   if (!profile) {
     if (!name) return send.deny();
 
-    const newProfile = new Profile();
-    newProfile.jubeatId = _.random(1, 99999999);
-    newProfile.name = name;
-    newProfile.previous_version = version;
+    const newProfile: Profile = {
+      collection: 'profile',
+      jubeatId: _.random(1, 99999999),
+      name: name,
+      previous_version: version
+    };
 
     await DB.Upsert<Profile>(refId, { collection: "profile" }, newProfile);
 
@@ -39,6 +41,63 @@ export const profile: EPR = async (info, data, send) => {
   }
 
   if (version === 3) {
+    if (!profile.knit) {
+      profile.knit = {
+        collabo: { completed: false, success: false },
+        info: {
+          acvPoint: 0,
+          acvProg: 0,
+          acvRouteProg: Array(4).fill(0),
+          acvWool: 0,
+          beatCount: 0,
+          conciergeSelectedCount: 0,
+          excellentCount: 0,
+          excellentSeqCount: 0,
+          fullcomboCount: 0,
+          fullcomboSeqCount: 0,
+          jubility: 0,
+          jubilityYday: 0,
+          matchCount: 0,
+          mynewsCount: 0,
+          saveCount: 0,
+          savedCount: 0,
+          tagCount: 0,
+          tuneCount: 0
+        },
+        item: {
+          markerList: Array(2).fill(0),
+          secretList: Array(2).fill(0),
+          themeList: 0,
+          titleList: Array(24).fill(0)
+        },
+        item_new: {
+          markerList: Array(2).fill(0),
+          secretList: Array(2).fill(0),
+          themeList: 0,
+          titleList: Array(24).fill(0)
+        },
+        last: {
+          areaname: 'NONE',
+          category: 0,
+          conciergeSuggestId: 0,
+          filter: 0,
+          marker: 0,
+          mselStat: 0,
+          musicId: 0,
+          parts: 0,
+          playTime: "0",
+          seqEditId: '',
+          seqId: 0,
+          shopname: 'NONE',
+          showCombo: 0,
+          showRank: 0,
+          sort: 0,
+          theme: 0,
+          title: 0
+        }
+      };
+      await DB.Update(refId, { collection: "profile" }, profile);
+    }
     if (U.GetConfig("unlock_all_songs")) {
       profile.knit.item = {
         secretList: [-1, -1],
@@ -53,14 +112,25 @@ export const profile: EPR = async (info, data, send) => {
         titleList: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
       };
     }
-    return send.pugFile('templates/knit/profile.pug', { refId, migration, ...profile }, { compress: false });
+    return send.pugFile('templates/knit/profile.pug', {
+      refId,
+      migration,
+      name: profile.name,
+      jubeatId: profile.jubeatId, ...profile.knit
+    }, { compress: true });
+  }
+
+  if (version === 4) {
+    if (U.GetConfig("unlock_all_songs")) {
+
+    }
+    return send.pugFile('templates/copious/profile.pug', { refId, migration, ...profile }, { compress: false });
   }
 
   return send.deny();
 };
 
 export const saveProfile: EPR = async (info, { data }, send) => {
-  console.log(U.toXML(data));
   const player = $(data).element("player");
 
   const refId = player.str("refid");
@@ -74,69 +144,67 @@ export const saveProfile: EPR = async (info, { data }, send) => {
   if (version === 3) {
     profile.name = player.str("name");
 
-    profile.last.shopname = player.str("shopname", profile.last.shopname);
-    profile.last.areaname = player.str("areaname", profile.last.areaname);
+    const { info, last, item, item_new, collabo } = profile.knit;
 
-    profile.jubility = player.number("info.jubility", profile.jubility);
-    profile.jubilityYday = player.number("info.jubility_yday", profile.jubilityYday);
+    last.shopname = player.str("shopname", last.shopname);
+    last.areaname = player.str("areaname", last.areaname);
 
-    profile.knit.acvProg = player.number("info.acv_prog", profile.knit.acvProg);
-    profile.knit.acvWool = player.number("info.acv_wool", profile.knit.acvWool);
-    profile.knit.acvRouteProg = player.numbers("info.acv_route_prog", profile.knit.acvRouteProg);
-    profile.knit.acvPoint = player.number("info.acv_point", profile.knit.acvPoint);
+    info.jubility = player.number("info.jubility", info.jubility);
+    info.jubilityYday = player.number("info.jubility_yday", info.jubilityYday);
+    info.acvProg = player.number("info.acv_prog", info.acvProg);
+    info.acvWool = player.number("info.acv_wool", info.acvWool);
+    info.acvRouteProg = player.numbers("info.acv_route_prog", info.acvRouteProg);
+    info.acvPoint = player.number("info.acv_point", info.acvPoint);
+    info.tuneCount = player.number("info.tune_cnt", info.tuneCount);
+    info.saveCount = player.number("info.save_cnt", info.saveCount);
+    info.savedCount = player.number("info.saved_cnt", info.savedCount);
+    info.fullcomboCount = player.number("info.fc_cnt", info.fullcomboCount);
+    info.fullcomboSeqCount = player.number("info.fc_seq_cnt", info.fullcomboSeqCount);
+    info.excellentCount = player.number("info.exc_cnt", info.excellentCount);
+    info.excellentSeqCount = player.number("info.exc_seq_cnt", info.excellentSeqCount);
+    info.matchCount = player.number("info.match_cnt", info.matchCount);
+    info.beatCount = player.number('info.beat_cnt', info.beatCount);
+    info.conciergeSelectedCount = player.number('info.con_sel_cnt', info.conciergeSelectedCount);
+    info.tagCount = player.number('info.tag_cnt', info.tagCount);
+    info.mynewsCount = player.number('info.mynews_cnt', info.mynewsCount);
 
-    profile.tuneCount = player.number("info.tune_cnt", profile.tuneCount);
-    profile.saveCount = player.number("info.save_cnt", profile.saveCount);
-    profile.savedCount = player.number("info.saved_cnt", profile.savedCount);
-    profile.fullcomboCount = player.number("info.fc_cnt", profile.fullcomboCount);
-    profile.fullcomboSeqCount = player.number("info.fc_seq_cnt", profile.fullcomboSeqCount);
-    profile.excellentCount = player.number("info.exc_cnt", profile.excellentCount);
-    profile.excellentSeqCount = player.number("info.exc_seq_cnt", profile.excellentSeqCount);
-    profile.matchCount = player.number("info.match_cnt", profile.matchCount);
-    profile.beatCount = player.number('info.beat_cnt', profile.beatCount);
-    profile.conciergeSelectedCount = player.number('info.con_sel_cnt', profile.conciergeSelectedCount);
-    profile.tagCount = player.number('info.tag_cnt', profile.tagCount);
-    profile.mynewsCount = player.number('info.mynews_cnt', profile.mynewsCount);
+    last.conciergeSuggestId = player.number('info.con_suggest_id', last.conciergeSuggestId);
+    last.playTime = String(new Date().getTime());
 
     if (!U.GetConfig("unlock_all_songs")) {
-      profile.knit.item.secretList = player.numbers('item.secret_list', profile.knit.item.secretList);
-      profile.knit.item.themeList = player.number('item.theme_list', profile.knit.item.themeList);
-      profile.knit.item.markerList = player.numbers('item.marker_list', profile.knit.item.markerList);
-      profile.knit.item.titleList = player.numbers('item.title_list', profile.knit.item.titleList);
+      item.secretList = player.numbers('item.secret_list', item.secretList);
+      item.themeList = player.number('item.theme_list', item.themeList);
+      item.markerList = player.numbers('item.marker_list', item.markerList);
+      item.titleList = player.numbers('item.title_list', item.titleList);
 
-      profile.knit.item_new.secretList = player.numbers('item.secret_new', profile.knit.item_new.secretList);
-      profile.knit.item_new.themeList = player.number('item.theme_new', profile.knit.item_new.themeList);
-      profile.knit.item_new.markerList = player.numbers('item.marker_new', profile.knit.item_new.markerList);
-      profile.knit.item_new.titleList = player.numbers('item.title_new', profile.knit.item_new.titleList);
+      item_new.secretList = player.numbers('item.secret_new', profile.knit.item_new.secretList);
+      item_new.themeList = player.number('item.theme_new', profile.knit.item_new.themeList);
+      item_new.markerList = player.numbers('item.marker_new', profile.knit.item_new.markerList);
+      item_new.titleList = player.numbers('item.title_new', profile.knit.item_new.titleList);
     }
 
-    profile.last.conciergeSuggestId = player.number('info.con_suggest_id', profile.last.conciergeSuggestId);
-    profile.last.playTime = BigInt(new Date().getMilliseconds());
-
     // Append
-    const collabo = player.element("collabo");
-    if (collabo) {
-      profile.knit.collabo.success = collabo.bool("success");
-      profile.knit.collabo.completed = collabo.bool("completed");
+    const collaboNode = player.element("collabo");
+    if (collaboNode) {
+      collabo.success = collaboNode.bool("success");
+      collabo.completed = collaboNode.bool("completed");
     }
 
     const result = $(data).element("result");
-
     if (result) {
       const tunes = result.elements("tune");
-
       for (const tune of tunes) {
         const musicId = tune.number("music", 0);
-        profile.last.musicId = musicId;
-        profile.last.seqId = parseInt(tune.attr("player.score").seq) || 0;
-        profile.last.title = tune.number("title", profile.last.title);
-        profile.last.theme = tune.number("theme", profile.last.theme);
-        profile.last.marker = tune.number("marker", profile.last.marker);
-        profile.last.sort = tune.number("sort", profile.last.sort);
-        profile.last.filter = tune.number("filter", profile.last.filter);
-        profile.last.showRank = tune.number("combo_disp", profile.last.showRank);
-        profile.last.showCombo = tune.number("rank_sort", profile.last.showCombo);
-        profile.last.mselStat = tune.number("msel_stat", profile.last.mselStat);
+        last.musicId = musicId;
+        last.seqId = parseInt(tune.attr("player.score").seq) || 0;
+        last.title = tune.number("title", last.title);
+        last.theme = tune.number("theme", last.theme);
+        last.marker = tune.number("marker", last.marker);
+        last.sort = tune.number("sort", last.sort);
+        last.filter = tune.number("filter", last.filter);
+        last.showRank = tune.number("combo_disp", last.showRank);
+        last.showCombo = tune.number("rank_sort", last.showCombo);
+        last.mselStat = tune.number("msel_stat", last.mselStat);
 
         const score = tune.number('player.score');
         const seq = parseInt(tune.attr('player.score').seq);
@@ -158,13 +226,15 @@ export const saveProfile: EPR = async (info, { data }, send) => {
         });
       }
     }
+  }
 
+  try {
     await DB.Update<Profile>(refId, { collection: "profile" }, profile);
 
     return send.object({ data: { player: { session_id: K.ITEM('s32', 1) } } });
+  } catch {
+    return send.deny();
   }
-
-  return send.deny();
 };
 
 export const loadScore: EPR = async (info, data, send) => {

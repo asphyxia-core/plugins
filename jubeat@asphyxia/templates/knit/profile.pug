@@ -1,89 +1,89 @@
 gametop
-    data
-        player
-            name(__type="str") #{name}
-            jid(__type="s32") #{jubeatId}
-            refid(__type="str") #{refId}
-            session_id(__type="s32") 1
+  data
+    player
+      name(__type="str") #{name}
+      jid(__type="s32") #{jubeatId}
+      refid(__type="str") #{refId}
+      session_id(__type="s32") 1
 
-            info
-                inherit(__type="bool") #{migration ? 1 : 0}
-                jubility(__type="s16") #{jubility}
-                jubility_yday(__type="s16") #{jubilityYday}
-                acv_prog(__type="s8") #{knit.acvProg}
-                acv_wool(__type="s8") #{knit.acvWool}
-                acv_route_prog(__type="s8" __count="4") #{knit.acvRouteProg.join(" ")}
-                acv_point(__type="s32") #{knit.acvPoint}
-                tune_cnt(__type="s32") #{tuneCount}
-                save_cnt(__type="s32") #{saveCount}
-                saved_cnt(__type="s32") #{savedCount}
-                fc_cnt(__type="s32") #{fullcomboCount}
-                ex_cnt(__type="s32") #{excellentCount}
-                match_cnt(__type="s32") #{matchCount}
-                beat_cnt(__type="s32") #{beatCount}
-                mynews_cnt(__type="s32") #{mynewsCount}
-                con_sel_cnt(__type="s32") #{conciergeSelectedCount}
-                tag_cnt(__type="s32") #{tagCount}
-                mtg_entry_cnt(__type="s32") 0
-                tag_entry_cnt(__type="s32") 0
-                mtg_hold_cnt(__type="s32") 0
-                tag_hold_cnt(__type="s32") 0
-                mtg_result(__type="u8") 0
+      info
+        inherit(__type="bool") #{migration ? 1 : 0}
+        jubility(__type="s16") #{info.jubility}
+        jubility_yday(__type="s16") #{info.jubilityYday}
+        acv_prog(__type="s8") #{info.acvProg}
+        acv_wool(__type="s8") #{info.acvWool}
+        acv_route_prog(__type="s8" __count="4") #{info.acvRouteProg.join(" ")}
+        acv_point(__type="s32") #{info.acvPoint}
+        tune_cnt(__type="s32") #{info.tuneCount}
+        save_cnt(__type="s32") #{info.saveCount}
+        saved_cnt(__type="s32") #{info.savedCount}
+        fc_cnt(__type="s32") #{info.fullcomboCount}
+        ex_cnt(__type="s32") #{info.excellentCount}
+        match_cnt(__type="s32") #{info.matchCount}
+        beat_cnt(__type="s32") #{info.beatCount}
+        mynews_cnt(__type="s32") #{info.mynewsCount}
+        con_sel_cnt(__type="s32") #{info.conciergeSelectedCount}
+        tag_cnt(__type="s32") #{info.tagCount}
+        mtg_entry_cnt(__type="s32") 0
+        tag_entry_cnt(__type="s32") 0
+        mtg_hold_cnt(__type="s32") 0
+        tag_hold_cnt(__type="s32") 0
+        mtg_result(__type="u8") 0
 
-            last
-                play_time(__type="s64") #{last.playTime || 0}
-                shopname(__type="str") #{last.shopname}
-                areaname(__type="str") #{last.areaname}
-                title(__type="s16") #{last.title}
-                theme(__type="s8") #{last.theme}
-                marker(__type="s8") #{last.marker}
-                rank_sort(__type="s8") #{last.showRank}
-                combo_disp(__type="s8") #{last.showCombo}
-                music_id(__type="s32") #{last.musicId}
-                seq_id(__type="s8") #{last.seqId}
-                sort(__type="s8") #{last.sort}
-                filter(__type="s32") #{last.filter}
-                msel_stat(__type="s8") #{last.mselStat}
-                con_suggest_id(__type="s8") #{last.conciergeSuggestId}
+      last
+        play_time(__type="s64") #{last.playTime}
+        shopname(__type="str") #{last.shopname}
+        areaname(__type="str") #{last.areaname}
+        title(__type="s16") #{last.title}
+        theme(__type="s8") #{last.theme}
+        marker(__type="s8") #{last.marker}
+        rank_sort(__type="s8") #{last.showRank}
+        combo_disp(__type="s8") #{last.showCombo}
+        music_id(__type="s32") #{last.musicId}
+        seq_id(__type="s8") #{last.seqId}
+        sort(__type="s8") #{last.sort}
+        filter(__type="s32") #{last.filter}
+        msel_stat(__type="s8") #{last.mselStat}
+        con_suggest_id(__type="s8") #{last.conciergeSuggestId}
 
-            item
-                secret_list(__type="s32" __count="2") #{knit.item.secretList.join(" ")}
-                theme_list(__type="s16") #{knit.item.themeList}
-                marker_list(__type="s32" __count="2") #{knit.item.markerList.join(" ")}
-                title_list(__type="s32" __count="24") #{knit.item.titleList.join(" ")}
+      item
+        secret_list(__type="s32" __count="2") #{item.secretList.join(" ")}
+        theme_list(__type="s16") #{item.themeList}
+        marker_list(__type="s32" __count="2") #{item.markerList.join(" ")}
+        title_list(__type="s32" __count="24") #{item.titleList.join(" ")}
 
-                new
-                    secret_list(__type="s32" __count="2") #{knit.item_new.secretList.join(" ")}
-                    theme_list(__type="s16") #{knit.item_new.themeList}
-                    marker_list(__type="s32" __count="2") #{knit.item_new.markerList.join(" ")}
-                    title_list(__type="s32" __count="24") #{knit.item_new.titleList.join(" ")}
+        new
+          secret_list(__type="s32" __count="2") #{item_new.secretList.join(" ")}
+          theme_list(__type="s16") #{item_new.themeList}
+          marker_list(__type="s32" __count="2") #{item_new.markerList.join(" ")}
+          title_list(__type="s32" __count="24") #{item_new.titleList.join(" ")}
 
-            today_music
-                music_id(__type="s32") 0
+      today_music
+        music_id(__type="s32") 0
 
-            news
-                checked(__type="s16") 0
+      news
+        checked(__type="s16") 0
 
-            friendlist(count="0")
+      friendlist(count="0")
 
-            lucky_music
-                music_id(__type="s32") 0
+      lucky_music
+        music_id(__type="s32") 0
 
-            mylist(count="0")
+      mylist(count="0")
 
-            group
-                group_id(__type="s32") 0
+      group
+        group_id(__type="s32") 0
 
-            bingo
-                reward
-                    total(__type="s32") 0
-                    point(__type="s32") 0
+      bingo
+        reward
+          total(__type="s32") 0
+          point(__type="s32") 0
 
-            collabo
-                success(__type="bool") #{knit.collabo.success ? 1 : 0}
-                completed(__type="bool") #{knit.collabo.completed ? 1 : 0}
+      collabo
+        success(__type="bool") #{collabo.success ? 1 : 0}
+        completed(__type="bool") #{collabo.completed ? 1 : 0}
 
-        history
-            play_hist(count="0")
+    history
+      play_hist(count="0")
 
-            match_hist(count="0")
+      match_hist(count="0")
