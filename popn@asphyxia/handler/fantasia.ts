@@ -211,7 +211,7 @@ export const friend = async (req: EamuseInfo, data: any, send: EamuseSend): Prom
         const profile = await utils.readProfile(rival);
         const params = await utils.readParams(rival, version);
 
-        const scores = await getScores(refid);
+        const scores = await getScores(rival);
 
         result.friend.push({
             open: K.ITEM('s8', 1),
