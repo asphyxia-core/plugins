@@ -100,7 +100,7 @@ export async function defaultProcessRawData(path: string): Promise<CommonMusicDa
       cont_dm: K.ITEM('bool', dm == 0 ? 0 : 1),
       is_secret: K.ITEM('bool', 0),
       is_hot: K.ITEM('bool', type == 2 ? 0 : 1),
-      data_ver: K.ITEM('s32', m.number("data_ver")),
+      data_ver: K.ITEM('s32', m.number("data_ver", 115)),
       diff: K.ARRAY('u16', [
         d[0],
         d[1],
