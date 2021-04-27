@@ -32,17 +32,14 @@ export default interface Profile {
       areaname: string;
       playTime: string;
       title: number;
-      parts: number;
       theme: number;
       marker: number;
       showRank: number;
       showCombo: number;
       musicId: number;
       seqId: number;
-      seqEditId: string;
       sort: number;
       filter: number;
-      category: number;
       mselStat: number;
       conciergeSuggestId: number;
     };
@@ -61,6 +58,63 @@ export default interface Profile {
     collabo: {
       success: boolean;
       completed: boolean;
+    }
+  };
+
+  copious?: {
+    info: {
+      jubility: number;
+      jubilityYday: number;
+      acvPoint: number;
+      acvState: number;
+      acvThrow: number[];
+      acvOwn: number;
+      tuneCount: number;
+      saveCount: number;
+      savedCount: number;
+      fullComboCount: number;
+      fullComboSeqCount: number;
+      excellentCount: number;
+      excellentSeqCount: number;
+      matchCount: number;
+      beatCount: number;
+      mynewsCount: number;
+      totalBestScore: number;
+    },
+    last: {
+      playTime: string;
+      shopname: string;
+      areaname: string;
+      title: number;
+      parts: number;
+      theme: number;
+      marker: number;
+      showRank: number;
+      showCombo: number;
+      musicId: number;
+      seqId: number;
+      sort: number;
+      category: number;
+      mselStat: number;
+    },
+    item: {
+      secretList: number[];
+      themeList: number;
+      markerList: number[];
+      titleList: number[];
+      partsList: number[];
+    },
+    item_new: {
+      secretList: number[];
+      themeList: number;
+      markerList: number[];
+      titleList: number[];
+    },
+    collabo: {
+      dailyMusicId: number;
+      served: number;
+      wonderState: number;
+      yellowState: number;
     }
   };
 }

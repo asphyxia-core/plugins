@@ -32,7 +32,6 @@ export const profile: EPR = async (info, data, send) => {
   if (profile.previous_version < version) {
     migration = true;
     profile.name = "";
-    await DB.Update<Profile>(refId, { collection: "profile" }, { $set: { name: "", previous_version: version } });
   }
 
   if (name) {
@@ -78,19 +77,16 @@ export const profile: EPR = async (info, data, send) => {
         },
         last: {
           areaname: 'NONE',
-          category: 0,
           conciergeSuggestId: 0,
           filter: 0,
           marker: 0,
           mselStat: 0,
           musicId: 0,
-          parts: 0,
           playTime: "0",
-          seqEditId: '',
           seqId: 0,
           shopname: 'NONE',
-          showCombo: 0,
-          showRank: 0,
+          showCombo: 1,
+          showRank: 1,
           sort: 0,
           theme: 0,
           title: 0
@@ -116,21 +112,95 @@ export const profile: EPR = async (info, data, send) => {
       refId,
       migration,
       name: profile.name,
-      jubeatId: profile.jubeatId, ...profile.knit
+      jubeatId: profile.jubeatId,
+      ...profile.knit
     }, { compress: true });
   }
 
   if (version === 4) {
-    if (U.GetConfig("unlock_all_songs")) {
-
+    if (!profile.copious) {
+      profile.copious = {
+        collabo: { dailyMusicId: 0, served: 0, wonderState: 0, yellowState: 0 },
+        info: {
+          acvOwn: 0,
+          acvPoint: 0,
+          acvState: 0,
+          acvThrow: [0, 0, 0],
+          beatCount: 0,
+          excellentCount: 0,
+          excellentSeqCount: 0,
+          fullComboCount: 0,
+          fullComboSeqCount: 0,
+          jubility: 0,
+          jubilityYday: 0,
+          matchCount: 0,
+          mynewsCount: 0,
+          saveCount: 0,
+          savedCount: 0,
+          tuneCount: 0,
+          totalBestScore: 0
+        },
+        item: {
+          markerList: Array(2).fill(0),
+          partsList: Array(96).fill(0),
+          secretList: Array(12).fill(0),
+          themeList: 0,
+          titleList: Array(32).fill(0)
+        },
+        item_new: {
+          markerList: Array(2).fill(0),
+          secretList: Array(12).fill(0),
+          themeList: 0,
+          titleList: Array(32).fill(0)
+        },
+        last: {
+          areaname: 'NONE',
+          category: 0,
+          marker: 0,
+          mselStat: 0,
+          musicId: 0,
+          parts: 0,
+          playTime: '0',
+          seqId: 0,
+          shopname: 'NONE',
+          showCombo: 1,
+          showRank: 1,
+          sort: 0,
+          theme: 0,
+          title: 0
+        }
+      };
+      await DB.Update(refId, { collection: "profile" }, profile);
     }
-    return send.pugFile('templates/copious/profile.pug', { refId, migration, ...profile }, { compress: false });
+    if (U.GetConfig("unlock_all_songs")) {
+      profile.copious.item = {
+        markerList: Array(2).fill(-1),
+        partsList: Array(96).fill(-1),
+        secretList: Array(12).fill(-1),
+        themeList: -1,
+        titleList: Array(32).fill(-1)
+      };
+      profile.copious.item_new = {
+        markerList: Array(2).fill(0),
+        secretList: Array(12).fill(0),
+        themeList: 0,
+        titleList: Array(32).fill(0)
+      };
+    }
+    return send.pugFile('templates/copious/profile.pug', {
+      refId,
+      migration,
+      name: profile.name,
+      jubeatId: profile.jubeatId,
+      ...profile.copious
+    }, { compress: false });
   }
 
   return send.deny();
 };
 
 export const saveProfile: EPR = async (info, { data }, send) => {
+  console.log(U.toXML(data));
   const player = $(data).element("player");
 
   const refId = player.str("refid");
@@ -140,6 +210,10 @@ export const saveProfile: EPR = async (info, { data }, send) => {
   if (version === 0) return send.deny();
 
   const profile = await DB.FindOne<Profile>(refId, { collection: "profile" });
+
+  if (profile.previous_version < version) {
+    await DB.Update<Profile>(refId, { collection: "profile" }, { $set: { previous_version: version } });
+  }
 
   if (version === 3) {
     profile.name = player.str("name");
@@ -173,15 +247,16 @@ export const saveProfile: EPR = async (info, { data }, send) => {
 
     if (!U.GetConfig("unlock_all_songs")) {
       item.secretList = player.numbers('item.secret_list', item.secretList);
-      item.themeList = player.number('item.theme_list', item.themeList);
-      item.markerList = player.numbers('item.marker_list', item.markerList);
-      item.titleList = player.numbers('item.title_list', item.titleList);
-
       item_new.secretList = player.numbers('item.secret_new', profile.knit.item_new.secretList);
-      item_new.themeList = player.number('item.theme_new', profile.knit.item_new.themeList);
-      item_new.markerList = player.numbers('item.marker_new', profile.knit.item_new.markerList);
-      item_new.titleList = player.numbers('item.title_new', profile.knit.item_new.titleList);
     }
+    item.themeList = player.number('item.theme_list', item.themeList);
+    item.markerList = player.numbers('item.marker_list', item.markerList);
+    item.titleList = player.numbers('item.title_list', item.titleList);
+
+    item_new.themeList = player.number('item.theme_new', profile.knit.item_new.themeList);
+    item_new.markerList = player.numbers('item.marker_new', profile.knit.item_new.markerList);
+    item_new.titleList = player.numbers('item.title_new', profile.knit.item_new.titleList);
+
 
     // Append
     const collaboNode = player.element("collabo");
@@ -226,15 +301,120 @@ export const saveProfile: EPR = async (info, { data }, send) => {
         });
       }
     }
-  }
 
-  try {
     await DB.Update<Profile>(refId, { collection: "profile" }, profile);
 
     return send.object({ data: { player: { session_id: K.ITEM('s32', 1) } } });
-  } catch {
-    return send.deny();
   }
+
+  if (version === 4) {
+    profile.name = player.str("name");
+
+    const { info, last, item, item_new, collabo } = profile.copious;
+
+    last.shopname = player.str("shopname", last.shopname);
+    last.areaname = player.str("areaname", last.areaname);
+
+    const infoNode = player.element("info");
+    if (infoNode) {
+      info.jubility = infoNode.number("jubility", info.jubility);
+      info.jubilityYday = infoNode.number("jubility_yday", info.jubilityYday);
+      info.acvState = infoNode.number("acv_state", info.acvState);
+      info.acvPoint = infoNode.number("acv_point", info.acvPoint);
+      info.acvOwn = infoNode.number("acv_own", info.acvOwn);
+      info.acvThrow = infoNode.numbers("acv_throw", info.acvThrow);
+      info.tuneCount = infoNode.number("tune_cnt", info.tuneCount);
+      info.saveCount = infoNode.number("save_cnt", info.saveCount);
+      info.savedCount = infoNode.number("saved_cnt", info.savedCount);
+      info.fullComboCount = infoNode.number("fc_cnt", info.fullComboCount);
+      info.fullComboSeqCount = infoNode.number("fc_seq_cnt", info.fullComboSeqCount);
+      info.excellentCount = infoNode.number("exc_cnt", info.excellentCount);
+      info.excellentSeqCount = infoNode.number("exc_seq_cnt", info.excellentSeqCount);
+      info.matchCount = infoNode.number("match_cnt", info.matchCount);
+      info.beatCount = infoNode.number("beat_cnt", info.beatCount);
+      info.totalBestScore = infoNode.number("total_best_score", info.totalBestScore);
+      info.mynewsCount = infoNode.number("mynews_cnt", info.mynewsCount);
+    }
+
+
+    const itemNode = player.element("item");
+    if (itemNode) {
+      if (!U.GetConfig("unlock_all_songs")) {
+        item.secretList = itemNode.numbers("secret_list", item.secretList);
+        item_new.secretList = itemNode.numbers("secret_new", item_new.secretList);
+      }
+      item.themeList = itemNode.number("theme_list", item.themeList);
+      item.markerList = itemNode.numbers("marker_list", item.markerList);
+      item.titleList = itemNode.numbers("title_list", item.titleList);
+      item.partsList = itemNode.numbers("parts_list", item.partsList);
+      item_new.themeList = itemNode.number("theme_new", item_new.themeList);
+      item_new.markerList = itemNode.numbers("marker_new", item_new.markerList);
+      item_new.titleList = itemNode.numbers("title_new", item_new.titleList);
+    }
+
+
+    last.playTime = String(new Date().getTime());
+
+    // Append
+    const collaboNode = $(data).element("collabo");
+    if (collaboNode) {
+      collabo.dailyMusicId = collaboNode.number("daily_music_id");
+      collabo.served = collaboNode.number("served");
+      collabo.wonderState = collaboNode.number("wonder_state");
+      collabo.yellowState = collaboNode.number("yellow_state");
+    }
+
+    const resultNode = $(data).element("result");
+    if (resultNode) {
+      const tunes = resultNode.elements('tune');
+      for (const tune of tunes) {
+        const musicId = tune.number("music", 0);
+        last.musicId = musicId;
+        last.seqId = parseInt(tune.attr("player.score").seq) || 0;
+        last.marker = tune.number("marker", last.marker);
+        last.title = tune.number("title", last.title);
+        last.parts = tune.number("parts", last.parts);
+        last.theme = tune.number("theme", last.theme);
+        last.sort = tune.number("sort", last.sort);
+        last.category = tune.number("category", last.category);
+        last.showCombo = tune.number("rank_sort", last.showCombo);
+        last.showRank = tune.number("combo_disp", last.showRank);
+        last.mselStat = tune.number("msel_stat", last.mselStat);
+
+        const score = tune.number('player.score');
+        const seq = parseInt(tune.attr('player.score').seq);
+        const clear = parseInt(tune.attr('player.score').clear);
+        const combo = parseInt(tune.attr('player.score').combo);
+        const bestScore = tune.number('player.best_score');
+        const bestClear = tune.number('player.best_clear');
+        const playCount = tune.number('player.play_cnt');
+        const clearCount = tune.number('player.clear_cnt');
+        const fullcomboCount = tune.number('player.fc_cnt');
+        const excellentCount = tune.number('player.exc_cnt');
+        const mbar = tune.numbers('player.mbar');
+
+        await updateScore(refId, musicId, seq, score, clear, mbar, {
+          playCount,
+          clearCount,
+          fullcomboCount,
+          excellentCount
+        });
+      }
+    }
+
+    await DB.Update<Profile>(refId, { collection: "profile" }, profile);
+
+    return send.object({
+      data: {
+        player: { session_id: K.ITEM('s32', 1) },
+        collabo: {
+          dellar: K.ITEM('s32', 0)
+        }
+      }
+    });
+  }
+
+  return send.deny();
 };
 
 export const loadScore: EPR = async (info, data, send) => {
@@ -273,7 +453,7 @@ export const loadScore: EPR = async (info, data, send) => {
     data.bar[score.seq] = score.bar;
   }
 
-  if (version === 3) return send.object({
+  if (version === 3 || version === 4) return send.object({
     data: {
       player: {
         playdata: K.ATTR({ count: String(Object.keys(scoreData).length) }, {
@@ -347,16 +527,41 @@ export const meeting: EPR = (info, data, send) => {
   });
 };
 
-export const getCollabo: EPR = (info, data, send) => send.object({
-  data: {
-    collabo: {
-      played: {
-        iidx: K.ITEM("s8", 1),
-        popn: K.ITEM("s8", 1),
-        ddr: K.ITEM("s8", 1),
-        reflec: K.ITEM("s8", 1),
-        gfdm: K.ITEM("s8", 1),
+export const getCollabo: EPR = (info, data, send) => {
+  const version = getVersion(info);
+  if (version === 0) return send.deny();
+
+  if (version === 3) {
+    return send.object({
+
+      data: {
+        collabo: {
+          played: {
+            iidx: K.ITEM("s8", 1),
+            popn: K.ITEM("s8", 1),
+            ddr: K.ITEM("s8", 1),
+            reflec: K.ITEM("s8", 1),
+            gfdm: K.ITEM("s8", 1),
+          }
+        }
       }
-    }
+    });
   }
-});
+
+  if (version === 4) {
+    return send.object({
+
+      data: {
+        player: {
+          collabo: {
+            reward: K.ITEM("s32", 0),
+            dellar: K.ITEM("s32", 0),
+            music_id: K.ITEM("s32", 0),
+            wonder_state: K.ITEM("u32", 0),
+            yellow_state: K.ITEM("u32", 0),
+          }
+        }
+      }
+    });
+  }
+};

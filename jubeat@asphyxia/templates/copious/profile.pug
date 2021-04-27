@@ -7,30 +7,30 @@ gametop
 
       info
         inherit(__type="bool") #{migration ? 1 : 0}
-        jubility(__type="s16") #{jubility}
-        jubility_yday(__type="s16") #{jubilityYday}
-        acv_point(__type="s32") 0
-        acv_state(__type="s8") 0
-        acv_throw(__type="s32") 0
-        acv_own(__type="s32") 0
-        tune_cnt(__type="s32") #{tuneCount}
-        save_cnt(__type="s32") #{saveCount}
-        saved_cnt(__type="s32") #{savedCount}
-        fc_cnt(__type="s32") #{fullcomboCount}
-        ex_cnt(__type="s32") #{excellentCount}
-        match_cnt(__type="s32") #{matchCount}
-        beat_cnt(__type="s32") #{beatCount}
-        mynews_cnt(__type="s32") #{mynewsCount}
+        jubility(__type="s16") #{info.jubility}
+        jubility_yday(__type="s16") #{info.jubilityYday}
+        acv_point(__type="s32") #{info.acvPoint}
+        acv_state(__type="s8") #{info.acvState}
+        acv_throw(__type="s32" __count="3") #{info.acvThrow.join(" ")}
+        acv_own(__type="s32") #{info.acvOwn}
+        tune_cnt(__type="s32") #{info.tuneCount}
+        save_cnt(__type="s32") #{info.saveCount}
+        saved_cnt(__type="s32") #{info.savedCount}
+        fc_cnt(__type="s32") #{info.fullComboCount}
+        ex_cnt(__type="s32") #{info.excellentCount}
+        match_cnt(__type="s32") #{info.matchCount}
+        beat_cnt(__type="s32") #{info.beatCount}
+        mynews_cnt(__type="s32") #{info.mynewsCount}
         mtg_entry_cnt(__type="s32") 0
         mtg_hold_cnt(__type="s32") 0
         mtg_result(__type="u8") 0
 
       last
-        play_time(__type="s64") #{last.playTime || 0}
+        play_time(__type="s64") #{last.playTime}
         shopname(__type="str") #{last.shopname}
         areaname(__type="str") #{last.areaname}
         title(__type="s16") #{last.title}
-        parts(__type="s16") #{last.parts || 0}
+        parts(__type="s16") #{last.parts}
         theme(__type="s8") #{last.theme}
         marker(__type="s8") #{last.marker}
         rank_sort(__type="s8") #{last.showRank}
@@ -38,20 +38,20 @@ gametop
         music_id(__type="s32") #{last.musicId}
         seq_id(__type="s8") #{last.seqId}
         sort(__type="s8") #{last.sort}
-        category(__type="s8") #{last.category || 0}
+        category(__type="s8") #{last.category}
         msel_stat(__type="s8") #{last.mselStat}
 
       item
-        secret_list(__type="s32" __count="12") #{Array(1).fill(0)}
-        theme_list(__type="s16") 0
-        marker_list(__type="s32" __count="2") #{Array(1).fill(0)}
-        title_list(__type="s32" __count="32") #{Array(1).fill(0)}
-        parts_list(__type="s32" __count="32") #{Array(1).fill(0)}
+        secret_list(__type="s32" __count="12") #{item.secretList.join(" ")}
+        theme_list(__type="s16") #{item.themeList}
+        marker_list(__type="s32" __count="2") #{item.markerList.join(" ")}
+        title_list(__type="s32" __count="32") #{item.titleList.join(" ")}
+        parts_list(__type="s32" __count="96") #{item.partsList.join(" ")}
         new
-          secret_list(__type="s32" __count="12") #{Array(1).fill(0)}
-            theme_list(__type="s16") 0
-            marker_list(__type="s32" __count="2") #{Array(1).fill(0)}
-            title_list(__type="s32" __count="32") #{Array(1).fill(0)}
+          secret_list(__type="s32" __count="12") #{item_new.secretList.join(" ")}
+          theme_list(__type="s16") #{item_new.themeList}
+          marker_list(__type="s32" __count="2") #{item_new.markerList.join(" ")}
+          title_list(__type="s32" __count="32") #{item_new.titleList.join(" ")}
 
       challenge
         today
