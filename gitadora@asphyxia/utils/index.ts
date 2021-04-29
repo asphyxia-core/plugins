@@ -16,4 +16,4 @@ export function isRequiredCoreVersion(major: number, minor: number) {
   const core_major = typeof CORE_VERSION_MAJOR === "number" ? CORE_VERSION_MAJOR : 1
   const core_minor = typeof CORE_VERSION_MINOR === "number" ? CORE_VERSION_MINOR : 18   
   return core_major >= major && core_minor >= minor
-}
+};

@@ -55,7 +55,7 @@ export function gameVerToDataVer(ver: string): DATAVersion {
       return DATAVersion.HIGHVOLTAGE
     case 'nextage':
       return DATAVersion.NEXTAGE
-    case 'excahin':
+    case 'exchain':
       return DATAVersion.EXCHAIN
     case 'matixx':
     default:

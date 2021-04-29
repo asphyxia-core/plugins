@@ -1,3 +1,5 @@
+import { getEncoreStageData } from "../utils/extrastage";
+
 export const shopInfoRegist: EPR = async (info, data, send) => {
   send.object({
     data: {
@@ -72,16 +74,22 @@ export const gameInfoGet: EPR = async (info, data, send) => {
     }
   }
 
+  const extraData = getEncoreStageData(info)
+  const extraMusic = []
+  for (const mid of extraData.musics ) {
+    extraMusic.push({
+      musicid: K.ITEM('s32', mid),
+      get_border: K.ITEM('u8', 0),
+    })
+  }
+
   await send.object({
     now_date: K.ITEM('u64', time),
     extra: {
-      extra_lv: K.ITEM('u8', 10),
+      extra_lv: K.ITEM('u8', extraData.level),
       extramusic: {
-        music: {
-          musicid: K.ITEM('s32', 0),
-          get_border: K.ITEM('u8', 0),
-        },
-      },
+        music: extraMusic,
+      }
     },
     infect_music: { term: K.ITEM('u8', 0) },
     unlock_challenge: { term: K.ITEM('u8', 0) },

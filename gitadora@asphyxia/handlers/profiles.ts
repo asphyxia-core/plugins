@@ -390,7 +390,7 @@ export const getPlayer: EPR = async (info, data, send) => {
   send.object({
     player: K.ATTR({ 'no': `${no}` }, {
       now_date: K.ITEM('u64', time),
-      secretmusic: {
+      secretmusic: { // TODO: FIX THIS FOR STOP INFOS ON GAME END
         music: {
           musicid: K.ITEM('s32', 0),
           seq: K.ITEM('u16', 255),
@@ -926,7 +926,7 @@ export const savePlayer: EPR = async (info, data, send) => {
       scores[mid].update[1] = newSkill;
     }
 
-    scores[mid].diffs[seq] = {
+    scores[mid].diffs[seq] = { //FIXME: Real server is bit complicated. this one is too buggy.
       perc: Math.max(_.get(scores[mid].diffs[seq], 'perc', 0), perc),
       rank: Math.max(_.get(scores[mid].diffs[seq], 'rank', 0), rank),
       meter: meter.toString(),
