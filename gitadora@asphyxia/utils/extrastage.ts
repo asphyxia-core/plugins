@@ -11,8 +11,11 @@ export function getEncoreStageData(info: EamuseInfo): EncoreStageData {
         case 'nextage':
             return {
                 level: 7,
-                musics: [
-                    2587, 2531, 2612, 2622, 2686, 2631, 2624, 2666
+                musics: [ //TODO: check special encore works.
+                    2587, 2531, 2612, 2622, 2686, 
+                    305, 602, 703, 802, 902, 1003, 1201, 1400, 1712, 1916, 2289, 2631, // DD13
+                    1704, 1811, 2121, 2201, 2624, // Soranaki 
+                    2341, 2020, 2282, 1907, 2666  // Stargazer
                 ]
             }
         case 'exchain':

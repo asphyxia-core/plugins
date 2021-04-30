@@ -75,20 +75,18 @@ export const gameInfoGet: EPR = async (info, data, send) => {
   }
 
   const extraData = getEncoreStageData(info)
-  const extraMusic = []
-  for (const mid of extraData.musics ) {
-    extraMusic.push({
-      musicid: K.ITEM('s32', mid),
-      get_border: K.ITEM('u8', 0),
-    })
-  }
 
   await send.object({
     now_date: K.ITEM('u64', time),
     extra: {
       extra_lv: K.ITEM('u8', extraData.level),
       extramusic: {
-        music: extraMusic,
+        music: extraData.musics.map(mid => {
+          return {
+            musicid: K.ITEM('s32', mid),
+            get_border: K.ITEM('u8', 0),
+          }
+        })
       }
     },
     infect_music: { term: K.ITEM('u8', 0) },
