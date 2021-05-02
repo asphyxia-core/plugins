@@ -16,6 +16,7 @@ I don't actually follow any coding rules for this jank so neither should you. Th
 I'll do my best to merge PR, but please make sure you are submitting code targeted for "public" releases. (Unless it is some ancient rare stuff and you feel generous enough to provide support for it)
 
 - For new plugins: please use `@asphyxia` identifier for your plugin since you are submitting code as the community.
+  - This way we prevent third-party plugins (e.g. `popn` or `popn@someoneelse`) from conflicting with our database.
 - For existing plugins: please inlude a changelog in your PR so it is easier for me to tell what it is for.
 
 ## How do I make plugins?
