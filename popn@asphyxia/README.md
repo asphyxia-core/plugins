@@ -1,6 +1,6 @@
 # Pop'n Music
 
-Plugin Version: **v2.1.0**
+Plugin Version: **v2.2.0**
 
 ## Supported Versions
 - pop'n music 19 Tune Street
@@ -14,6 +14,10 @@ Plugin Version: **v2.1.0**
 Important : require minimum Asphyxia Core **v1.31**
 
 ## Changelog
+
+### 2.2.0
+* Tune Street : Add Town Mode + enable Net Taisen (only CPU will works)
+* Some fixes
 
 ### 2.1.0
 * Add rivals support (except for Tune Street)
@@ -46,7 +50,5 @@ To import data, you have to :
 * Data is imported. Run the game, insert your card and your scores are available.
 
 ## Known limitations
-* Tune Street : It will not report your profile name in-game
-* Tune Street : No Town Mode
-* No rival support implemented
-* Some stats are not implemented (like daily stats, most played music)
+* No rival support for Tune Street
+* Some stats are not implemented

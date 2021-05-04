@@ -9,7 +9,7 @@ export const getInfo = async (req: EamuseInfo, data: any, send: EamuseSend): Pro
         game_phase: K.ITEM('s32', 2),
         ir_phase: K.ITEM('s32', 0),
         event_phase: K.ITEM('s32', 5),
-        netvs_phase: K.ITEM('s32', 0),
+        netvs_phase: K.ITEM('s32', 0), // 1 to enable
         card_phase: K.ITEM('s32', 6),
         illust_phase: K.ITEM('s32', 2),
         psp_phase: K.ITEM('s32', 5),
@@ -17,7 +17,7 @@ export const getInfo = async (req: EamuseInfo, data: any, send: EamuseSend): Pro
         jubeat_phase: K.ITEM('s32', 1),
         public_phase: K.ITEM('s32', 3),
         kac_phase: K.ITEM('s32', 2),
-        local_matching: K.ITEM('s32', 1),
+        local_matching: K.ITEM('s32', 0),
         n_matching_sec: K.ITEM('s32', 60),
         l_matching_sec: K.ITEM('s32', 60),
         is_check_cpu: K.ITEM('s32', 0),

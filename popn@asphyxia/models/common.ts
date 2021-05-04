@@ -1,22 +1,23 @@
 export interface Phase {
-  id: number;
-  p: number;
+  id: number,
+  p: number,
 }
 
 export interface ExtraData {
   [field: string]: {
-    path: string;
-    pathSrc?: string;
-    type: string;
-    default: any;
-    isArray?: true;
+    path: string,
+    pathSrc?: string,
+    type: string,
+    default: any,
+    isArray?: true,
   };
 };
 
 export interface Profile {
   collection: 'profile',
-  name: string;
-  dataVersion: number;
+  name: string,
+  friendId: string,
+  dataVersion: number
 }
 
 export interface Params {
@@ -39,9 +40,9 @@ export interface Scores {
 
   scores: {
     [key: string]: {
-      clear_type?: number;
-      score: number;
-      cnt: number;
+      clear_type?: number,
+      score: number,
+      cnt: number,
     };
   };
 }

@@ -61,7 +61,7 @@ export const readProfile = async (refid: string): Promise<Profile> => {
     if (profile !== undefined && profile !== null && profile.dataVersion !== CURRENT_DATA_VERSION) {
         return await doConvert(profile);
     }
-    return profile || { collection: 'profile', name: 'ゲスト', dataVersion: CURRENT_DATA_VERSION };
+    return profile || { collection: 'profile', name: 'ゲスト', friendId: null, dataVersion: CURRENT_DATA_VERSION };
 }
 
 export const writeProfile = async (refid: string, profile: Profile) => {

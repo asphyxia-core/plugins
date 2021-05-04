@@ -14,7 +14,7 @@ export const getInfo = async (req: EamuseInfo, data: any, send: EamuseSend): Pro
         netvs_phase: K.ITEM('s32', 0),
         card_phase: K.ITEM('s32', 9),
         other_phase: K.ITEM('s32', 9),
-        local_matching_enable: K.ITEM('s32', 1),
+        local_matching_enable: K.ITEM('s32', 0),
         n_matching_sec: K.ITEM('s32', 60),
         l_matching_sec: K.ITEM('s32', 60),
         is_check_cpu: K.ITEM('s32', 0),

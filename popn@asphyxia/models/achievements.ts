@@ -3,6 +3,21 @@ export interface Achievements {
   version: string,
 }
 
+export interface AchievementsTuneStreet extends Achievements {
+  version: 'v19',
+
+  apply: string[],
+  bought_flg: number[],
+  build_flg: number[],
+  chara_flg: number[],
+  event_flg: number[],
+  base: number[],
+  building: {
+    [id: number]: number[]
+  }
+  play_type: number
+}
+
 export interface AchievementsLapistoria extends Achievements {
   version: 'v22',
 
