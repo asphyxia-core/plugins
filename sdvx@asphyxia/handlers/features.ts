@@ -1,17 +1,46 @@
-import { Profile } from '../models/profile';
-import { MusicRecord } from '../models/music_record';
-import { IDToCode, GetCounter } from '../utils';
-import { Mix } from '../models/mix';
+import {Profile} from '../models/profile';
+import {MusicRecord} from '../models/music_record';
+import {getVersion, IDToCode, GetCounter} from '../utils';
+import {Mix} from '../models/mix';
 
 export const hiscore: EPR = async (info, data, send) => {
   const records = await DB.Find<MusicRecord>(null, { collection: 'music' });
+
+  const version = getVersion(info);
 
   const profiles = _.groupBy(
     await DB.Find<Profile>(null, { collection: 'profile' }),
     '__refid'
   );
 
-  send.object({
+  if (version === 1) {
+    return send.object({
+      hiscore: K.ATTR({ type: "1" }, {
+        music: _.map(
+          _.groupBy(records, r => {
+            return `${r.mid}:${r.type}`;
+          }),
+          r => _.maxBy(r, 'score')
+        ).map(r => (K.ATTR({ id: String(r.mid) }, {
+          note: (() => {
+            const notes = [];
+
+            for (let i = 1; i <= 3; i++) {
+              if (r.type !== i) continue;
+              notes.push(K.ATTR({ type: String(r.type) }, {
+                name: K.ITEM('str', profiles[r.__refid][0].name),
+                score: K.ITEM('u32', r.score)
+              }))
+            }
+
+            return notes;
+          })()
+        }))),
+      })
+    })
+  }
+
+  return send.object({
     sc: {
       d: _.map(
         _.groupBy(records, r => {
@@ -40,7 +69,7 @@ export const rival: EPR = async (info, data, send) => {
     await DB.Find<Profile>(null, { collection: 'profile' })
   ).filter(p => p.__refid != refid);
 
-  send.object({
+  return send.object({
     rival: await Promise.all(
       rivals.map(async (p, index) => {
         return {
@@ -84,7 +113,7 @@ export const saveMix: EPR = async (info, data, send) => {
     jacket: mix.number('jacket_id'),
   });
 
-  send.object({
+  return send.object({
     automation: {
       mix_id: K.ITEM('s32', id),
       mix_code: K.ITEM('str', doc.code),
@@ -105,11 +134,10 @@ export const loadMix: EPR = async (info, data, send) => {
 
   const mix = await DB.FindOne<Mix>({ collection: 'mix', code });
   if (!mix) {
-    send.object({ result: K.ITEM('s32', 1) });
-    return;
+    return send.object({ result: K.ITEM('s32', 1) });
   }
 
-  send.object({
+  return send.object({
     automation: {
       mix_id: K.ITEM('s32', mix.id),
       mix_code: K.ITEM('str', mix.code),

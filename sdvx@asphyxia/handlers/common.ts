@@ -6,6 +6,12 @@ export const common: EPR = async (info, data, send) => {
   let courses = [];
   let extend = [];
 
+  const version = parseInt(info.model.split(":")[4]);
+
+  if (version <= 2013052900) {
+      return send.pugFile('templates/booth/common.pug');
+  }
+
   switch (info.method) {
     case 'sv4_common': {
       events = EVENT4;
@@ -26,13 +32,13 @@ export const common: EPR = async (info, data, send) => {
   if (U.GetConfig('unlock_all_songs')) {
     for (let i = 1; i < 1700; ++i) {
       for (let j = 0; j < 5; ++j) {
-          
+
         songs.push({
           music_id: K.ITEM('s32', i),
           music_type: K.ITEM('u8', j),
           limited: K.ITEM('u8', 3),
         });
-        
+
       }
     }
   }

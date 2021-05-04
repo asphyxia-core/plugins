@@ -1,0 +1,23 @@
+game
+    name(__type="str") #{name}
+    code(__type="str") #{code}
+    gamecoin_packet(__type="u32") #{packets}
+    gamecoin_block(__type="u32") #{blocks}
+    exp_point(__type="u32") #{expPoint ? expPoint : 0}
+    m_user_cnt(__type="u32") #{mUserCnt ? mUserCnt : 0}
+    have_item(__type="bool" __count=512) #{Array(512).fill(1).join(" ")}
+    have_note(__type="bool" __count=512) #{Array(512).fill(1).join(" ")}
+
+    last(
+        music_id=musicID,
+        music_type=musicType,
+        sort_type=sortType,
+        headphone=headphone,
+        hispeed=hiSpeed,
+        appeal_id=appeal,
+        frame0=boothFrame ? boothFrame[0] : 0,
+        frame1=boothFrame ? boothFrame[1] : 0,
+        frame2=boothFrame ? boothFrame[2] : 0,
+        frame3=boothFrame ? boothFrame[3] : 0,
+        frame4=boothFrame ? boothFrame[4] : 0,
+    )
