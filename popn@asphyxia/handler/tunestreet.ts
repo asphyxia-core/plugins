@@ -132,10 +132,10 @@ export const getProfile = async (refid: string, name?: string) => {
     // binary_profile[35] = customize_friend_no
     // binary_profile[36] = customize_friend_winlose
     // binary_profile[37] = read_news_no_max
-    // binary_profile[38] = skin_tex_note
-    // binary_profile[39] = skin_tex_cmn
-    // binary_profile[40] = skin_sd_bgm
-    // binary_profile[41] = skin_sd_se
+    binary_profile[38] = _.get(params, `params.skin_tex_note`, 0) & 0xFF;
+    binary_profile[39] = _.get(params, `params.skin_tex_cmn`, 0) & 0xFF;
+    binary_profile[40] = _.get(params, `params.skin_sd_bgm`, 0) & 0xFF;
+    binary_profile[41] = _.get(params, `params.skin_sd_se`, 0) & 0xFF;
     binary_profile[44] = _.get(params, `params.option`, 0) & 0xFF;
     binary_profile[45] = (_.get(params, `params.option`, 0) >> 8) & 0xFF;
     binary_profile[46] = (_.get(params, `params.option`, 0) >> 16) & 0xFF;
@@ -456,6 +456,10 @@ export const write = async (req: EamuseInfo, data: any, send: EamuseSend): Promi
     params.params['music'] = parseInt($(data).attr()['music_num']);
     params.params['sheet'] = parseInt($(data).attr()['sheet_num']);
     params.params['category'] = parseInt($(data).attr()['category_num']);
+    params.params['skin_sd_bgm'] = parseInt($(data).attr()['skin_sd_bgm']);
+    params.params['skin_sd_se'] = parseInt($(data).attr()['skin_sd_se']);
+    params.params['skin_tex_cmn'] = parseInt($(data).attr()['skin_tex_cmn']);
+    params.params['skin_tex_note'] = parseInt($(data).attr()['skin_tex_note']);
 
     await utils.writeParams(refid, version, params);
 
