@@ -57,11 +57,30 @@ export const getExtraData = (data: any, params: Params, extraData: ExtraData) =>
 }
 
 export const readProfile = async (refid: string): Promise<Profile> => {
-    const profile = await DB.FindOne<Profile>(refid, { collection: 'profile' });
-    if (profile !== undefined && profile !== null && profile.dataVersion !== CURRENT_DATA_VERSION) {
-        return await doConvert(profile);
+    let profile = await DB.FindOne<Profile>(refid, { collection: 'profile' });
+    if (profile !== undefined && profile !== null) {
+        if(profile.dataVersion !== CURRENT_DATA_VERSION) {
+            profile = await doConvert(profile);
+        }
+        if(profile.friendId == undefined || profile.friendId == null) {
+            profile.friendId = await generateFriendId();
+            await writeProfile(refid, profile);
+        }
     }
-    return profile || { collection: 'profile', name: 'ゲスト', friendId: null, dataVersion: CURRENT_DATA_VERSION };
+    return profile || { collection: 'profile', name: 'ゲスト', friendId: await generateFriendId(), dataVersion: CURRENT_DATA_VERSION };
+}
+
+const generateFriendId = async (): Promise<string> => {
+    let friendId;
+    let check = null;
+    do {
+        friendId = "";
+        for (let i = 0; i < 12; i++) {
+            friendId += Math.floor(Math.random() * 10);
+        }
+        check = await DB.FindOne<Profile>(null, { collection: 'profile', friendId });
+    } while(check != undefined && check != null);
+    return friendId;
 }
 
 export const writeProfile = async (refid: string, profile: Profile) => {

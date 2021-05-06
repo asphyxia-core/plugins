@@ -84,7 +84,7 @@ export const getProfile = async (refid: string, name?: string) => {
     let player: any = {
         base: {
             name: K.ITEM('str', profile.name),
-            g_pm_id: K.ITEM('str', '1234-5678'),
+            g_pm_id: K.ITEM('str', profile.friendId),
             staff: K.ITEM('s8', 0),
             is_conv: K.ITEM('s8', -1),
             my_best: K.ARRAY('s16', myBest),
@@ -215,7 +215,7 @@ export const friend = async (req: EamuseInfo, data: any, send: EamuseSend): Prom
 
         result.friend.push({
             open: K.ITEM('s8', 1),
-            g_pm_id: K.ITEM('str', 'ASPHYXIAPLAY'),
+            g_pm_id: K.ITEM('str', profile.friendId),
             name: K.ITEM('str', profile.name),
             chara: K.ITEM('s16', params.params.chara || -1),
             clear_medal: K.ARRAY('u16', scores.clear_medal),

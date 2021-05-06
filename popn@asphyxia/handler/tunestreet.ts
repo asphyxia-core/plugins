@@ -106,19 +106,6 @@ export const getProfile = async (refid: string, name?: string) => {
     binary_profile[15] = _.get(params, `params.last_play_flag`, 0) & 0xFF;
     binary_profile[16] = _.get(params, `params.medal_and_friend`, 0) & 0xFF;
 
-    let friendId = profile.friendId;
-    if (friendId == undefined || friendId == null) {
-        let check = null;
-        do {
-            friendId = "";
-            for (let i = 0; i < 12; i++) {
-                friendId += Math.floor(Math.random() * 10);
-            }
-            profile.friendId = friendId;
-            let check = await DB.FindOne<Profile>(null, { collection: 'profile', friendId });
-        } while(check != undefined && check != null);
-        await utils.writeProfile(refid, profile);
-    }
     let friendIdBinary = U.EncodeString(profile.friendId, 'shift_jis');
     for (let i = 0; i < friendIdBinary.length || i < 12; i++) {
         binary_profile[17 + i] = friendIdBinary[i];
