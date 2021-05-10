@@ -399,6 +399,13 @@ export const getPlayer: EPR = async (info, data, send) => {
           }
         }),
       },
+      trbitem: {
+        item: _.range(0,750).map(id => {
+          return {
+            itemid: K.ITEM('s32', id),
+          }
+        }),
+      },
       chara_list: {},
       title_parts: {},
       information: {
