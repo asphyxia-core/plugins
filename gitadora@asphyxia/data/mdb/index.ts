@@ -65,7 +65,7 @@ export function gameVerToDataVer(ver: string): DATAVersion {
 
 export async function processDataBuilder(gameVer: string, processHandler?: processRawDataHandler) {
   const ver = gameVerToDataVer(gameVer)
-  const base = `data/mdb_${ver}`
+  const base = `data/mdb/${ver}`
   if (IO.Exists(`${base}.b64`)) {
     return await readB64JSON(`${base}.b64`);
   }

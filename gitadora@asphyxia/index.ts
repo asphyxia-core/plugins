@@ -21,7 +21,7 @@ export function register() {
     default: false,
   })
 
-  R.DataFile("data/custom_mdb.xml", {
+  R.DataFile("data/mdb/custom.xml", {
     accept: ".xml",
     name: "Custom MDB",
     desc: "You need to enable Custom MDB option first."
@@ -50,4 +50,10 @@ export function register() {
   MultiRoute('cardutil.check', check);
   MultiRoute('gametop.get', getPlayer);
   MultiRoute('gameend.regist', savePlayer);
+
+  R.Unhandled(async (info, data, send) => {
+    if (["eventlog"].includes(info.module)) return;
+    console.error(`Received Unhandled Response on ${info.method} by ${info.model}/${info.module}`)
+    console.error(`Received Request: ${JSON.stringify(data, null, 4)}`)
+  })
 }

@@ -1,13 +1,13 @@
 import { getVersion } from "../utils";
-import { defaultProcessRawData, processDataBuilder } from "../data"
-import { CommonMusicDataField, readJSONOrXML, readXML } from "../data";
+import { defaultProcessRawData, processDataBuilder } from "../data/mdb"
+import { CommonMusicDataField, readJSONOrXML, readXML } from "../data/mdb";
 
 export const playableMusic: EPR = async (info, data, send) => {
   const version = getVersion(info);
   let music: CommonMusicDataField[] = [];
   try {
     if (U.GetConfig("enable_custom_mdb")) {
-      music = (await defaultProcessRawData('data/custom_mdb.xml')).music
+      music = (await defaultProcessRawData('data/mdb/custom.xml')).music
     }
   } catch (e) {
     console.error(e.stack);

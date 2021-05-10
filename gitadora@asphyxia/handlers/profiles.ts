@@ -391,11 +391,13 @@ export const getPlayer: EPR = async (info, data, send) => {
     player: K.ATTR({ 'no': `${no}` }, {
       now_date: K.ITEM('u64', time),
       secretmusic: { // TODO: FIX THIS FOR STOP INFOS ON GAME END
-        music: {
-          musicid: K.ITEM('s32', 0),
-          seq: K.ITEM('u16', 255),
-          kind: K.ITEM('s32', 40),
-        },
+        music: _.merge(_.range(0,2800), _.range(5000, 5100)).map(mid => {
+          return {
+            musicid: K.ITEM('s32', mid),
+            seq: K.ITEM('u16', 255),
+            kind: K.ITEM('s32', 40),
+          }
+        }),
       },
       chara_list: {},
       title_parts: {},
@@ -524,10 +526,28 @@ export const getPlayer: EPR = async (info, data, send) => {
           play_date_ms: K.ITEM("u64", BigInt(0))
         },
         lottery_result: {
-          unlock_bit: K.ITEM("u64", BigInt(0))
+          unlock_bit: K.ITEM("u64", BigInt(2305843009213693950)),
+        },
+      },
+      lotterybox: {
+        score_list: {
+          data: [
+            {
+              term: K.ITEM("u8", 0),
+              score: {
+                one_day_play_cnt: K.ITEM("s32", 0),
+                one_day_lottery_cnt: K.ITEM("s32", 0),
+                lucky_star: K.ITEM("s32", 0),
+                bear_mark: K.ITEM("s32", 0),
+                play_date_ms: K.ITEM("u64", BigInt(0))
+              },
+              lottery_result: {
+                unlock_bit: K.ITEM("u64", BigInt(2305843009213693950))
+              }
+            },
+          ]
         }
       },
-      lotterybox: {},
       ...addition,
       ...playerData,
       finish: K.ITEM('bool', 1),

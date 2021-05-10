@@ -1,4 +1,4 @@
-import { getEncoreStageData } from "../utils/extrastage";
+import { getEncoreStageData } from "../data/extrastage";
 
 export const shopInfoRegist: EPR = async (info, data, send) => {
   send.object({
@@ -55,6 +55,35 @@ export const gameInfoGet: EPR = async (info, data, send) => {
         ...obj,
         box_term: {
           state: K.ITEM('u8', 0)
+        },
+        box: {
+          pack: [
+            {
+              state: K.ITEM("u8", 1),
+              pack_kind: K.ITEM("s32", 0),
+              pack_id: K.ITEM("s32", 0),
+              item: [
+                {
+                  index: K.ITEM("s32", 0),
+                  item_kind: K.ITEM("s32", 0),
+                  item_id: K.ITEM("s32", 2666),
+                  item_param: K.ITEM("str", ""),
+                },
+                {
+                  index: K.ITEM("s32", 1),
+                  item_kind: K.ITEM("s32", 0),
+                  item_id: K.ITEM("s32", 2624),
+                  item_param: K.ITEM("str", ""),
+                },
+                {
+                  index: K.ITEM("s32", 2),
+                  item_kind: K.ITEM("s32", 0),
+                  item_id: K.ITEM("s32", 2631),
+                  item_param: K.ITEM("str", ""),
+                },
+              ]
+            }
+          ]
         }
       };
     } else {
@@ -77,7 +106,7 @@ export const gameInfoGet: EPR = async (info, data, send) => {
   const extraData = getEncoreStageData(info)
 
   await send.object({
-    now_date: K.ITEM('u64', time),
+    now_date: K.ITEM('u64', BigInt(Date.now())),
     extra: {
       extra_lv: K.ITEM('u8', extraData.level),
       extramusic: {

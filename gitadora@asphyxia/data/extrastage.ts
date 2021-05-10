@@ -1,4 +1,4 @@
-import { getVersion } from ".";
+import { getVersion } from "../utils";
 
 interface EncoreStageData {
     level: number
@@ -11,7 +11,7 @@ export function getEncoreStageData(info: EamuseInfo): EncoreStageData {
     switch (getVersion(info)) {
         case 'nextage':
             return {
-                level: 7,
+                level: 12  ,
                 musics: [ //TODO: check special encore works.
                     2587, 2531, 2612, 2622, 2686,
                     305, 602, 703, 802, 902, 1003, 1201, 1400, 1712, 1916, 2289, 2631, // DD13
