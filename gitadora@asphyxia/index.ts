@@ -14,6 +14,13 @@ export function register() {
 
   R.GameCode('M32');
 
+  R.Config("encore_version", {
+    name: "Encore Version",
+    desc: "Set encore version",
+    type: "integer",
+    default: 13,
+  })
+
   R.Config("enable_custom_mdb", {
     name: "Enable Custom MDB",
     desc: "For who uses own MDB",
