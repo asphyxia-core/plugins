@@ -212,7 +212,7 @@ const doConvert = async (profile: ProfileDoc<any>): Promise<ProfileDoc<Profile>>
 
     // Update scores
     let scoresData: Scores = { collection: 'scores', version: 'v25', scores: {} };
-    const oldScores = await DB.Find<any>(null, { collection: 'scores' });
+    const oldScores = await DB.Find<any>(profile.__refid, { collection: 'scores' });
     for (const oldScore of oldScores) {
         for (const key in oldScore.scores) {
             scoresData.scores[key] = {
@@ -234,9 +234,9 @@ const doConvert = async (profile: ProfileDoc<any>): Promise<ProfileDoc<Profile>>
                 }[Math.max(oldScore.scores[key].clearmedal || 0, oldScore.scores[key].clear_type || 0)]
             };
         }
-        await DB.Remove(oldScore.__refid, { collection: 'scores' });
-        await DB.Insert(oldScore.__refid, scoresData);
     }
+    await DB.Remove(profile.__refid, { collection: 'scores' });
+    await DB.Insert(profile.__refid, scoresData);
 
     return newProfile;
 }
