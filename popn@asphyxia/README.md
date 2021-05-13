@@ -1,6 +1,6 @@
 # Pop'n Music
 
-Plugin Version: **v2.2.0**
+Plugin Version: **v2.2.1**
 
 ## Supported Versions
 - pop'n music 19 Tune Street
@@ -14,6 +14,10 @@ Plugin Version: **v2.2.0**
 Important : require minimum Asphyxia Core **v1.31**
 
 ## Changelog
+
+### 2.2.1
+* Tune Street : User customization is now saved
+* Fix 1.x to 2.x conversion code when there are multiple profiles
 
 ### 2.2.0
 * Tune Street : Add Town Mode + enable Net Taisen (only CPU will works)
