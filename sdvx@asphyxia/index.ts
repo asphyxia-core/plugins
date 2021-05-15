@@ -67,7 +67,7 @@ export function register() {
   MultiRoute('entry_e', true);
   MultiRoute('exception', true);
   R.Route('eventlog.write', (_, __, send) => send.object({
-    gamesession: K.ITEM('s64', 1n),
+    gamesession: K.ITEM('s64', BigInt(1)),
     logsendflg: K.ITEM('s32', 0),
     logerrlevel: K.ITEM('s32', 0),
     evtidnosendflg: K.ITEM('s32', 0)
