@@ -166,6 +166,7 @@ const readScore = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<
 const getScores = async (refid: string, version: string, forFriend: boolean = false) => {
     const scoresData = await utils.readScores(refid, version);
     const result = [];
+    const maxMusicId = GAME_MAX_MUSIC_ID[isOmni ? 'omni' : version];
 
     for (const key in scoresData.scores) {
         const keyData = key.split(':');
@@ -186,7 +187,7 @@ const getScores = async (refid: string, version: string, forFriend: boolean = fa
             1100: 11,
         }[score.clear_type];
 
-        if (music > GAME_MAX_MUSIC_ID[version]) {
+        if (music > maxMusicId) {
             continue;
         }
         if ([0, 1, 2, 3].indexOf(sheet) == -1) {
@@ -324,7 +325,7 @@ const getProfile = async (refid: string, version: string, name?: string) => {
         result: K.ITEM('s8', 0),
         account: {
             name: K.ITEM('str', profile.name),
-            g_pm_id: K.ITEM('str', 'ASPHYXIAPLAY'),
+            g_pm_id: K.ITEM('str', profile.friendId),
             staff: K.ITEM('s8', 0),
             item_type: K.ITEM('s16', 0),
             item_id: K.ITEM('s16', 0),
@@ -654,7 +655,7 @@ const friend = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any
     const friend = {
         friend: {
             no: K.ITEM('s16', no),
-            g_pm_id: K.ITEM('str', 'ASPHYXIAPLAY'),
+            g_pm_id: K.ITEM('str', profile.friendId),
             name: K.ITEM('str', profile.name),
             chara: K.ITEM('s16', params.params.chara || -1),
             is_open: K.ITEM('s8', 1),
@@ -667,7 +668,13 @@ const friend = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+let isOmni= false;
+
 const getVersion = (req: EamuseInfo): string => {
+    if(req.model.indexOf('J:A:X') >= 0) {
+        isOmni = true;
+    }
+    
     const date: number = parseInt(req.model.match(/:(\d*)$/)[1]);
     if (date >= 2018101700) {
         return 'v25';
@@ -678,7 +685,8 @@ const getVersion = (req: EamuseInfo): string => {
 
 const GAME_MAX_MUSIC_ID = {
     v24: 1704,
-    v25: 1877
+    v25: 1877,
+    omni: 3155
 }
 
 const defaultAchievements: AchievementsUsaneko = {

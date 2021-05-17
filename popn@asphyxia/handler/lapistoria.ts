@@ -124,7 +124,7 @@ const getProfile = async (refid: string, name?: string) => {
         result: K.ITEM('s8', 0),
         account: {
             name: K.ITEM('str', profile.name),
-            g_pm_id: K.ITEM('str', 'ASPHYXIAPLAY'),
+            g_pm_id: K.ITEM('str', profile.friendId),
             staff: K.ITEM('s8', 0),
             is_conv: K.ITEM('s8', 0),
             item_type: K.ITEM('s16', 0),
@@ -435,7 +435,7 @@ const friend = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any
     const friend = {
         friend: {
             no: K.ITEM('s16', no),
-            g_pm_id: K.ITEM('str', 'ASPHYXIAPLAY'),
+            g_pm_id: K.ITEM('str', profile.friendId),
             name: K.ITEM('str', profile.name),
             chara: K.ITEM('s16', params.params.chara || -1),
             is_open: K.ITEM('s8', 1),

@@ -14,7 +14,7 @@ export const getInfo = async (req: EamuseInfo, data: any, send: EamuseSend): Pro
         netvs_phase: K.ITEM('s32', 0),
         card_phase: K.ITEM('s32', 9),
         other_phase: K.ITEM('s32', 9),
-        local_matching_enable: K.ITEM('s32', 1),
+        local_matching_enable: K.ITEM('s32', 0),
         n_matching_sec: K.ITEM('s32', 60),
         l_matching_sec: K.ITEM('s32', 60),
         is_check_cpu: K.ITEM('s32', 0),
@@ -80,7 +80,7 @@ export const getProfile = async (refid: string, name?: string) => {
     let player: any = {
         base: {
             name: K.ITEM('str', profile.name),
-            g_pm_id: K.ITEM('str', '1234-5678'),
+            g_pm_id: K.ITEM('str', profile.friendId),
             staff: K.ITEM('s8', 0),
             is_conv: K.ITEM('s8', -1),
             collabo: K.ITEM('u8', 255),
@@ -250,7 +250,7 @@ export const friend = async (req: EamuseInfo, data: any, send: EamuseSend): Prom
 
         result.friend.push({
             open: K.ITEM('s8', 1),
-            g_pm_id: K.ITEM('str', 'ASPHYXIAPLAY'),
+            g_pm_id: K.ITEM('str', profile.friendId),
             name: K.ITEM('str', profile.name),
             chara: K.ITEM('s16', params.params.chara || -1),
             hair: K.ITEM('u8', params.params.hair || 0),

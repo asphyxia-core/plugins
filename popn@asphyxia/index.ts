@@ -65,6 +65,8 @@ export function register() {
   R.Route(`playerdata.get`, async (req, data, send) => getVersion(req).read(req, data, send));
   R.Route(`playerdata.set`, async (req, data, send) => getVersion(req).write(req, data, send));
   R.Route(`playerdata.friend`, async (req, data, send) => getVersion(req).friend(req, data, send));
+  
+  R.Route(`playerdata.town`, async (req, data, send) => tunestreet.map(req, data, send));
 
   // For Pnm >= 22, each game set his own route
   lapistoria.setRoutes();
