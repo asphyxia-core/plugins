@@ -1,6 +1,6 @@
 # Jubeat
 
-Plugin Version: **v1.2.0**
+Plugin Version: **v1.3.0**
 
 ### Supported Versions
 
@@ -14,6 +14,10 @@ Plugin Version: **v1.2.0**
 ### Changelogs
 
 ***
+
+#### 1.3.0
+
+- Matching Support (Experimental)
 
 #### 1.2.0
 
