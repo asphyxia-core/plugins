@@ -1,6 +1,6 @@
 # Jubeat
 
-Plugin Version: **v1.3.0**
+Plugin Version: **v1.4.1**
 
 ### Supported Versions
 
@@ -10,10 +10,16 @@ Plugin Version: **v1.3.0**
 - knit APPEND
 - copious
 - copious APPEND
+- saucer
 
 ### Changelogs
 
 ***
+
+#### 1.4.1
+
+- saucer support
+- Change profile structure
 
 #### 1.3.0
 

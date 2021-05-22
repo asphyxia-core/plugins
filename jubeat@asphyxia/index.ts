@@ -9,6 +9,7 @@ export function register() {
   }
   R.GameCode('J44');
   R.GameCode('K44');
+  R.GameCode('L44');
 
   R.Route('gametop.regist', profile);
   R.Route('gametop.get_info', gameInfo);
