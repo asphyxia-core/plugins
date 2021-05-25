@@ -9,11 +9,12 @@ interface EncoreStageData {
 export function getEncoreStageData(info: EamuseInfo): EncoreStageData {
     const fallback = { level: 10, musics: [0] }
     const level: number = U.GetConfig("encore_version")
+    const ntDummyEncore = U.GetConfig("nextage_dummy_encore")
     switch (getVersion(info)) {
         case 'nextage':
             return {
                 level,
-                musics: [ 
+                musics: !ntDummyEncore ? [ 
                     2587, // 悪魔のハニープリン
                     2531, // The ULTIMATES -reminiscence-
                     2612, // ECLIPSE 2
@@ -23,6 +24,8 @@ export function getEncoreStageData(info: EamuseInfo): EncoreStageData {
                     305, 602, 703, 802, 902, 1003, 1201, 1400, 1712, 1916, 2289, 2631, // DD13 and encores.
                     1704, 1811, 2121, 2201, 2624, // Soranaki and encores.
                     1907, 2020, 2282, 2341, 2666  // Stargazer and encores.
+                ] : [
+                    2622, 305, 1704, 1907, 2686 // Dummy.
                 ]
             }
         case 'exchain':

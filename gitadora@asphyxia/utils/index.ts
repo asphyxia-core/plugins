@@ -17,3 +17,8 @@ export function isRequiredCoreVersion(major: number, minor: number) {
   const core_minor = typeof CORE_VERSION_MINOR === "number" ? CORE_VERSION_MINOR : 18   
   return core_major >= major && core_minor >= minor
 };
+
+export function isAsphyxiaDebugMode() {
+  const argv = process.argv
+  return argv.includes("--dev") || argv.includes("--console")
+}

@@ -9,9 +9,14 @@ Supported Versions
  - NEX+AGE
 
 
-Profile sharing between version (WIP)
--------------------------------------
-Only scores are shared between versions. As It's planned to support some Version-specific features.
+When Plugin Doesn't work correctly / Startup Error on Plugin
+------------------------------------------------------------
+The folder structure between v1.0 and v1.1 is quite different. Do not overwrite plugin folder.
+<br>If encounter error, Please try these step:
+
+1. Remove `gitadora@asphyxia` folder.
+2. C-C and C-V the newest version of `gitadora@asphyxia`
+3. (Custom MDB Users) Reupload MDB or move `data/custom_mdb.xml` to `data/mdb/custom.xml`
 
 Note about newer version of Asphyxia Core
 -----------------------------------------
@@ -19,15 +24,10 @@ Since newer version of Core separate the save db per each plugin, Seems there wa
 
 Release Notes
 =============
-
-v2.0.0 (Current, WIP)
----------------------
-* Support score shares between versions.
-
-
-v1.1.0-beta
+v1.1.0
 ------------
- * NEX+AGE Support (Beta)
+ * NEX+AGE Support (Not full support.)
+ * Restructure bit for maintaining.
  
 v1.0.0
 ------

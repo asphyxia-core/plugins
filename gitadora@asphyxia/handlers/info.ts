@@ -55,35 +55,6 @@ export const gameInfoGet: EPR = async (info, data, send) => {
         ...obj,
         box_term: {
           state: K.ITEM('u8', 0)
-        },
-        box: {
-          pack: [
-            {
-              state: K.ITEM("u8", 1),
-              pack_kind: K.ITEM("s32", 0),
-              pack_id: K.ITEM("s32", 0),
-              item: [
-                {
-                  index: K.ITEM("s32", 0),
-                  item_kind: K.ITEM("s32", 0),
-                  item_id: K.ITEM("s32", 2666),
-                  item_param: K.ITEM("str", ""),
-                },
-                {
-                  index: K.ITEM("s32", 1),
-                  item_kind: K.ITEM("s32", 0),
-                  item_id: K.ITEM("s32", 2624),
-                  item_param: K.ITEM("str", ""),
-                },
-                {
-                  index: K.ITEM("s32", 2),
-                  item_kind: K.ITEM("s32", 0),
-                  item_id: K.ITEM("s32", 2631),
-                  item_param: K.ITEM("str", ""),
-                },
-              ]
-            }
-          ]
         }
       };
     } else {

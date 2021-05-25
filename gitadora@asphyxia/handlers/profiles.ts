@@ -533,28 +533,10 @@ export const getPlayer: EPR = async (info, data, send) => {
           play_date_ms: K.ITEM("u64", BigInt(0))
         },
         lottery_result: {
-          unlock_bit: K.ITEM("u64", BigInt(2305843009213693950)),
-        },
-      },
-      lotterybox: {
-        score_list: {
-          data: [
-            {
-              term: K.ITEM("u8", 0),
-              score: {
-                one_day_play_cnt: K.ITEM("s32", 0),
-                one_day_lottery_cnt: K.ITEM("s32", 0),
-                lucky_star: K.ITEM("s32", 0),
-                bear_mark: K.ITEM("s32", 0),
-                play_date_ms: K.ITEM("u64", BigInt(0))
-              },
-              lottery_result: {
-                unlock_bit: K.ITEM("u64", BigInt(2305843009213693950))
-              }
-            },
-          ]
+          unlock_bit: K.ITEM("u64", BigInt(0))
         }
       },
+      lotterybox: {},
       ...addition,
       ...playerData,
       finish: K.ITEM('bool', 1),
