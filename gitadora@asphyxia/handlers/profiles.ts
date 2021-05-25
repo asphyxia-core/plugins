@@ -45,6 +45,7 @@ export const check: EPR = async (info, data, send) => {
 
   const playerInfo = await DB.FindOne<PlayerInfo>(refid, {
     collection: 'playerinfo',
+    version
   })
 
   if (playerInfo) {
@@ -90,6 +91,7 @@ export const getPlayer: EPR = async (info, data, send) => {
 
   const name = await DB.FindOne<PlayerInfo>(refid, {
     collection: 'playerinfo',
+    version
   })
   const dmProfile = await getProfile(refid, version, 'dm')
   const gfProfile = await getProfile(refid, version, 'gf')
@@ -388,12 +390,21 @@ export const getPlayer: EPR = async (info, data, send) => {
   send.object({
     player: K.ATTR({ 'no': `${no}` }, {
       now_date: K.ITEM('u64', time),
-      secretmusic: {
-        music: {
-          musicid: K.ITEM('s32', 0),
-          seq: K.ITEM('u16', 255),
-          kind: K.ITEM('s32', 40),
-        },
+      secretmusic: { // TODO: FIX THIS
+        music: _.merge(_.range(0,2800), _.range(5000, 5100)).map(mid => {
+          return {
+            musicid: K.ITEM('s32', mid),
+            seq: K.ITEM('u16', 255),
+            kind: K.ITEM('s32', 40),
+          }
+        }),
+      },
+      trbitem: { // TODO: FIX THIS
+        item: _.range(0,750).map(id => {
+          return {
+            itemid: K.ITEM('s32', id),
+          }
+        }),
       },
       chara_list: {},
       title_parts: {},
@@ -512,6 +523,20 @@ export const getPlayer: EPR = async (info, data, send) => {
         unlock_status_6: K.ITEM('s32', 0),
         unlock_status_7: K.ITEM('s32', 0),
       },
+      thanksgiving: {
+        term: K.ITEM("u8", 0),
+        score: {
+          one_day_play_cnt: K.ITEM("s32", 0),
+          one_day_lottery_cnt: K.ITEM("s32", 0),
+          lucky_star: K.ITEM("s32", 0),
+          bear_mark: K.ITEM("s32", 0),
+          play_date_ms: K.ITEM("u64", BigInt(0))
+        },
+        lottery_result: {
+          unlock_bit: K.ITEM("u64", BigInt(0))
+        }
+      },
+      lotterybox: {},
       ...addition,
       ...playerData,
       finish: K.ITEM('bool', 1),
@@ -910,7 +935,7 @@ export const savePlayer: EPR = async (info, data, send) => {
       scores[mid].update[1] = newSkill;
     }
 
-    scores[mid].diffs[seq] = {
+    scores[mid].diffs[seq] = { //FIXME: Real server is bit complicated. this one is too buggy.
       perc: Math.max(_.get(scores[mid].diffs[seq], 'perc', 0), perc),
       rank: Math.max(_.get(scores[mid].diffs[seq], 'rank', 0), rank),
       meter: meter.toString(),
