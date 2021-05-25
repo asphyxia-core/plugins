@@ -22,6 +22,13 @@ Note about newer version of Asphyxia Core
 -----------------------------------------
 Since newer version of Core separate the save db per each plugin, Seems there was an error after the migration process. till it's fixed on Core side, you maybe need backup the old save and start from zero.
 
+
+Known Issues
+============
+ * Information dialog keep showing as plugin doesn't store item data currently.
+ * Special Premium Encore on Nextage
+   - Bandage solution is implemented. Try it.
+
 Release Notes
 =============
 v1.1.0
