@@ -1,6 +1,6 @@
 # Jubeat
 
-Plugin Version: **v1.4.1**
+Plugin Version: **v1.5.0**
 
 ### Supported Versions
 
@@ -11,10 +11,15 @@ Plugin Version: **v1.4.1**
 - copious
 - copious APPEND
 - saucer
+- saucer fulfill
 
 ### Changelogs
 
 ***
+
+#### 1.5.0
+
+- saucer fulfill support
 
 #### 1.4.1
 

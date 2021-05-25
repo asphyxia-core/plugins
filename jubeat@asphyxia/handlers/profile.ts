@@ -1,6 +1,7 @@
 import {getVersion, getVersionName, VersionRange} from "../utils";
 import Profile from "../models/profile";
 import {Score} from "../models/score";
+import {CourseResult} from "../models/course";
 
 export const profile: EPR = async (info, data, send) => {
   let refId = $(data).str("data.player.pass.refid");
@@ -32,17 +33,20 @@ export const profile: EPR = async (info, data, send) => {
 
   return send.object({
     data: {
-      ...VersionRange(version, 5, 5) && require("../templates/gameInfos/saucer.ts")(profile),
+      ...version === 5 && require("../templates/gameInfos/saucer.ts")(profile),
+      ...version === 6 && require("../templates/gameInfos/fulfill.ts")(profile),
 
       player: {
         name: K.ITEM("str", profile.name),
         jid: K.ITEM("s32", profile.jubeatId),
         refid: K.ITEM("str", profile.__refid),
         session_id: K.ITEM("s32", 1),
+        event_flag: K.ITEM("u64", BigInt(0)),
 
         ...version === 3 && require("../templates/profiles/knit.ts")(profile),
         ...version === 4 && require("../templates/profiles/copious.ts")(profile),
         ...version === 5 && require("../templates/profiles/saucer.ts")(profile),
+        ...version === 6 && require("../templates/profiles/fulfill.ts")(profile),
       }
     }
   });
@@ -236,6 +240,62 @@ export const saveProfile: EPR = async (info, { data }, send) => {
     profile.saucer.bistro.carry_over = $(data).number("player.bistro.carry_over");
   }
 
+  if (version === 6) {
+    if (!profile.fulfill) profile.fulfill = {};
+    profile.fulfill.jubility = $(data).number("player.info.jubility");
+    profile.fulfill.jubilityYday = $(data).number("player.info.jubility_yday");
+    profile.fulfill.tuneCount = $(data).number("player.info.tune_cnt");
+    profile.fulfill.saveCount = $(data).number("player.info.save_cnt");
+    profile.fulfill.savedCount = $(data).number("player.info.saved_cnt");
+    profile.fulfill.fcCount = $(data).number("player.info.fc_cnt");
+    profile.fulfill.exCount = $(data).number("player.info.exc_cnt");
+    profile.fulfill.clearCount = $(data).number("player.info.clear_cnt");
+    profile.fulfill.matchCount = $(data).number("player.info.match_cnt");
+    profile.fulfill.expertOption = $(data).number("player.info.expert_option");
+    profile.fulfill.matching = $(data).number("player.info.matching");
+    profile.fulfill.hazard = $(data).number("player.info.hazard");
+    profile.fulfill.hard = $(data).number("player.info.hard");
+    profile.fulfill.extraPoint = $(data).number("player.info.extra_point");
+    profile.fulfill.isExtraPlayed = $(data).bool("player.info.is_extra_played");
+    profile.fulfill.totalBestScore = $(data).number("player.info.total_best_score");
+    profile.fulfill.clearMaxLevel = $(data).number("player.info.clear_max_level");
+    profile.fulfill.fcMaxLevel = $(data).number("player.info.fc_max_level");
+    profile.fulfill.exMaxLevel = $(data).number("player.info.exc_max_level");
+
+    profile.fulfill.marker = lastMarker;
+    profile.fulfill.theme = lastTheme;
+    profile.fulfill.title = lastTitle;
+    profile.fulfill.parts = lastParts;
+    profile.fulfill.sort = lastSort;
+    profile.fulfill.category = lastCategory;
+
+    profile.fulfill.secretList = $(data).numbers("player.item.secret_list");
+    profile.fulfill.themeList = $(data).number("player.item.theme_list");
+    profile.fulfill.markerList = $(data).numbers("player.item.marker_list");
+    profile.fulfill.titleList = $(data).numbers("player.item.title_list");
+    profile.fulfill.partsList = $(data).numbers("player.item.parts_list");
+    profile.fulfill.secretListNew = $(data).numbers("player.item.secret_new");
+    profile.fulfill.themeListNew = $(data).number("player.item.theme_new");
+    profile.fulfill.markerListNew = $(data).numbers("player.item.marker_new");
+    profile.fulfill.titleListNew = $(data).numbers("player.item.title_new");
+
+    const courseNode = $(data).element("course");
+    if (courseNode) {
+      profile.fulfill.lastCourseId = courseNode.number("course_id");
+
+      await DB.Upsert<CourseResult>(refId, {
+        collection: "course_results",
+        courseId: courseNode.number("course_id"),
+        version: 6
+      }, {
+        $set: {
+          rating: courseNode.number("rating"),
+          scores: courseNode.elements("music").map(m => m.number("score"))
+        }
+      });
+    }
+  }
+
   try {
     await DB.Update<Profile>(refId, { collection: "profile" }, profile);
 
@@ -338,6 +398,69 @@ const updateScore = async (refId: string, data: any): Promise<boolean> => {
     console.error("Score saving failed: ", e.stack);
     return false;
   }
+};
+
+export const getCourse: EPR = async (info, data, send) => {
+  const version = getVersion(info);
+  if (version === 0) return send.deny();
+
+  const jubeatId = $(data).number("data.player.jid");
+  if (!jubeatId) return send.deny();
+
+  const profile = await DB.FindOne<Profile>(null, { collection: "profile", jubeatId });
+  if (!profile) return send.deny();
+
+  if (version === 6) {
+    const results = await DB.Find<CourseResult>(profile.__refid, { collection: "course_results", version: 6 });
+
+    const { courses } = require("../data/fulfill_courses.json");
+
+    const validCourseIds: number[] = courses.map(course => course.course_id);
+
+    return send.object({
+      data: {
+        course_list: {
+          course: courses.map(course => ({
+            id: K.ITEM("s32", course.course_id),
+            name: K.ITEM("str", course.course_name),
+            level: K.ITEM("u8", course.course_level),
+
+            norma: {
+              norma_id: K.ARRAY("s32", course.norma.norma_id),
+              bronze_value: K.ARRAY("s32", course.norma.bronze),
+              silver_value: K.ARRAY("s32", course.norma.silver),
+              gold_value: K.ARRAY("s32", course.norma.gold)
+            },
+
+            music_list: {
+              music: course.music_list.map(music => (K.ATTR({ index: music.index }, {
+                music_id: K.ITEM("s32", music.music_id),
+                seq: K.ITEM("u8", music.seq_id)
+              })))
+            }
+          }))
+        },
+
+        player_list: {
+          player: {
+            jid: K.ITEM("s32", jubeatId),
+
+            result_list: {
+              result: results.filter(e => validCourseIds.find(valid => valid === e.courseId)).map(result => ({
+                id: K.ITEM("s32", result.courseId),
+                rating: K.ITEM("u8", result.rating),
+                score: K.ARRAY("s32", result.scores)
+              }))
+            }
+          }
+        },
+
+        last_course_id: K.ITEM("s32", profile.fulfill?.lastCourseId || 0)
+      }
+    });
+  }
+
+  return send.deny();
 };
 
 export const meeting: EPR = (info, data, send) => {
