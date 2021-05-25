@@ -1,6 +1,6 @@
-import {getVersion} from "../utils";
-import Profile from '../models/profile';
-import {Score} from '../models/score';
+import {getVersion, getVersionName, VersionRange} from "../utils";
+import Profile from "../models/profile";
+import {Score} from "../models/score";
 
 export const profile: EPR = async (info, data, send) => {
   let refId = $(data).str("data.player.pass.refid");
@@ -16,155 +16,239 @@ export const profile: EPR = async (info, data, send) => {
   if (!profile) {
     if (!name) return send.deny();
 
-    const newProfile = new Profile();
-    newProfile.jubeatId = _.random(1, 99999999);
-    newProfile.name = name;
-    newProfile.previous_version = version;
+    const newProfile: Profile = {
+      collection: "profile",
+      jubeatId: _.random(1, 99999999),
+      name: name,
+
+      lastShopname: "NONE",
+      lastAreaname: "NONE"
+    };
 
     await DB.Upsert<Profile>(refId, { collection: "profile" }, newProfile);
 
     profile = newProfile;
   }
 
-  let migration = false;
-  if (profile.previous_version < version) {
-    migration = true;
-    profile.name = "";
-    await DB.Update<Profile>(refId, { collection: "profile" }, { $set: { name: "", previous_version: version } });
-  }
+  return send.object({
+    data: {
+      ...VersionRange(version, 5, 5) && require("../templates/gameInfos/saucer.ts")(profile),
 
-  if (name) {
-    profile.name = name;
-    await DB.Update<Profile>(refId, { collection: "profile" }, { $set: { name } });
-  }
+      player: {
+        name: K.ITEM("str", profile.name),
+        jid: K.ITEM("s32", profile.jubeatId),
+        refid: K.ITEM("str", profile.__refid),
+        session_id: K.ITEM("s32", 1),
 
-  if (version === 3) {
-    if (U.GetConfig("unlock_all_songs")) {
-      profile.knit.item = {
-        secretList: [-1, -1],
-        themeList: -1,
-        markerList: [-1, -1],
-        titleList: [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
-      };
-      profile.knit.item_new = {
-        secretList: [0, 0],
-        themeList: 0,
-        markerList: [0, 0],
-        titleList: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-      };
+        ...version === 3 && require("../templates/profiles/knit.ts")(profile),
+        ...version === 4 && require("../templates/profiles/copious.ts")(profile),
+        ...version === 5 && require("../templates/profiles/saucer.ts")(profile),
+      }
     }
-    return send.pugFile('templates/knit/profile.pug', { refId, migration, ...profile }, { compress: false });
-  }
-
-  return send.deny();
+  });
 };
 
 export const saveProfile: EPR = async (info, { data }, send) => {
-  console.log(U.toXML(data));
-  const player = $(data).element("player");
+  console.log(U.toXML({
+    call: K.ATTR({ model: info.model }, {
+      [info.module]: K.ATTR({ method: info.method }, { data })
+    })
+  }));
 
-  const refId = player.str("refid");
+  const refId = $(data).str("player.refid");
   if (!refId) return send.deny();
 
   const version = getVersion(info);
   if (version === 0) return send.deny();
 
   const profile = await DB.FindOne<Profile>(refId, { collection: "profile" });
+  if (!profile) return send.deny();
 
-  if (version === 3) {
-    profile.name = player.str("name");
+  let lastMarker = 0;
+  let lastTheme = 0;
+  let lastTitle = 0;
+  let lastParts = 0;
+  let lastSort = 0;
+  let lastFilter = 0;
+  let lastCategory = 0;
+  let lastMselStat = 0;
 
-    profile.last.shopname = player.str("shopname", profile.last.shopname);
-    profile.last.areaname = player.str("areaname", profile.last.areaname);
+  const result = $(data).element("result");
 
-    profile.jubility = player.number("info.jubility", profile.jubility);
-    profile.jubilityYday = player.number("info.jubility_yday", profile.jubilityYday);
+  if (result) {
+    const tunes = result.elements("tune");
+    const historys = {};
+    const historyNode = $(data).elements("player.history.tune");
 
-    profile.knit.acvProg = player.number("info.acv_prog", profile.knit.acvProg);
-    profile.knit.acvWool = player.number("info.acv_wool", profile.knit.acvWool);
-    profile.knit.acvRouteProg = player.numbers("info.acv_route_prog", profile.knit.acvRouteProg);
-    profile.knit.acvPoint = player.number("info.acv_point", profile.knit.acvPoint);
-
-    profile.tuneCount = player.number("info.tune_cnt", profile.tuneCount);
-    profile.saveCount = player.number("info.save_cnt", profile.saveCount);
-    profile.savedCount = player.number("info.saved_cnt", profile.savedCount);
-    profile.fullcomboCount = player.number("info.fc_cnt", profile.fullcomboCount);
-    profile.fullcomboSeqCount = player.number("info.fc_seq_cnt", profile.fullcomboSeqCount);
-    profile.excellentCount = player.number("info.exc_cnt", profile.excellentCount);
-    profile.excellentSeqCount = player.number("info.exc_seq_cnt", profile.excellentSeqCount);
-    profile.matchCount = player.number("info.match_cnt", profile.matchCount);
-    profile.beatCount = player.number('info.beat_cnt', profile.beatCount);
-    profile.conciergeSelectedCount = player.number('info.con_sel_cnt', profile.conciergeSelectedCount);
-    profile.tagCount = player.number('info.tag_cnt', profile.tagCount);
-    profile.mynewsCount = player.number('info.mynews_cnt', profile.mynewsCount);
-
-    if (!U.GetConfig("unlock_all_songs")) {
-      profile.knit.item.secretList = player.numbers('item.secret_list', profile.knit.item.secretList);
-      profile.knit.item.themeList = player.number('item.theme_list', profile.knit.item.themeList);
-      profile.knit.item.markerList = player.numbers('item.marker_list', profile.knit.item.markerList);
-      profile.knit.item.titleList = player.numbers('item.title_list', profile.knit.item.titleList);
-
-      profile.knit.item_new.secretList = player.numbers('item.secret_new', profile.knit.item_new.secretList);
-      profile.knit.item_new.themeList = player.number('item.theme_new', profile.knit.item_new.themeList);
-      profile.knit.item_new.markerList = player.numbers('item.marker_new', profile.knit.item_new.markerList);
-      profile.knit.item_new.titleList = player.numbers('item.title_new', profile.knit.item_new.titleList);
-    }
-
-    profile.last.conciergeSuggestId = player.number('info.con_suggest_id', profile.last.conciergeSuggestId);
-    profile.last.playTime = BigInt(new Date().getMilliseconds());
-
-    // Append
-    const collabo = player.element("collabo");
-    if (collabo) {
-      profile.knit.collabo.success = collabo.bool("success");
-      profile.knit.collabo.completed = collabo.bool("completed");
-    }
-
-    const result = $(data).element("result");
-
-    if (result) {
-      const tunes = result.elements("tune");
-
-      for (const tune of tunes) {
-        const musicId = tune.number("music", 0);
-        profile.last.musicId = musicId;
-        profile.last.seqId = parseInt(tune.attr("player.score").seq) || 0;
-        profile.last.title = tune.number("title", profile.last.title);
-        profile.last.theme = tune.number("theme", profile.last.theme);
-        profile.last.marker = tune.number("marker", profile.last.marker);
-        profile.last.sort = tune.number("sort", profile.last.sort);
-        profile.last.filter = tune.number("filter", profile.last.filter);
-        profile.last.showRank = tune.number("combo_disp", profile.last.showRank);
-        profile.last.showCombo = tune.number("rank_sort", profile.last.showCombo);
-        profile.last.mselStat = tune.number("msel_stat", profile.last.mselStat);
-
-        const score = tune.number('player.score');
-        const seq = parseInt(tune.attr('player.score').seq);
-        const clear = parseInt(tune.attr('player.score').clear);
-        const combo = parseInt(tune.attr('player.score').combo);
-        const bestScore = tune.number('player.best_score');
-        const bestClear = tune.number('player.best_clear');
-        const playCount = tune.number('player.play_cnt');
-        const clearCount = tune.number('player.clear_cnt');
-        const fullcomboCount = tune.number('player.fc_cnt');
-        const excellentCount = tune.number('player.exc_cnt');
-        const mbar = tune.numbers('player.mbar');
-
-        await updateScore(refId, musicId, seq, score, clear, mbar, {
-          playCount,
-          clearCount,
-          fullcomboCount,
-          excellentCount
-        });
+    if (historyNode) {
+      for (const history of historyNode) {
+        historys[history.attr().log_id] = {
+          timestamp: history.bigint("timestamp"),
+          isHard: history.bool("player.result.is_hard_mode")
+        };
       }
     }
 
-    await DB.Update<Profile>(refId, { collection: "profile" }, profile);
+    for (const tune of tunes) {
+      const tuneId = tune.attr().id;
 
-    return send.object({ data: { player: { session_id: K.ITEM('s32', 1) } } });
+      profile.musicId = tune.number("music");
+      profile.seqId = parseInt(tune.attr("player.score").seq);
+      lastMarker = tune.number("marker");
+      lastTheme = tune.number("theme");
+      lastTitle = tune.number("title");
+      lastParts = tune.number("parts");
+      lastSort = tune.number("sort");
+      lastFilter = tune.number("filter");
+      lastCategory = tune.number("category");
+      lastMselStat = tune.number("msel_stat");
+      profile.rankSort = tune.number("rank_sort");
+      profile.comboDisp = tune.number("combo_disp");
+
+      await updateScore(refId, {
+        musicId: tune.number("music"),
+        seq: parseInt(tune.attr("player.score").seq),
+        score: tune.number("player.score"),
+        clear: parseInt(tune.attr("player.score").clear),
+        isHard: historys[tuneId]?.isHard || false,
+        bestScore: tune.number("player.best_score"),
+        bestClear: tune.number("player.best_clear"),
+        playCount: tune.number("player.play_cnt"),
+        clearCount: tune.number("player.clear_cnt"),
+        fullcomboCount: tune.number("player.fc_cnt"),
+        excellentCount: tune.number("player.exc_cnt"),
+        ...tune.element("player.mbar") && { mbar: tune.numbers("player.mbar") }
+      });
+    }
   }
 
-  return send.deny();
+  profile.lastPlayTime = Number($(data).bigint("player.time_gameend"));
+  profile.lastShopname = $(data).str("player.shopname");
+  profile.lastAreaname = $(data).str("player.areaname");
+
+  if (version === 3) {
+    if (!profile.knit) profile.knit = {};
+    profile.knit.jubility = $(data).number("player.info.jubility");
+    profile.knit.jubilityYday = $(data).number("player.info.jubility_yday");
+    profile.knit.acvProg = $(data).number("player.info.acv_prog");
+    profile.knit.acvPoint = $(data).number("player.info.acv_point");
+    profile.knit.acvWool = $(data).number("player.info.acv_wool");
+    profile.knit.acvRouteProg = $(data).numbers("player.info.acv_route_prog");
+    profile.knit.tuneCount = $(data).number("player.info.tune_cnt");
+    profile.knit.saveCount = $(data).number("player.info.save_cnt");
+    profile.knit.savedCount = $(data).number("player.info.saved_cnt");
+    profile.knit.fcCount = $(data).number("player.info.fc_cnt");
+    profile.knit.fcSeqCount = $(data).number("player.info.fc_seq_cnt");
+    profile.knit.exCount = $(data).number("player.info.exc_cnt");
+    profile.knit.exSeqCount = $(data).number("player.info.exc_seq_cnt");
+    profile.knit.matchCount = $(data).number("player.info.match_cnt");
+    profile.knit.conSelCount = $(data).number("player.info.con_sel_cnt");
+
+    profile.knit.marker = lastMarker;
+    profile.knit.theme = lastTheme;
+    profile.knit.title = lastTitle;
+    profile.knit.sort = lastSort;
+    profile.knit.filter = lastFilter;
+    profile.knit.mselStat = lastMselStat;
+    profile.knit.conSuggestId = $(data).number("player.info.con_suggest_id");
+
+    profile.knit.secretList = $(data).numbers("player.item.secret_list");
+    profile.knit.themeList = $(data).number("player.item.theme_list");
+    profile.knit.markerList = $(data).numbers("player.item.marker_list");
+    profile.knit.titleList = $(data).numbers("player.item.title_list");
+
+    profile.knit.secretListNew = $(data).numbers("player.item.secret_new");
+    profile.knit.themeListNew = $(data).number("player.item.theme_new");
+    profile.knit.markerListNew = $(data).numbers("player.item.marker_new");
+    profile.knit.titleListNew = $(data).numbers("player.item.title_new");
+  }
+
+  if (version === 4) {
+    if (!profile.copious) profile.copious = {};
+    profile.copious.jubility = $(data).number("player.info.jubility");
+    profile.copious.jubilityYday = $(data).number("player.info.jubility_yday");
+    profile.copious.acvState = $(data).number("player.info.acv_state");
+    profile.copious.acvPoint = $(data).number("player.info.acv_point");
+    profile.copious.acvOwn = $(data).number("player.info.acv_own");
+    profile.copious.acvThrow = $(data).numbers("player.info.acv_throw");
+    profile.copious.tuneCount = $(data).number("player.info.tune_cnt");
+    profile.copious.saveCount = $(data).number("player.info.save_cnt");
+    profile.copious.savedCount = $(data).number("player.info.saved_cnt");
+    profile.copious.fcCount = $(data).number("player.info.fc_cnt");
+    profile.copious.fcSeqCount = $(data).number("player.info.fc_seq_cnt");
+    profile.copious.exCount = $(data).number("player.info.exc_cnt");
+    profile.copious.exSeqCount = $(data).number("player.info.exc_seq_cnt");
+    profile.copious.matchCount = $(data).number("player.info.match_cnt");
+    profile.copious.totalBestScore = $(data).number("player.info.total_best_score");
+
+    profile.copious.marker = lastMarker;
+    profile.copious.theme = lastTheme;
+    profile.copious.title = lastTitle;
+    profile.copious.parts = lastParts;
+    profile.copious.sort = lastSort;
+    profile.copious.category = lastCategory;
+    profile.copious.mselStat = lastMselStat;
+
+    profile.copious.secretList = $(data).numbers("player.item.secret_list");
+    profile.copious.themeList = $(data).number("player.item.theme_list");
+    profile.copious.markerList = $(data).numbers("player.item.marker_list");
+    profile.copious.titleList = $(data).numbers("player.item.title_list");
+    profile.copious.partsList = $(data).numbers("player.item.parts_list");
+
+    profile.copious.secretListNew = $(data).numbers("player.item.secret_new");
+    profile.copious.themeListNew = $(data).number("player.item.theme_new");
+    profile.copious.markerListNew = $(data).numbers("player.item.marker_new");
+    profile.copious.titleListNew = $(data).numbers("player.item.title_new");
+  }
+
+  if (version === 5) {
+    if (!profile.saucer) profile.saucer = {};
+    profile.saucer.jubility = $(data).number("player.info.jubility");
+    profile.saucer.jubilityYday = $(data).number("player.info.jubility_yday");
+    profile.saucer.tuneCount = $(data).number("player.info.tune_cnt");
+    profile.saucer.clearCount = $(data).number("player.info.clear_cnt");
+    profile.saucer.saveCount = $(data).number("player.info.save_cnt");
+    profile.saucer.savedCount = $(data).number("player.info.saved_cnt");
+    profile.saucer.fcCount = $(data).number("player.info.fc_cnt");
+    profile.saucer.exCount = $(data).number("player.info.exc_cnt");
+    profile.saucer.matchCount = $(data).number("player.info.match_cnt");
+    profile.saucer.totalBestScore = $(data).number("player.info.total_best_score");
+
+    profile.saucer.marker = lastMarker;
+    profile.saucer.theme = lastTheme;
+    profile.saucer.title = lastTitle;
+    profile.saucer.parts = lastParts;
+    profile.saucer.sort = lastSort;
+    profile.saucer.category = lastCategory;
+
+    profile.saucer.secretList = $(data).numbers("player.item.secret_list");
+    profile.saucer.themeList = $(data).number("player.item.theme_list");
+    profile.saucer.markerList = $(data).numbers("player.item.marker_list");
+    profile.saucer.titleList = $(data).numbers("player.item.title_list");
+    profile.saucer.partsList = $(data).numbers("player.item.parts_list");
+
+    profile.saucer.secretListNew = $(data).numbers("player.item.secret_new");
+    profile.saucer.themeListNew = $(data).number("player.item.theme_new");
+    profile.saucer.markerListNew = $(data).numbers("player.item.marker_new");
+    profile.saucer.titleListNew = $(data).numbers("player.item.title_new");
+
+    if (!profile.saucer.bistro) profile.saucer.bistro = {};
+    profile.saucer.bistro.carry_over = $(data).number("player.bistro.carry_over");
+  }
+
+  try {
+    await DB.Update<Profile>(refId, { collection: "profile" }, profile);
+
+    return send.object({
+      data: {
+        player: { session_id: K.ITEM("s32", 1) },
+        ...version === 4 && { collabo: { deller: K.ITEM("s32", 0) } }
+      }
+    });
+  } catch (e) {
+    console.error(`Profile save failed: ${e.message}`);
+    return send.deny();
+  }
 };
 
 export const loadScore: EPR = async (info, data, send) => {
@@ -178,7 +262,7 @@ export const loadScore: EPR = async (info, data, send) => {
   if (version === 0) return send.deny();
 
   const scores = await DB.Find<Score>(profile.__refid, { collection: "score" });
-  const scoreData: { [musicId: number]: any } = {};
+  const scoreData: { [musicId: number]: { score: number[], clear: number[], playCnt: number[], clearCnt: number[], fcCnt: number[], exCnt: number[], bar: number[][] } } = {};
 
   for (const score of scores) {
     if (!scoreData[score.musicId]) {
@@ -198,95 +282,112 @@ export const loadScore: EPR = async (info, data, send) => {
     data.clearCnt[score.seq] = score.clearCount;
     data.fcCnt[score.seq] = score.fullcomboCount;
     data.exCnt[score.seq] = score.excellentCount;
-    data.clear[score.seq] = score.clearType;
+    data.clear[score.seq] = score.clear;
     data.score[score.seq] = score.score;
     data.bar[score.seq] = score.bar;
   }
 
-  if (version === 3) return send.object({
+  return send.object({
     data: {
       player: {
-        playdata: K.ATTR({ count: String(Object.keys(scoreData).length) }, {
-          musicdata: (() => {
-            const musicdata = [];
-            Object.entries(scoreData).forEach(([k, v]) => {
-              musicdata.push(K.ATTR({ music_id: String(k) }, {
-                play_cnt: K.ARRAY('s32', v.playCnt),
-                clear_cnt: K.ARRAY('s32', v.clearCnt),
-                fc_cnt: K.ARRAY('s32', v.fcCnt),
-                ex_cnt: K.ARRAY('s32', v.exCnt),
-                clear: K.ARRAY('s8', v.clear),
-                score: K.ARRAY('s32', v.score),
-                bar: v.bar.map((v, i) => K.ARRAY('u8', v, { seq: String(i) }))
-              }));
-            });
-            return musicdata;
-          })()
-        })
+        jid: K.ITEM("s32", jubeatId),
+
+        ...version >= 3 && {
+          playdata: K.ATTR({ count: String(Object.keys(scoreData).length) }, {
+            musicdata: Object.keys(scoreData).map(musicId => K.ATTR({ music_id: String(musicId) }, {
+              score: K.ARRAY("s32", scoreData[musicId].score),
+              clear: K.ARRAY("s8", scoreData[musicId].clear),
+              play_cnt: K.ARRAY("s32", scoreData[musicId].playCnt),
+              clear_cnt: K.ARRAY("s32", scoreData[musicId].clearCnt),
+              fc_cnt: K.ARRAY("s32", scoreData[musicId].fcCnt),
+              ex_cnt: K.ARRAY("s32", scoreData[musicId].exCnt),
+              bar: scoreData[musicId].bar.map((bar, seq) => K.ARRAY("u8", bar, { seq: String(seq) }))
+            }))
+          })
+        }
       }
     }
   });
-
-  return send.deny();
 };
 
-const updateScore = async (refId: string, musicId: number, seq: number, score: number, clear: number, mbar: number[], data: any) => {
-  let raised;
+const updateScore = async (refId: string, data: any): Promise<boolean> => {
+  try {
+    await DB.Upsert<Score>(refId, {
+      collection: "score",
+      musicId: data.musicId,
+      seq: data.seq,
+      isHardMode: data.isHard
+    }, {
+      $set: {
+        musicId: data.musicId,
+        seq: data.seq,
+        score: data.bestScore,
+        clear: data.bestClear,
+        musicRate: 0,
+        ...data.mbar && { bar: data.mbar, },
+        playCount: data.playCount,
+        clearCount: data.clearCount,
+        fullcomboCount: data.fullcomboCount,
+        excellentCount: data.excellentCount,
+        isHardMode: data.isHard
+      }
+    });
 
-  const oldScore = await DB.FindOne<Score>(refId, { collection: "score", musicId, seq });
-
-  let scoreData = oldScore;
-
-  if (!oldScore) {
-    scoreData = new Score();
-    scoreData.musicId = musicId;
-    scoreData.seq = seq;
-    raised = true;
-  } else {
-    raised = score > oldScore.score;
-    score = Math.max(oldScore.score, score);
+    return true;
+  } catch (e) {
+    console.error("Score saving failed: ", e.stack);
+    return false;
   }
-
-  scoreData.clearType = Math.max(scoreData.clearType, clear);
-  scoreData.playCount = data.playCount;
-  scoreData.clearCount = data.clearCount;
-  scoreData.fullcomboCount = data.fullcomboCount;
-  scoreData.excellentCount = data.excellentCount;
-  scoreData.isHardmodeClear = false;
-
-  if (mbar && raised) {
-    scoreData.score = score;
-    scoreData.bar = mbar;
-  }
-
-  await DB.Upsert(refId, { collection: "score", musicId, seq }, scoreData);
 };
 
 export const meeting: EPR = (info, data, send) => {
   return send.object({
     data: {
       meeting: {
-        single: K.ATTR({ count: '0' }),
-        tag: K.ATTR({ count: '0' }),
+        single: K.ATTR({ count: "0" }),
+        tag: K.ATTR({ count: "0" }),
       },
       reward: {
-        total: K.ITEM('s32', 0),
-        point: K.ITEM('s32', 0)
+        total: K.ITEM("s32", 0),
+        point: K.ITEM("s32", 0)
       }
     }
   });
 };
 
-export const getCollabo: EPR = (info, data, send) => send.object({
-  data: {
-    collabo: {
-      played: {
-        iidx: K.ITEM("s8", 1),
-        popn: K.ITEM("s8", 1),
-        ddr: K.ITEM("s8", 1),
-        reflec: K.ITEM("s8", 1),
-        gfdm: K.ITEM("s8", 1),
+export const getCollabo: EPR = (info, data, send) => {
+  const version = getVersion(info);
+  if (version === 0) return send.deny();
+
+  if (version === 3) {
+    return send.object({
+      data: {
+        collabo: {
+          played: {
+            iidx: K.ITEM("s8", 1),
+            popn: K.ITEM("s8", 1),
+            ddr: K.ITEM("s8", 1),
+            reflec: K.ITEM("s8", 1),
+            gfdm: K.ITEM("s8", 1),
+          }
+        }
       }
-    }
+    });
   }
-});
+
+  if (version === 4) {
+    return send.object({
+      data: {
+        player: {
+          collabo: {
+            reward: K.ITEM("s32", 0),
+            dellar: K.ITEM("s32", 0),
+            music_id: K.ITEM("s32", 0),
+            wonder_state: K.ITEM("u32", 2),
+            yellow_state: K.ITEM("u32", 2),
+          }
+        }
+      }
+    });
+  }
+};
