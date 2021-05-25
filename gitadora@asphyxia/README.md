@@ -1,5 +1,7 @@
 GITADORA Plugin for Asphyxia-Core
 =================================
+![Version: v1.1.0](https://img.shields.io/badge/version-v1.1.0-blue)
+
 This plugin is based on converted from public-exported Asphyxia's Routes.
 
 Supported Versions
@@ -18,10 +20,6 @@ The folder structure between v1.0 and v1.1 is quite different. Do not overwrite 
 2. C-C and C-V the newest version of `gitadora@asphyxia`
 3. (Custom MDB Users) Reupload MDB or move `data/custom_mdb.xml` to `data/mdb/custom.xml`
 
-Note about newer version of Asphyxia Core
------------------------------------------
-Since newer version of Core separate the save db per each plugin, Seems there was an error after the migration process. till it's fixed on Core side, you maybe need backup the old save and start from zero.
-
 
 Known Issues
 ============
@@ -31,8 +29,8 @@ Known Issues
 
 Release Notes
 =============
-v1.1.0
-------------
+v1.1.0 (Current)
+----------------
  * NEX+AGE Support (Not full support.)
  * Restructure bit for maintaining.
  
