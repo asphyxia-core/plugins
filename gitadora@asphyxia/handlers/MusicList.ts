@@ -1,6 +1,9 @@
 import { getVersion } from "../utils";
 import { defaultProcessRawData, processDataBuilder } from "../data/mdb"
 import { CommonMusicDataField, readJSONOrXML, readXML } from "../data/mdb";
+import Logger from "../utils/logger"
+
+const logger = new Logger("MusicList")
 
 export const playableMusic: EPR = async (info, data, send) => {
   const version = getVersion(info);
@@ -10,8 +13,8 @@ export const playableMusic: EPR = async (info, data, send) => {
       music = (await defaultProcessRawData('data/mdb/custom.xml')).music
     }
   } catch (e) {
-    console.error(e.stack);
-    console.error("Fallback: Using default MDB method.")
+    logger.error(e.stack);
+    logger.error("Fallback: Using default MDB method.")
     music = [];
   }
 
