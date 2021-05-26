@@ -66,9 +66,12 @@ export function register() {
   MultiRoute('gametop.get', getPlayer);
   MultiRoute('gameend.regist', savePlayer);
 
+  // Misc
+  R.Route('bemani_gakuen.get_music_info', true) 
+
   R.Unhandled(async (info, data, send) => {
     if (["eventlog"].includes(info.module)) return;
-    logger.error(`Received Unhandled Response on ${info.method} by ${info.model}/${info.module}`)
+    logger.error(`Received Unhandled Request on Method "${info.method}" by ${info.model}/${info.module}`)
     logger.debugError(`Received Request: ${JSON.stringify(data, null, 4)}`)
   })
 }
