@@ -13,8 +13,8 @@ export const playableMusic: EPR = async (info, data, send) => {
       music = (await defaultProcessRawData('data/mdb/custom.xml')).music
     }
   } catch (e) {
-    logger.error(e.stack);
-    logger.error("Fallback: Using default MDB method.")
+    logger.warn("Read Custom MDB failed. Using default MDB as a fallback.")
+    logger.debugWarn(e.stack);
     music = [];
   }
 
