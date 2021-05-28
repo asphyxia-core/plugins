@@ -1,6 +1,6 @@
 GITADORA Plugin for Asphyxia-Core
 =================================
-![Version: v1.1.0](https://img.shields.io/badge/version-v1.1.0-blue)
+![Version: v1.1.1](https://img.shields.io/badge/version-v1.1.1-blue)
 
 This plugin is based on converted from public-exported Asphyxia's Routes.
 
@@ -29,8 +29,14 @@ Known Issues
 
 Release Notes
 =============
-v1.1.0 (Current)
+v1.1.1 (Current)
 ----------------
+ * fix: Error when create new profile on exchain.
+ * fix: last song doesn't work correctly.
+ * misc: Add logger for tracking problem.
+
+v1.1.0
+------
  * NEX+AGE Support (Not full support.)
  * Restructure bit for maintaining.
  

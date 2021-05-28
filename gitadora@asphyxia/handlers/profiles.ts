@@ -391,20 +391,11 @@ export const getPlayer: EPR = async (info, data, send) => {
     player: K.ATTR({ 'no': `${no}` }, {
       now_date: K.ITEM('u64', time),
       secretmusic: { // TODO: FIX THIS
-        music: _.merge(_.range(0,2800), _.range(5000, 5100)).map(mid => {
-          return {
-            musicid: K.ITEM('s32', mid),
-            seq: K.ITEM('u16', 255),
-            kind: K.ITEM('s32', 40),
-          }
-        }),
-      },
-      trbitem: { // TODO: FIX THIS
-        item: _.range(0,750).map(id => {
-          return {
-            itemid: K.ITEM('s32', id),
-          }
-        }),
+        music: {
+          musicid: K.ITEM('s32', 0),
+          seq: K.ITEM('u16', 255),
+          kind: K.ITEM('s32', 40),
+        }
       },
       chara_list: {},
       title_parts: {},

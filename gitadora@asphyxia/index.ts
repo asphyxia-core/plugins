@@ -3,6 +3,9 @@ import { playableMusic } from "./handlers/MusicList"
 import { getPlayer, check, regist, savePlayer } from "./handlers/profiles";
 import { updatePlayerInfo } from "./handlers/webui";
 import { isAsphyxiaDebugMode, isRequiredCoreVersion } from "./utils";
+import Logger from "./utils/logger";
+
+const logger = new Logger("main")
 
 export function register() {
   if(!isRequiredCoreVersion(1, 20)) {
@@ -63,11 +66,12 @@ export function register() {
   MultiRoute('gametop.get', getPlayer);
   MultiRoute('gameend.regist', savePlayer);
 
+  // Misc
+  R.Route('bemani_gakuen.get_music_info', true) 
+
   R.Unhandled(async (info, data, send) => {
     if (["eventlog"].includes(info.module)) return;
-    console.error(`Received Unhandled Response on ${info.method} by ${info.model}/${info.module}`)
-    if (isAsphyxiaDebugMode()){
-      console.error(`Received Request: ${JSON.stringify(data, null, 4)}`)
-    }
+    logger.error(`Received Unhandled Request on Method "${info.method}" by ${info.model}/${info.module}`)
+    logger.debugError(`Received Request: ${JSON.stringify(data, null, 4)}`)
   })
 }
