@@ -1,0 +1,147 @@
+//DATA//
+  profile: DB.FindOne(refid, { collection: "profile" })
+
+-
+  const onOff = [ "Off", "On" ];
+  const characters = [ "All Character Random", "Man Random", "Female Random", "Yuni", "Rage", "Afro", "Jenny", "Emi", "Baby-Lon", "Gus", "Ruby", "Alice", "Julio", "Bonnie", "Zero", "Rinon" ];
+  const arrowSkins = [ "Normal", "X", "Classic", "Cyber", "Medium", "Small", "Dot" ];
+  const guidelines = [ "Off", "Border", "Center" ];
+  const filters = [ "Off", "Dark", "Darker", "Darkest" ];
+  const judgmentPrioritys = [ "Judgment priority", "Arrow priority" ];
+
+if (profile.usergamedata)
+  -
+    const common = profile.usergamedata.COMMON.strdata.split(",");
+    const option = profile.usergamedata.OPTION.strdata.split(",");
+
+    const name = common[25];
+    const weight = common[17];
+    const displayCalories = parseInt(common[3]);
+    const character = parseInt(common[4]);
+    const arrowSkin = parseInt(option[11]);
+    const guideline = parseInt(option[13]);
+    const filter = parseInt(option[12]);
+    const judgmentPriority = parseInt(option[15]);
+    const displayTiming = parseInt(option[16]);
+
+  div
+    .card
+      .card-header
+        p.card-header-title
+          span.icon
+            i.mdi.mdi-cog
+          | Profile Settings
+
+      .card-content
+        .field.is-horizontal.has-addons
+          .field-label.is-normal
+            label.label Dancer Name
+          .field-body
+            p.control
+              input.input(type="text", id="dancer_name", pattern="[A-Z]{8}", maxlength=8, value=name)
+            p.control
+              a.button.is-primary#change-name Change
+
+        .field.is-horizontal.has-addons
+          .field-label.is-normal
+            label.label Workout Weight
+          .field-body
+            p.control
+              input.input(type="number", id="weight_1", value=weight.split(".")[0])
+            p.control
+              input.input(type="number", id="weight_2", value=weight.split(".")[1])
+            p.control
+              a.button.is-primary#change-weight Change
+
+        .field.is-horizontal.has-addons
+          .field-label.is-normal
+            label.label Workout Display Calories
+          .field-body
+            p.control
+              .select
+                select#display_calories
+                  if (displayCalories === 1)
+                    option(value=0) Off
+                    option(value=1, selected) On
+                  else
+                    option(value=0, selected) Off
+                    option(value=1) On
+            p.control
+              a.button.is-primary#change-display-calories Submit
+
+        .field.is-horizontal.has-addons
+          .field-label.is-normal
+            label.label Arrow Skin
+          .field-body
+            p.control
+              .select
+                select#arrow_skin
+                  each v, i in arrowSkins
+                    if (arrowSkin === i)
+                      option(value=i, selected) #{v}
+                    else
+                      option(value=i) #{v}
+            p.control
+              a.button.is-primary#change-arrow-skin Submit
+
+        .field.is-horizontal.has-addons
+          .field-label.is-normal
+            label.label Guideline
+          .field-body
+            p.control
+              .select
+                select#guideline
+                  each v, i in guidelines
+                    if (guideline === i)
+                      option(value=i, selected) #{v}
+                    else
+                      option(value=i) #{v}
+            p.control
+              a.button.is-primary#change-guideline Submit
+
+        .field.is-horizontal.has-addons
+          .field-label.is-normal
+            label.label Filter concentration
+          .field-body
+            p.control
+              .select
+                select#filter
+                  each v, i in filters
+                    if (filter === i)
+                      option(value=i, selected) #{v}
+                    else
+                      option(value=i) #{v}
+            p.control
+              a.button.is-primary#change-filter Submit
+
+        .field.is-horizontal.has-addons
+          .field-label.is-normal
+            label.label Judgment display priority
+          .field-body
+            p.control
+              .select
+                select#judgment_priority
+                  each v, i in judgmentPrioritys
+                    if (judgmentPriority === i)
+                      option(value=i, selected) #{v}
+                    else
+                      option(value=i) #{v}
+            p.control
+              a.button.is-primary#change-judgment-priority Submit
+
+        .field.is-horizontal.has-addons
+          .field-label.is-normal
+            label.label Display Timing judgment
+          .field-body
+            p.control
+              .select
+                select#display_timing
+                  each v, i in ["Off", "On"]
+                    if (displayTiming === i)
+                      option(value=i, selected) #{v}
+                    else
+                      option(value=i) #{v}
+            p.control
+              a.button.is-primary#change-display-timing Submit
+
+script(src="static/js/profile_settings.js")
