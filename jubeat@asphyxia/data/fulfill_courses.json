@@ -1,0 +1,1624 @@
+{
+  "courses": [
+    {
+      "course_id": 1,
+      "course_name": "溢れ出した記憶、特別なあなたにありがとう。",
+      "course_level": 1,
+      "norma": {
+        "norma_id": [
+          1,
+          2,
+          0
+        ],
+        "bronze": [
+          850000,
+          0,
+          0
+        ],
+        "silver": [
+          900000,
+          1,
+          0
+        ],
+        "gold": [
+          950000,
+          2,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 50000241,
+          "seq_id": 2
+        },
+        {
+          "index": 1,
+          "music_id": 10000052,
+          "seq_id": 2
+        },
+        {
+          "index": 2,
+          "music_id": 30000042,
+          "seq_id": 2
+        },
+        {
+          "index": 3,
+          "music_id": 50000085,
+          "seq_id": 2
+        },
+        {
+          "index": 4,
+          "music_id": 50000144,
+          "seq_id": 2
+        }
+      ]
+    },
+    {
+      "course_id": 2,
+      "course_name": "コースモードが怖い？ばっかお前TAGがついてるだろ",
+      "course_level": 1,
+      "norma": {
+        "norma_id": [
+          1,
+          2,
+          0
+        ],
+        "bronze": [
+          800000,
+          0,
+          0
+        ],
+        "silver": [
+          850000,
+          1,
+          0
+        ],
+        "gold": [
+          900000,
+          2,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 50000121,
+          "seq_id": 1
+        },
+        {
+          "index": 1,
+          "music_id": 30000122,
+          "seq_id": 1
+        },
+        {
+          "index": 2,
+          "music_id": 40000159,
+          "seq_id": 1
+        },
+        {
+          "index": 3,
+          "music_id": 50000089,
+          "seq_id": 1
+        },
+        {
+          "index": 4,
+          "music_id": 40000051,
+          "seq_id": 2
+        }
+      ]
+    },
+    {
+      "course_id": 3,
+      "course_name": "満月の鐘踊り響くは虚空から成る恋の歌",
+      "course_level": 2,
+      "norma": {
+        "norma_id": [
+          1,
+          2,
+          0
+        ],
+        "bronze": [
+          850000,
+          1,
+          0
+        ],
+        "silver": [
+          900000,
+          2,
+          0
+        ],
+        "gold": [
+          950000,
+          3,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 40000121,
+          "seq_id": 2
+        },
+        {
+          "index": 1,
+          "music_id": 50000188,
+          "seq_id": 2
+        },
+        {
+          "index": 2,
+          "music_id": 30000047,
+          "seq_id": 2
+        },
+        {
+          "index": 3,
+          "music_id": 50000237,
+          "seq_id": 2
+        },
+        {
+          "index": 4,
+          "music_id": 50000176,
+          "seq_id": 2
+        }
+      ]
+    },
+    {
+      "course_id": 4,
+      "course_name": "スミスゼミナール 夏の陣開講記念 基本編",
+      "course_level": 2,
+      "norma": {
+        "norma_id": [
+          3,
+          2,
+          0
+        ],
+        "bronze": [
+          85,
+          1,
+          0
+        ],
+        "silver": [
+          90,
+          2,
+          0
+        ],
+        "gold": [
+          95,
+          3,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 50000267,
+          "seq_id": 1
+        },
+        {
+          "index": 1,
+          "music_id": 50000233,
+          "seq_id": 1
+        },
+        {
+          "index": 2,
+          "music_id": 50000228,
+          "seq_id": 1
+        },
+        {
+          "index": 3,
+          "music_id": 50000268,
+          "seq_id": 1
+        },
+        {
+          "index": 4,
+          "music_id": 50000291,
+          "seq_id": 1
+        }
+      ]
+    },
+    {
+      "course_id": 5,
+      "course_name": "HARDモードじゃないから、絶対、大丈夫だよっ！",
+      "course_level": 2,
+      "norma": {
+        "norma_id": [
+          1,
+          2,
+          0
+        ],
+        "bronze": [
+          850000,
+          0,
+          0
+        ],
+        "silver": [
+          900000,
+          1,
+          0
+        ],
+        "gold": [
+          950000,
+          3,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 50000144,
+          "seq_id": 2
+        },
+        {
+          "index": 1,
+          "music_id": 50000188,
+          "seq_id": 2
+        },
+        {
+          "index": 2,
+          "music_id": 50000070,
+          "seq_id": 2
+        },
+        {
+          "index": 3,
+          "music_id": 50000151,
+          "seq_id": 2
+        },
+        {
+          "index": 4,
+          "music_id": 50000152,
+          "seq_id": 2
+        }
+      ]
+    },
+    {
+      "course_id": 6,
+      "course_name": "星明かりの下、愛という名の日替わりランチを君と",
+      "course_level": 3,
+      "norma": {
+        "norma_id": [
+          3,
+          0,
+          0
+        ],
+        "bronze": [
+          70,
+          0,
+          0
+        ],
+        "silver": [
+          80,
+          0,
+          0
+        ],
+        "gold": [
+          90,
+          0,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 50000196,
+          "seq_id": 1
+        },
+        {
+          "index": 1,
+          "music_id": 50000151,
+          "seq_id": 2
+        },
+        {
+          "index": 2,
+          "music_id": 50000060,
+          "seq_id": 1
+        },
+        {
+          "index": 3,
+          "music_id": 40000048,
+          "seq_id": 2
+        },
+        {
+          "index": 4,
+          "music_id": 10000051,
+          "seq_id": 2
+        }
+      ]
+    },
+    {
+      "course_id": 7,
+      "course_name": "輝く北極星と幸せなヒーロー",
+      "course_level": 4,
+      "norma": {
+        "norma_id": [
+          1,
+          2,
+          0
+        ],
+        "bronze": [
+          900000,
+          1,
+          0
+        ],
+        "silver": [
+          950000,
+          2,
+          0
+        ],
+        "gold": [
+          980000,
+          3,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 50000079,
+          "seq_id": 2
+        },
+        {
+          "index": 1,
+          "music_id": 20000044,
+          "seq_id": 2
+        },
+        {
+          "index": 2,
+          "music_id": 50000109,
+          "seq_id": 2
+        },
+        {
+          "index": 3,
+          "music_id": 10000043,
+          "seq_id": 2
+        },
+        {
+          "index": 4,
+          "music_id": 10000042,
+          "seq_id": 2
+        }
+      ]
+    },
+    {
+      "course_id": 8,
+      "course_name": "花-鳥-藻-夏",
+      "course_level": 4,
+      "norma": {
+        "norma_id": [
+          3,
+          0,
+          0
+        ],
+        "bronze": [
+          70,
+          0,
+          0
+        ],
+        "silver": [
+          80,
+          0,
+          0
+        ],
+        "gold": [
+          90,
+          0,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 10000068,
+          "seq_id": 2
+        },
+        {
+          "index": 1,
+          "music_id": 40000154,
+          "seq_id": 2
+        },
+        {
+          "index": 2,
+          "music_id": 50000123,
+          "seq_id": 1
+        },
+        {
+          "index": 3,
+          "music_id": 40000051,
+          "seq_id": 2
+        },
+        {
+          "index": 4,
+          "music_id": 30000045,
+          "seq_id": 2
+        }
+      ]
+    },
+    {
+      "course_id": 9,
+      "course_name": "TAG生誕祭2014 俺の記録を抜いてみろ！",
+      "course_level": 4,
+      "norma": {
+        "norma_id": [
+          1,
+          2,
+          0
+        ],
+        "bronze": [
+          900000,
+          0,
+          0
+        ],
+        "silver": [
+          950000,
+          0,
+          0
+        ],
+        "gold": [
+          967252,
+          1,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 30000122,
+          "seq_id": 2
+        },
+        {
+          "index": 1,
+          "music_id": 50000086,
+          "seq_id": 2
+        },
+        {
+          "index": 2,
+          "music_id": 50000121,
+          "seq_id": 2
+        },
+        {
+          "index": 3,
+          "music_id": 50000196,
+          "seq_id": 2
+        },
+        {
+          "index": 4,
+          "music_id": 40000051,
+          "seq_id": 2
+        }
+      ]
+    },
+    {
+      "course_id": 10,
+      "course_name": "さよなら、亡くした恋と蝶の舞うヒストリア",
+      "course_level": 5,
+      "norma": {
+        "norma_id": [
+          3,
+          0,
+          0
+        ],
+        "bronze": [
+          80,
+          0,
+          0
+        ],
+        "silver": [
+          85,
+          0,
+          0
+        ],
+        "gold": [
+          90,
+          0,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 20000041,
+          "seq_id": 2
+        },
+        {
+          "index": 1,
+          "music_id": 30000044,
+          "seq_id": 2
+        },
+        {
+          "index": 2,
+          "music_id": 50000037,
+          "seq_id": 2
+        },
+        {
+          "index": 3,
+          "music_id": 20000124,
+          "seq_id": 2
+        },
+        {
+          "index": 4,
+          "music_id": 50000033,
+          "seq_id": 2
+        }
+      ]
+    },
+    {
+      "course_id": 11,
+      "course_name": "きらきらほしふるまぼろしなぎさちゃん",
+      "course_level": 5,
+      "norma": {
+        "norma_id": [
+          4,
+          1,
+          0
+        ],
+        "bronze": [
+          0,
+          700000,
+          0
+        ],
+        "silver": [
+          0,
+          800000,
+          0
+        ],
+        "gold": [
+          0,
+          900000,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 30000050,
+          "seq_id": 2
+        },
+        {
+          "index": 1,
+          "music_id": 30000049,
+          "seq_id": 2
+        },
+        {
+          "index": 2,
+          "music_id": 50000235,
+          "seq_id": 2
+        },
+        {
+          "index": 3,
+          "music_id": 50000157,
+          "seq_id": 2
+        },
+        {
+          "index": 4,
+          "music_id": 50000038,
+          "seq_id": 2
+        }
+      ]
+    },
+    {
+      "course_id": 12,
+      "course_name": "The Memorial Third: 僕みたいに演奏してね",
+      "course_level": 5,
+      "norma": {
+        "norma_id": [
+          3,
+          0,
+          0
+        ],
+        "bronze": [
+          75,
+          0,
+          0
+        ],
+        "silver": [
+          80,
+          0,
+          0
+        ],
+        "gold": [
+          85,
+          0,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 10000037,
+          "seq_id": 2
+        },
+        {
+          "index": 1,
+          "music_id": 20000048,
+          "seq_id": 1
+        },
+        {
+          "index": 2,
+          "music_id": 50000253,
+          "seq_id": 1
+        },
+        {
+          "index": 3,
+          "music_id": 20000121,
+          "seq_id": 2
+        },
+        {
+          "index": 4,
+          "music_id": 50000133,
+          "seq_id": 2
+        }
+      ]
+    },
+    {
+      "course_id": 13,
+      "course_name": "Enjoy! 4thKAC ～Memories of saucer～",
+      "course_level": 5,
+      "norma": {
+        "norma_id": [
+          1,
+          2,
+          0
+        ],
+        "bronze": [
+          900000,
+          1,
+          0
+        ],
+        "silver": [
+          950000,
+          2,
+          0
+        ],
+        "gold": [
+          980000,
+          4,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 50000206,
+          "seq_id": 1
+        },
+        {
+          "index": 1,
+          "music_id": 50000023,
+          "seq_id": 1
+        },
+        {
+          "index": 2,
+          "music_id": 50000078,
+          "seq_id": 1
+        },
+        {
+          "index": 3,
+          "music_id": 50000203,
+          "seq_id": 1
+        },
+        {
+          "index": 4,
+          "music_id": 50000323,
+          "seq_id": 1
+        }
+      ]
+    },
+    {
+      "course_id": 14,
+      "course_name": "風に吹かれるキケンなシロクマダンス",
+      "course_level": 6,
+      "norma": {
+        "norma_id": [
+          1,
+          2,
+          0
+        ],
+        "bronze": [
+          900000,
+          1,
+          0
+        ],
+        "silver": [
+          950000,
+          2,
+          0
+        ],
+        "gold": [
+          980000,
+          3,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 50000059,
+          "seq_id": 2
+        },
+        {
+          "index": 1,
+          "music_id": 50000197,
+          "seq_id": 2
+        },
+        {
+          "index": 2,
+          "music_id": 30000037,
+          "seq_id": 2
+        },
+        {
+          "index": 3,
+          "music_id": 50000182,
+          "seq_id": 2
+        },
+        {
+          "index": 4,
+          "music_id": 20000038,
+          "seq_id": 2
+        }
+      ]
+    },
+    {
+      "course_id": 15,
+      "course_name": "君主は視線で友との愛を語るめう",
+      "course_level": 6,
+      "norma": {
+        "norma_id": [
+          3,
+          0,
+          0
+        ],
+        "bronze": [
+          85,
+          0,
+          0
+        ],
+        "silver": [
+          90,
+          0,
+          0
+        ],
+        "gold": [
+          95,
+          0,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 40000052,
+          "seq_id": 2
+        },
+        {
+          "index": 1,
+          "music_id": 50000152,
+          "seq_id": 2
+        },
+        {
+          "index": 2,
+          "music_id": 50000090,
+          "seq_id": 2
+        },
+        {
+          "index": 3,
+          "music_id": 20000040,
+          "seq_id": 2
+        },
+        {
+          "index": 4,
+          "music_id": 50000184,
+          "seq_id": 2
+        }
+      ]
+    },
+    {
+      "course_id": 16,
+      "course_name": "スミスゼミナール 夏の陣開講記念 応用編",
+      "course_level": 6,
+      "norma": {
+        "norma_id": [
+          4,
+          1,
+          0
+        ],
+        "bronze": [
+          0,
+          750000,
+          0
+        ],
+        "silver": [
+          0,
+          850000,
+          0
+        ],
+        "gold": [
+          0,
+          900000,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 50000233,
+          "seq_id": 2
+        },
+        {
+          "index": 1,
+          "music_id": 50000267,
+          "seq_id": 2
+        },
+        {
+          "index": 2,
+          "music_id": 50000268,
+          "seq_id": 2
+        },
+        {
+          "index": 3,
+          "music_id": 50000228,
+          "seq_id": 2
+        },
+        {
+          "index": 4,
+          "music_id": 50000291,
+          "seq_id": 2
+        }
+      ]
+    },
+    {
+      "course_id": 17,
+      "course_name": "天から降り注ぐ星はまるで甘いキャンディ",
+      "course_level": 7,
+      "norma": {
+        "norma_id": [
+          3,
+          0,
+          0
+        ],
+        "bronze": [
+          85,
+          0,
+          0
+        ],
+        "silver": [
+          90,
+          0,
+          0
+        ],
+        "gold": [
+          95,
+          0,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 20000044,
+          "seq_id": 2
+        },
+        {
+          "index": 1,
+          "music_id": 30000050,
+          "seq_id": 2
+        },
+        {
+          "index": 2,
+          "music_id": 50000080,
+          "seq_id": 2
+        },
+        {
+          "index": 3,
+          "music_id": 40000126,
+          "seq_id": 2
+        },
+        {
+          "index": 4,
+          "music_id": 10000067,
+          "seq_id": 2
+        }
+      ]
+    },
+    {
+      "course_id": 18,
+      "course_name": "てんとう虫が囁いている「Wow Wow…」",
+      "course_level": 7,
+      "norma": {
+        "norma_id": [
+          3,
+          0,
+          0
+        ],
+        "bronze": [
+          85,
+          0,
+          0
+        ],
+        "silver": [
+          90,
+          0,
+          0
+        ],
+        "gold": [
+          95,
+          0,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 50000132,
+          "seq_id": 2
+        },
+        {
+          "index": 1,
+          "music_id": 40000128,
+          "seq_id": 2
+        },
+        {
+          "index": 2,
+          "music_id": 10000036,
+          "seq_id": 2
+        },
+        {
+          "index": 3,
+          "music_id": 50000119,
+          "seq_id": 2
+        },
+        {
+          "index": 4,
+          "music_id": 50000030,
+          "seq_id": 2
+        }
+      ]
+    },
+    {
+      "course_id": 19,
+      "course_name": "HARDモードでも大丈夫だよ！絶対、大丈夫だよっ！",
+      "course_level": 7,
+      "norma": {
+        "norma_id": [
+          4,
+          1,
+          0
+        ],
+        "bronze": [
+          0,
+          850000,
+          0
+        ],
+        "silver": [
+          0,
+          900000,
+          0
+        ],
+        "gold": [
+          0,
+          950000,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 50000144,
+          "seq_id": 2
+        },
+        {
+          "index": 1,
+          "music_id": 50000070,
+          "seq_id": 2
+        },
+        {
+          "index": 2,
+          "music_id": 50000188,
+          "seq_id": 2
+        },
+        {
+          "index": 3,
+          "music_id": 50000151,
+          "seq_id": 2
+        },
+        {
+          "index": 4,
+          "music_id": 50000152,
+          "seq_id": 2
+        }
+      ]
+    },
+    {
+      "course_id": 20,
+      "course_name": "こんなHARDモード、滅べばいい…",
+      "course_level": 7,
+      "norma": {
+        "norma_id": [
+          4,
+          1,
+          0
+        ],
+        "bronze": [
+          0,
+          850000,
+          0
+        ],
+        "silver": [
+          0,
+          900000,
+          0
+        ],
+        "gold": [
+          0,
+          950000,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 50000294,
+          "seq_id": 2
+        },
+        {
+          "index": 1,
+          "music_id": 50000295,
+          "seq_id": 2
+        },
+        {
+          "index": 2,
+          "music_id": 50000234,
+          "seq_id": 2
+        },
+        {
+          "index": 3,
+          "music_id": 50000245,
+          "seq_id": 2
+        },
+        {
+          "index": 4,
+          "music_id": 50000282,
+          "seq_id": 2
+        }
+      ]
+    },
+    {
+      "course_id": 21,
+      "course_name": "Challenge! 4thKAC ～Memories of saucer～",
+      "course_level": 7,
+      "norma": {
+        "norma_id": [
+          1,
+          0,
+          0
+        ],
+        "bronze": [
+          900000,
+          0,
+          0
+        ],
+        "silver": [
+          950000,
+          0,
+          0
+        ],
+        "gold": [
+          980000,
+          0,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 50000206,
+          "seq_id": 2
+        },
+        {
+          "index": 1,
+          "music_id": 50000023,
+          "seq_id": 2
+        },
+        {
+          "index": 2,
+          "music_id": 50000078,
+          "seq_id": 2
+        },
+        {
+          "index": 3,
+          "music_id": 50000203,
+          "seq_id": 2
+        },
+        {
+          "index": 4,
+          "music_id": 50000323,
+          "seq_id": 2
+        }
+      ]
+    },
+    {
+      "course_id": 22,
+      "course_name": "サヨナラ・キングコング ～恋のつぼみは愛の虹へ～",
+      "course_level": 8,
+      "norma": {
+        "norma_id": [
+          4,
+          1,
+          0
+        ],
+        "bronze": [
+          0,
+          900000,
+          0
+        ],
+        "silver": [
+          0,
+          950000,
+          0
+        ],
+        "gold": [
+          0,
+          980000,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 50000148,
+          "seq_id": 2
+        },
+        {
+          "index": 1,
+          "music_id": 50000101,
+          "seq_id": 2
+        },
+        {
+          "index": 2,
+          "music_id": 10000064,
+          "seq_id": 2
+        },
+        {
+          "index": 3,
+          "music_id": 50000171,
+          "seq_id": 2
+        },
+        {
+          "index": 4,
+          "music_id": 50000070,
+          "seq_id": 2
+        }
+      ]
+    },
+    {
+      "course_id": 23,
+      "course_name": "風に舞う白鳥の翼と花弁、さながら万華鏡のよう",
+      "course_level": 8,
+      "norma": {
+        "norma_id": [
+          3,
+          0,
+          0
+        ],
+        "bronze": [
+          90,
+          0,
+          0
+        ],
+        "silver": [
+          95,
+          0,
+          0
+        ],
+        "gold": [
+          98,
+          0,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 30000036,
+          "seq_id": 2
+        },
+        {
+          "index": 1,
+          "music_id": 50000122,
+          "seq_id": 2
+        },
+        {
+          "index": 2,
+          "music_id": 10000062,
+          "seq_id": 2
+        },
+        {
+          "index": 3,
+          "music_id": 50000199,
+          "seq_id": 2
+        },
+        {
+          "index": 4,
+          "music_id": 40000153,
+          "seq_id": 2
+        }
+      ]
+    },
+    {
+      "course_id": 24,
+      "course_name": "The 小さなおぼろガチョウ♪",
+      "course_level": 8,
+      "norma": {
+        "norma_id": [
+          1,
+          2,
+          0
+        ],
+        "bronze": [
+          970000,
+          2,
+          0
+        ],
+        "silver": [
+          980000,
+          3,
+          0
+        ],
+        "gold": [
+          990000,
+          4,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 50000049,
+          "seq_id": 2
+        },
+        {
+          "index": 1,
+          "music_id": 50000071,
+          "seq_id": 2
+        },
+        {
+          "index": 2,
+          "music_id": 10000041,
+          "seq_id": 2
+        },
+        {
+          "index": 3,
+          "music_id": 50000031,
+          "seq_id": 2
+        },
+        {
+          "index": 4,
+          "music_id": 40000129,
+          "seq_id": 2
+        }
+      ]
+    },
+    {
+      "course_id": 25,
+      "course_name": "TAG生誕祭2014 俺の記録を抜いてみろ！～HARD編～",
+      "course_level": 8,
+      "norma": {
+        "norma_id": [
+          4,
+          1,
+          0
+        ],
+        "bronze": [
+          0,
+          800000,
+          0
+        ],
+        "silver": [
+          0,
+          900000,
+          0
+        ],
+        "gold": [
+          0,
+          931463,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 50000089,
+          "seq_id": 2
+        },
+        {
+          "index": 1,
+          "music_id": 50000083,
+          "seq_id": 2
+        },
+        {
+          "index": 2,
+          "music_id": 50000210,
+          "seq_id": 2
+        },
+        {
+          "index": 3,
+          "music_id": 50000030,
+          "seq_id": 2
+        },
+        {
+          "index": 4,
+          "music_id": 40000159,
+          "seq_id": 2
+        }
+      ]
+    },
+    {
+      "course_id": 26,
+      "course_name": "凍る世界で見る鳳凰の火の花",
+      "course_level": 9,
+      "norma": {
+        "norma_id": [
+          4,
+          1,
+          0
+        ],
+        "bronze": [
+          0,
+          920000,
+          0
+        ],
+        "silver": [
+          0,
+          950000,
+          0
+        ],
+        "gold": [
+          0,
+          980000,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 30000043,
+          "seq_id": 2
+        },
+        {
+          "index": 1,
+          "music_id": 10000039,
+          "seq_id": 2
+        },
+        {
+          "index": 2,
+          "music_id": 20000048,
+          "seq_id": 2
+        },
+        {
+          "index": 3,
+          "music_id": 50000096,
+          "seq_id": 2
+        },
+        {
+          "index": 4,
+          "music_id": 20000038,
+          "seq_id": 2
+        }
+      ]
+    },
+    {
+      "course_id": 27,
+      "course_name": "真実の桜が乱れしとき、キルト纏いし君は修羅となる",
+      "course_level": 9,
+      "norma": {
+        "norma_id": [
+          4,
+          3,
+          0
+        ],
+        "bronze": [
+          0,
+          80,
+          0
+        ],
+        "silver": [
+          0,
+          85,
+          0
+        ],
+        "gold": [
+          0,
+          90,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 50000113,
+          "seq_id": 2
+        },
+        {
+          "index": 1,
+          "music_id": 50000184,
+          "seq_id": 2
+        },
+        {
+          "index": 2,
+          "music_id": 50000177,
+          "seq_id": 2
+        },
+        {
+          "index": 3,
+          "music_id": 30000124,
+          "seq_id": 2
+        },
+        {
+          "index": 4,
+          "music_id": 50000078,
+          "seq_id": 2
+        }
+      ]
+    },
+    {
+      "course_id": 28,
+      "course_name": "THE FINAL01 ～雷光に月、乙女に花散る祝福を～",
+      "course_level": 10,
+      "norma": {
+        "norma_id": [
+          4,
+          1,
+          0
+        ],
+        "bronze": [
+          0,
+          920000,
+          0
+        ],
+        "silver": [
+          0,
+          950000,
+          0
+        ],
+        "gold": [
+          0,
+          980000,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 10000038,
+          "seq_id": 2
+        },
+        {
+          "index": 1,
+          "music_id": 20000051,
+          "seq_id": 2
+        },
+        {
+          "index": 2,
+          "music_id": 30000048,
+          "seq_id": 2
+        },
+        {
+          "index": 3,
+          "music_id": 40000060,
+          "seq_id": 2
+        },
+        {
+          "index": 4,
+          "music_id": 50000023,
+          "seq_id": 2
+        }
+      ]
+    },
+    {
+      "course_id": 29,
+      "course_name": "The Memorial Third: assimilated all into Nature",
+      "course_level": 10,
+      "norma": {
+        "norma_id": [
+          4,
+          1,
+          0
+        ],
+        "bronze": [
+          0,
+          920000,
+          0
+        ],
+        "silver": [
+          0,
+          950000,
+          0
+        ],
+        "gold": [
+          0,
+          980000,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 50000135,
+          "seq_id": 2
+        },
+        {
+          "index": 1,
+          "music_id": 50000029,
+          "seq_id": 2
+        },
+        {
+          "index": 2,
+          "music_id": 40000047,
+          "seq_id": 2
+        },
+        {
+          "index": 3,
+          "music_id": 40000046,
+          "seq_id": 2
+        },
+        {
+          "index": 4,
+          "music_id": 50000253,
+          "seq_id": 2
+        }
+      ]
+    },
+    {
+      "course_id": 30,
+      "course_name": "4thKAC ～Memories of saucer～",
+      "course_level": 10,
+      "norma": {
+        "norma_id": [
+          4,
+          1,
+          0
+        ],
+        "bronze": [
+          0,
+          920000,
+          0
+        ],
+        "silver": [
+          0,
+          950000,
+          0
+        ],
+        "gold": [
+          0,
+          980000,
+          0
+        ]
+      },
+      "music_list": [
+        {
+          "index": 0,
+          "music_id": 50000206,
+          "seq_id": 2
+        },
+        {
+          "index": 1,
+          "music_id": 50000023,
+          "seq_id": 2
+        },
+        {
+          "index": 2,
+          "music_id": 50000078,
+          "seq_id": 2
+        },
+        {
+          "index": 3,
+          "music_id": 50000203,
+          "seq_id": 2
+        },
+        {
+          "index": 4,
+          "music_id": 50000323,
+          "seq_id": 2
+        }
+      ]
+    }
+  ]
+}

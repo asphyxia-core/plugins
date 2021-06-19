@@ -1,3 +1,5 @@
+import { getEncoreStageData } from "../data/extrastage";
+
 export const shopInfoRegist: EPR = async (info, data, send) => {
   send.object({
     data: {
@@ -19,6 +21,7 @@ export const gameInfoGet: EPR = async (info, data, send) => {
       bonus_musicid: K.ITEM('s32', 0),
     },
     bear_fes: {},
+    nextadium: {},
   };
   const time = BigInt(31536000);
   for (let i = 1; i <= 20; ++i) {
@@ -42,6 +45,18 @@ export const gameInfoGet: EPR = async (info, data, send) => {
         term: K.ITEM('u8', 0),
         sticker_list: {},
       };
+      addition['thanksgiving'] = {
+        ...obj,
+        box_term: {
+          state: K.ITEM('u8', 0)
+        }
+      };
+      addition['lotterybox'] = {
+        ...obj,
+        box_term: {
+          state: K.ITEM('u8', 0)
+        }
+      };
     } else {
       addition[`phrase_combo_challenge_${i}`] = obj;
     }
@@ -59,16 +74,20 @@ export const gameInfoGet: EPR = async (info, data, send) => {
     }
   }
 
+  const extraData = getEncoreStageData(info)
+
   await send.object({
-    now_date: K.ITEM('u64', time),
+    now_date: K.ITEM('u64', BigInt(Date.now())),
     extra: {
-      extra_lv: K.ITEM('u8', 10),
+      extra_lv: K.ITEM('u8', extraData.level),
       extramusic: {
-        music: {
-          musicid: K.ITEM('s32', 0),
-          get_border: K.ITEM('u8', 0),
-        },
-      },
+        music: extraData.musics.map(mid => {
+          return {
+            musicid: K.ITEM('s32', mid),
+            get_border: K.ITEM('u8', 0),
+          }
+        })
+      }
     },
     infect_music: { term: K.ITEM('u8', 0) },
     unlock_challenge: { term: K.ITEM('u8', 0) },
