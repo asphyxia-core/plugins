@@ -208,7 +208,7 @@ const getProfile = async (refid: string, name?: string) => {
                 900: 9,
                 1000: 10,
                 1100: 11,
-            }[score.clear_type]),
+            }[score.clear_type] || 0),
             old_score: K.ITEM('s32', 0),
             old_clear_type: K.ITEM('u8', 0),
         });
@@ -416,7 +416,7 @@ const friend = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any
             music_num: music.toString(),
             sheet_num: sheet.toString(),
             score: score.score.toString(),
-            clearmedal: {
+            clearmedal: ({
                 100: 1,
                 200: 2,
                 300: 3,
@@ -428,7 +428,7 @@ const friend = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any
                 900: 9,
                 1000: 10,
                 1100: 11,
-            }[score.clear_type].toString(),
+            }[score.clear_type] || 0).toString(),
         }));
     }
 
