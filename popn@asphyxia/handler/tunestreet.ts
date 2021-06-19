@@ -397,7 +397,7 @@ const __format_flags_for_score = (sheet: number, clear_type: number) => {
         3: 0x4000,
         7: 0,
         8: 0,
-    }[sheet]
+    }[sheet];
     const shift = {
         9: 4,
         4: 0,
@@ -408,7 +408,7 @@ const __format_flags_for_score = (sheet: number, clear_type: number) => {
         3: 6,
         7: 9,
         8: 8,
-    }[sheet]
+    }[sheet];
     const flags = {
         100: 0,
         200: 0,
@@ -421,7 +421,7 @@ const __format_flags_for_score = (sheet: number, clear_type: number) => {
         900: 2,
         1000: 2,
         1100: 3,
-    }[clear_type]
+    }[clear_type] || 0;
     return (flags << shift) | playedflag
 }
 

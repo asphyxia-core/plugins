@@ -185,7 +185,7 @@ const getScores = async (refid: string, version: string, forFriend: boolean = fa
             900: 9,
             1000: 10,
             1100: 11,
-        }[score.clear_type];
+        }[score.clear_type] || 0;
 
         if (music > maxMusicId) {
             continue;

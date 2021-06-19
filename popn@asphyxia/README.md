@@ -1,6 +1,6 @@
 # Pop'n Music
 
-Plugin Version: **v2.2.2**
+Plugin Version: **v2.2.3**
 
 ## Supported Versions
 - pop'n music 19 Tune Street
@@ -14,6 +14,9 @@ Plugin Version: **v2.2.2**
 Important : require minimum Asphyxia Core **v1.31**
 
 ## Changelog
+
+### 2.2.3
+* All : Send 0 if clear_type is not existing.
 
 ### 2.2.2
 * Usaneko/Peace : Add Omnimix support (songs with id >= 3000).

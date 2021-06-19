@@ -302,7 +302,7 @@ const getScores = async (refid: string) => {
             900: 10,
             1000: 11,
             1100: 15,
-        }[score.clear_type];
+        }[score.clear_type] || 0;
         clear_medal[music] = clear_medal[music] | (medal << (sheet * 4));
 
         const hiscore_index = (music * 4) + sheet;
