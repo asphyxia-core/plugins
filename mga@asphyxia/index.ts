@@ -8,6 +8,7 @@ export function register() {
   R.GameCode('I36');
 
   R.Route(`eventlog.write`, async (req, data, send) => {
+    // Don't save event log.
     send.object({
       gamesession: K.ITEM('s64', BigInt(1)),
       logsendflg: K.ITEM('s32', 0),
@@ -17,6 +18,8 @@ export function register() {
   });
 
   R.Route(`system.getmaster`, async (req, data, send) => {
+    // Called at game startup
+    // Unlock all contents
     send.object({
       result: K.ITEM('s32', 1),
       strdata1: K.ITEM('str', Buffer.from('2011081000:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1:1', 'utf-8').toString('base64')),
@@ -26,6 +29,7 @@ export function register() {
   });
 
   R.Route(`playerdata.usergamedata_send`, async (req, data, send) => {
+    // Save user data
     const refid = $(data).element('data').str('eaid');
     const datanum = $(data).element('data').number('datanum');
     let playerData: PlayerData = {
@@ -49,6 +53,7 @@ export function register() {
   });
 
   R.Route(`playerdata.usergamedata_recv`, async (req, data, send) => {
+    // Load user data
     const refid = $(data).element('data').str('eaid');
 
     const playerData = await DB.FindOne<PlayerData>(refid, { collection: 'data' });
@@ -61,7 +66,9 @@ export function register() {
     };
 
     for(let i = 0; i < playerData.str.length; i++) {
+      // Remove the 2 firsts elements of player data
       let data = playerData.str[i].split(',');
+
       player.record.d[i] = K.ITEM('str', Buffer.from(data.slice(2).join(','), 'utf-8').toString('base64') + playerData.bin[i]);
       player.record.d[i].bin1 = K.ITEM('str', playerData.bin[i]);
     }
@@ -73,6 +80,7 @@ export function register() {
   });
 
   R.Route(`playerdata.usergamedata_scorerank`, async (req, data, send) => {
+    // Not implemented
     send.object({
       result: K.ITEM('s32', 0)
     });
