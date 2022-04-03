@@ -12,7 +12,8 @@ game
   sort_type(__type="u8") #{sortType}
   headphone(__type="u8") #{headphone}
   blaster_energy(__type="u32") #{blasterEnergy}
-  blaster_count(__type="u32") #{blasterCount}
+  blaster_count(__type="u32") 0
+  extrack_energy(__type="u16") #{extrackEnergy}
 
   hispeed(__type="s32") #{hiSpeed}
   lanespeed(__type="u32") #{laneSpeed}
@@ -33,10 +34,11 @@ game
   
   ea_shop
     packet_booster(__type="s32") 1
-    if version != 5
+    if version < 5
       block_booster(__type="s32") 1
-    blaster_pass_enable(__type="bool") 1
-    blaster_pass_limit_date(__type="u64") #{currentTime}
+    if version >= 5
+      blaster_pass_enable(__type="bool") #{blasterpass}
+      blaster_pass_limit_date(__type="u64") #{currentTime}
   
   eaappli
     relation(__type="s8") 1
@@ -50,6 +52,7 @@ game
         ssnid(__type="s16") #{course.sid}
         crsid(__type="s16") #{course.cid}
         sc(__type="s32") #{course.score}
+        ex(__type="s32") 0
         ct(__type="s16") #{course.clear}
         gr(__type="s16") #{course.grade}
         ar(__type="s16") #{course.rate}

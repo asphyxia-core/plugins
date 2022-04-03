@@ -13,7 +13,7 @@ export const EVENT5 = [
   'FACTORY\t10',
   'CONTINUATION',
   'APPEAL_CARD_GEN_NEW_PRICE',
-  'APPEAL_CARD_UNLOCK\t0,30170914,0,30171014,0,30171116,0,30180201,0,30180607,0,30181206,0,30200326,0,30200611',
+  'APPEAL_CARD_UNLOCK\t0,30170914,0,30171014,0,30171116,0,30180201,0,30180607,0,30181206,0,30200326,0,30200611,4,10140732,6,10150431',
   'FAVORITE_APPEALCARD_MAX\t100',
   'FAVORITE_MUSIC_MAX\t500',
   'EVENTDATE_APRILFOOL',
@@ -2474,7 +2474,7 @@ export const COURSES5 = [
     id: 13,
     name: 'SKILL ANALYZER 第5回',
     isNew: 1,
-    courses:[
+    courses: [
       {
         id: 1,
         type: 0,
@@ -2781,7 +2781,7 @@ export const COURSES5 = [
     id: 14,
     name: 'SKILL ANALYZER 第6回',
     isNew: 1,
-    courses:[
+    courses: [
       {
         id: 1,
         type: 0,

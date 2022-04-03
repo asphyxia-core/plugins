@@ -20,6 +20,7 @@ export interface Profile {
   headphone: number;
   blasterEnergy: number;
   blasterCount: number;
+  extrackEnergy: number;
 
   hiSpeed: number;
   laneSpeed: number;
@@ -31,6 +32,15 @@ export interface Profile {
   effCLeft: number;
   effCRight: number;
   narrowDown: number;
+  
+  bgm: number;
+  subbg: number;
+  nemsys: number;
+  
+  stampA: number;
+  stampB: number;
+  stampC: number;
+  stampD: number;
 
   boothFrame: number[];
 }

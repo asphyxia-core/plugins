@@ -4,6 +4,7 @@ export interface MusicRecord {
   mid: number;
   type: number;
   score: number;
+  exscore: number;
   clear: number;
   grade: number;
   buttonRate: number;

@@ -1,0 +1,14 @@
+game
+  new
+    each music in temp
+      music
+          music_id (__type="u32")#{music.mid}
+          music_type (__type="u32")#{music.type}
+          score (__type="u32")#{music.score}
+          cnt (__type="u32")1
+          clear_type (__type="u32")#{music.clear}
+          score_grade (__type="u32")#{music.grade}
+          btn_rate (__type="u32")#{music.buttonRate}
+          long_rate (__type="u32")#{music.longRate}
+          vol_rate (__type="u32")#{music.volRate}
+  old

@@ -1,7 +1,7 @@
-import {Profile} from '../models/profile';
-import {MusicRecord} from '../models/music_record';
-import {getVersion, IDToCode, GetCounter} from '../utils';
-import {Mix} from '../models/mix';
+import { Profile } from '../models/profile';
+import { MusicRecord } from '../models/music_record';
+import { getVersion, IDToCode, GetCounter } from '../utils';
+import { Mix } from '../models/mix';
 
 export const hiscore: EPR = async (info, data, send) => {
   const records = await DB.Find<MusicRecord>(null, { collection: 'music' });
@@ -152,3 +152,29 @@ export const loadMix: EPR = async (info, data, send) => {
     },
   });
 };
+
+export const globalMatch: EPR = async (info, data, send) => {
+  // console.log("Current MID: "+$(data).number('mid'));
+  // console.log("Port: "+$(data).number('port'));
+  // console.log("Global IP: "+$(data).numbers('gip'));
+  // console.log("Private IP: "+$(data).numbers('lip'));
+
+  // var mid = $(data).number('mid');
+  // var port = $(data).number('port');
+  // var gip = $(data).str('gip');
+  // var lip = $(data).str('lip');
+  // var testArray = [{
+  //   port: port,
+  //   gip:gip,
+  //   lip:lip,
+  // }];
+  // return send.object({
+  //   entry_id: K.ITEM('str', '123456789'),
+  //   entry: testArray.map(a=>{
+  //     port: K.ITEM('u16',a.port);
+  //     gip: K.ITEM('ip4',a.gip);
+  //     lip: K.ITEM('ip4',a.lip);
+  //   })
+  // });
+  send.success();
+}

@@ -1,0 +1,61 @@
+//DATA//
+  profile: DB.Find(refid, { collection: 'course' })
+
+-
+  //const padded = _.padStart(profile.id.toString(), 8);
+  //const sdvxid = `${padded.slice(0, 4)}-${padded.slice(4)}`;
+
+link(rel="stylesheet" href="static/asset/css/course.css")
+div
+  .card
+    .card-header
+      p.card-header-title
+        span.icon
+          i.mdi.mdi-account-edit
+        | Course
+    .card-content
+      .field
+          label.label Version Select
+          .control
+            .select
+              select(name="version_select" id="version_select")
+                option(value="2") INFINITE INFECTION
+                option(value="3") GRAVITY WARS
+                option(value="4") HEAVENLY HAVEN
+                option(value="5") VIVIDWAVE
+                option(value="6") EXCEED GEAR
+      div.is-centered(id="course_content" style="text-align: center;")
+        .card
+          .card-header
+            p.card-header-title
+              span.icon
+                i.mdi.mdi-account-edit
+              | season 
+          .card-content
+            .course-content(id="single_course")
+              table
+                tr 
+                  td(colspan = 3) name
+                tr 
+                  td level
+                  td clearmark 
+                  td clearrate 
+              table 
+                tr 
+                  td 
+                    div(style="vertical-align: top;")
+                      div(style="width:80%;display:inline-block;vertical-align: center;") f
+                      div(style="width:20%;display:inline-block;vertical-align: center;") 12
+                tr 
+                  td
+                    div(style="vertical-align: top;")
+                      div(style="width:80%;display:inline-block;vertical-align: center;") f
+                      div(style="width:20%;display:inline-block;vertical-align: center;") 12
+                tr
+                  td 
+                    div(style="vertical-align: top;")
+                      div(style="width:80%;display:inline-block;vertical-align: center;") f
+                      div(style="width:20%;display:inline-block;vertical-align: center;") 12
+
+div(hidden id='data-pass') !{JSON.stringify(profile)}
+script(src="static/asset/js/course.js") 
