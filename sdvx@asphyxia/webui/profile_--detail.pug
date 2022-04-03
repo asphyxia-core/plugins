@@ -1,0 +1,34 @@
+//DATA//
+  profile: DB.FindOne(refid, { collection: 'profile' })
+  score_data: DB.Find(refid, { collection: 'music' })
+  skill_data: DB.Find(refid,{collection: 'skill'})
+
+-
+  const padded = _.padStart(profile.id.toString(), 8);
+  const sdvxid = `${padded.slice(0, 4)}-${padded.slice(4)}`;
+
+link(rel="stylesheet" href="static/asset/css/detail.css")
+div
+  .card
+    .card-header
+      p.card-header-title
+        span.icon
+          i.mdi.mdi-account-edit
+        | Profile 
+    .card-content
+      .field
+            label.label Skill Version Select
+            .control
+              .select
+                select(name="version_select" id="version_select")
+      div(style="width:100%;text-align:center;vertical-align:middle;")
+        div(class="dots is-centered" ) 
+          div 
+          div 
+          div 
+      div.is-centered(id="test" style="text-align: center;")
+      
+div(hidden id='data-pass') !{JSON.stringify(profile)}
+div(hidden id='score-pass') !{JSON.stringify(score_data)}
+div(hidden id='skill-pass') !{JSON.stringify(skill_data)}
+script(src="static/asset/js/detail.js") 

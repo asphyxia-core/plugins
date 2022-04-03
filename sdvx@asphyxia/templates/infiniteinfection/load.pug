@@ -1,0 +1,105 @@
+game
+  result(__type="u8") 0
+  name(__type="str") #{name}
+  code(__type="str") #{code}
+  sdvx_id(__type="str") #{code}
+  gamecoin_packet(__type="u32") #{packets}
+  gamecoin_block(__type="u32") #{blocks}
+  
+
+  last
+    music_id(__type="s32") #{musicID}
+    music_type(__type="u8") #{musicType}
+    sort_type(__type="u8") #{sortType}
+    comment_id(__type="u16") 0
+    appeal_id(__type="u16") #{appeal}
+    headphone(__type="u8") #{headphone}
+    narrow_down(__type="u8") #{narrowDown}
+    gauge_option(__type="u8") #{gaugeOption}
+  blaster_energy(__type="u32") #{blasterEnergy}
+  blaster_count(__type="u32") #{blasterCount}
+  extrack_energy(__type="u16") #{extrackEnergy}
+
+  hispeed(__type="s32") #{hiSpeed}
+  lanespeed(__type="u32") #{laneSpeed}
+  
+  ars_option(__type="u8") #{arsOption}
+  notes_option(__type="u8") #{notesOption}
+  early_late_disp(__type="u8") #{earlyLateDisp}
+  draw_adjust(__type="s32") #{drawAdjust}
+  eff_c_left(__type="u8") #{effCLeft}
+  eff_c_right(__type="u8") #{effCRight}
+  
+
+  kac_id(__type="str") #{name}
+
+  skill_level(__type="s16") #{skill.level}
+  skill_base_id(__type="s16") #{skill.base}
+  skill_name_id(__type="s16") #{skill.name}
+  
+  ea_shop
+    packet_booster(__type="s32") 1
+    if version < 5
+      block_booster(__type="s32") 1
+    if version >= 5
+      blaster_pass_enable(__type="bool") 1
+      blaster_pass_limit_date(__type="u64") #{currentTime}
+  
+  eaappli
+    relation(__type="s8") 1
+  cloud
+    relation(__type="s8") 1
+  block_no(__type="s32") 0
+
+  skill
+    course
+      each course in courses
+        d
+          ssnid(__type="s16") #{course.sid}
+          crsid(__type="s16") #{course.cid}
+          sc(__type="s32") #{course.score}
+          ex(__type="s32") 0
+          ct(__type="s16") #{course.clear}
+          gr(__type="s16") #{course.grade}
+          ar(__type="s16") #{course.rate}
+          cnt(__type="s16") #{course.count}
+    course_total
+      each course in courses
+        d
+          ssnid(__type="s16") #{course.sid}
+          crsid(__type="s16") #{course.cid}
+          sc(__type="s32") #{course.score}
+          ex(__type="s32") 0
+          ct(__type="s16") #{course.clear}
+          gr(__type="s16") #{course.grade}
+          ar(__type="s16") #{course.rate}
+          cnt(__type="s16") #{course.count}
+    course_all
+      each course in courses
+        d
+          ssnid(__type="s16") #{course.sid}
+          crsid(__type="s16") #{course.cid}
+          sc(__type="s32") #{course.score}
+          ex(__type="s32") 0
+          ct(__type="s16") #{course.clear}
+          gr(__type="s16") #{course.grade}
+          ar(__type="s16") #{course.rate}
+          cnt(__type="s16") #{course.count}
+
+  item
+    each item in tempItem
+      info
+        type(__type="u8") #{item.type}
+        id(__type="u32") #{item.id}
+        param(__type="u32") #{item.param}
+
+
+  play_count(__type="u32") 1001
+  day_count(__type="u32") 301
+  today_count(__type="u32") 21
+  play_chain(__type="u32") 31
+  max_play_chain(__type="u32") 31
+  week_count(__type="u32") 9
+  week_play_count(__type="u32") 101
+  week_chain(__type="u32") 31
+  max_week_chain(__type="u32") 31

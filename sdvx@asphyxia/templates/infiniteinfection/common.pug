@@ -1,0 +1,38 @@
+- let music = 0;
+- let event = 0;
+- let catalog = 0;
+
+
+game
+    music_limited
+        while music < 23
+            each type in [0,1,2,3]
+                info
+                    music_id(__type="s32") #{music++}
+                    music_type(__type="u8") #{type}
+                    limited(__type="u8") 3
+
+    event
+        while event < 41
+            info
+                event_id(__type="u32") #{event++}
+    
+    skill_course
+        each course in courses
+            info
+                course_id(__type="s16") #{course.id}
+                level(__type="s16") #{course.level}
+                season_id(__type="s16") #{course.season_id}
+                season_name(__type="str") #{course.season_name}
+                season_new_flg(__type="bool") #{course.new_flg}
+                course_name(_type="str") #{course.name}
+                course_type(__type="s16") #{course.type}
+                skill_name_id(__type="s16") #{course.name_id}
+                matching_assist(__type="bool") #{course.matching_assist}
+                guage_type(__type="s16") #{course.guage_type}
+                paseli_type(type="s16") #{course.paseli_type}
+                each trackinfo in course.tracks
+                    track
+                        track_no(__type="s16") #{trackinfo.no}
+                        music_id(__type="s32") #{trackinfo.id}
+                        music_type(__type="s8") #{trackinfo.type}

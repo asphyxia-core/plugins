@@ -1,0 +1,163 @@
+//DATA//
+  profile: DB.FindOne(refid, { collection: 'profile' })
+
+-
+  const padded = _.padStart(profile.id.toString(), 8);
+  const sdvxid = `${padded.slice(0, 4)}-${padded.slice(4)}`;
+
+link(rel="stylesheet" href="static/asset/css/profile.css")
+div
+  .card
+    .card-header
+      p.card-header-title
+        span.icon
+          i.mdi.mdi-account-edit
+        | Settings
+    .card-content
+      form(method="post" action="/emit/updateProfile")
+        .field
+          label.label ID
+          .control
+            input.input(type="text" name="refid", value=refid readonly)
+        .field
+          label.label SDVX ID
+          .control
+            input.input(type="text" name="sdvxid", value=sdvxid readonly)
+        .field
+          label.label Name
+          .control
+            input.input(type="text" name="name", placeholder=profile.name)
+        .field
+          label.label AppealCardID
+            span.icon.has-tooltip-right(data-tooltip="Check \"data/others/appeal_card.xml\"")
+              i.mdi.mdi-help-circle
+          //.control.is-expanded 
+                  .select.is-fullwidth
+                    select(name="appeal" id="appeal_select")//
+          .control
+            input.input(type="number" step=1 name="appeal", placeholder=profile.appeal)
+        .field
+          label.label Akaname
+            span.icon.has-tooltip-right(data-tooltip="Custom is set as ID 50000, if you want to use custom, please make sure you add the entry to the xml file.")
+              i.mdi.mdi-help-circle
+          .control.is-expanded 
+                  .select.is-fullwidth
+                    select(name="akaname" id="akaname_select")
+          //.control
+            input.input(type="number" step=1 name="akaname", placeholder=profile.akaname)//
+        br
+        div(style="font-size:26px;font-weight:bold;vertical-align:top; overflow-wrap: break-word;word-break: break-all;") EXCEED GEAR VALKYRIE GENERATOR CUSTOMIZATION
+          .tile.is-ancestor
+            .tile.is-parent.is-6
+              .tile.is-child(style="vertical-align: top;")
+                .field
+                  label.label Nemsys Design:
+                  //span.icon.has-tooltip-right(data-tooltip="0.Default 1.Decal 2.Gold 3.Right 4.Left")
+                    i.mdi.mdi-help-circle
+                  .control.is-expanded 
+                    .select.is-fullwidth
+                      select(name="nemsys" id="nemsys_select")
+                //.control
+                    input.input(type="number" step=1 name="nemsys", placeholder=profile.nemsys)//
+                .field
+                  label.label SubmonitorBG
+                    //span.icon.has-tooltip-right(data-tooltip="0~15 Check \"data/graphics/submonitor_bg\"")
+                      i.mdi.mdi-help-circle
+                  .control
+                    .select.is-fullwidth
+                      select(name="subbg")
+                    //input.input(type="number" step=1 name="subbg", placeholder=profile.subbg)    
+                .field
+                  label.label BGM
+                    //span.icon.has-tooltip-right(data-tooltip="0.Default 1.Max Burning 2.Bangin' Burst\n3.Ultraplayer 4.Everlasting Message\n5.Lachryma《Re:Queen’M》6.He4ven\n7.iLLness LiLin 8.I")
+                      i.mdi.mdi-help-circle
+                  .control
+                    .select.is-fullwidth
+                      select(name="bgm")
+                    //input.input(type="number" step=1 name="bgm", placeholder=profile.bgm)
+                .field
+                  label.label AStamp
+                    //span.icon.has-tooltip-right(data-tooltip="Check \"data/graphics/chat_stamp\" 000X_0Y => 4*(X-1)+Y=StampID stamp_0000_01~04 is not usable!!!")
+                      i.mdi.mdi-help-circle
+                  .control
+                    .select.is-fullwidth
+                      select(name="stampA")
+                    //input.input(type="number" step=1 name="stampA", placeholder=profile.stampA)
+                .field
+                  label.label BStamp
+                    //span.icon.has-tooltip-right(data-tooltip="Check \"data/graphics/chat_stamp\" 000X_0Y => 4*(X-1)+Y=StampID stamp_0000_01~04 is not usable!!!")
+                      i.mdi.mdi-help-circle
+                  .control
+                    .select.is-fullwidth
+                      select(name="stampB")
+                    //input.input(type="number" step=1 name="stampB", placeholder=profile.stampB)
+                .field
+                  label.label CStamp
+                    //span.icon.has-tooltip-right(data-tooltip="Check \"data/graphics/chat_stamp\" 000X_0Y => 4*(X-1)+Y=StampID stamp_0000_01~04 is not usable!!!")
+                      i.mdi.mdi-help-circle
+                  .control
+                    .select.is-fullwidth
+                      select(name="stampC")
+                    //input.input(type="number" step=1 name="stampC", placeholder=profile.stampC)
+                .field
+                  label.label DStamp
+                    //span.icon.has-tooltip-right(data-tooltip="Check \"data/graphics/chat_stamp\" 000X_0Y => 4*(X-1)+Y=StampID stamp_0000_01~04 is not usable!!!")
+                      i.mdi.mdi-help-circle
+                  .control
+                    .select.is-fullwidth
+                      select(name="stampD")
+                    //input.input(type="number" step=1 name="stampD", placeholder=profile.stampD)
+                .field
+                  button.button.is-primary(type="submit") 
+                    span.icon
+                      i.mdi.mdi-check
+                    span Submit
+            .tile.is-vertical(style="vertical-aling:top;font-size:1rem;font-weight:700;") 
+              .tile 
+                .tile.is-parent
+                  .tile.is-child
+                    p Nemsys Preview
+                    img(src='static/asset/nemsys/nemsys_0000_i_eeb.png' id="nemsys_pre")
+                .tile.is-parent
+                  .tile.is-child
+                    p Submonitor Preview
+                    img(src='static/asset/submonitor_bg/subbg_0001.jpg' id="sub_pre")
+              .tile 
+                .tile.is-parent.btm
+                  .tile.is-child
+                    p A
+                    img(src='static/asset/nostamp.png' id="a_pre")
+                .tile.is-parent.btm
+                  .tile.is-child
+                    p B
+                    img(src='static/asset/nostamp.png' id="b_pre")
+                .tile.is-parent.btm
+                  .tile.is-child
+                    p C
+                    img(src='static/asset/nostamp.png' id="c_pre")
+                .tile.is-parent.btm
+                  .tile.is-child
+                    p D
+                    img(src='static/asset/nostamp.png' id="d_pre")
+              .tile.is-parent.is-vertical(id='bgm_pre')
+                p BGM preview
+                audio(controls style="width:100%;display:none;" src='static/asset/audio/custom_00/0.mp3' type='audio/mp3' id='custom_0')
+              .tile.is-parent.is-vertical(id='sel_pre')
+                p Song selection preview
+                audio(controls style="width:100%;display:none;" src='static/asset/audio/custom_00/1.mp3' type='audio/mp3' id='custom_1')
+              .tile.is-parent.is-vertical
+                article.tile.is-child
+                  .content(style="color:#696969;overflow-wrap: break-word;word-break: break-all;") 
+                    | For Heavenly model original and AprilFool nemsys, you'll have to edit 
+                    br
+                    | /data/others/custom_nemsys.xml, and put the heavenly model texture in 
+                    br
+                    | /data_mods/omnimix/graphics/ver06/psd_nemsys_ifs/nemsys_0011_i_eeb.png
+                    br
+                    | (You can right-click preview to save the texture) 
+                    br
+                    | THIS IS SELF-PHOTOSHOP TEXTURE, NOT OFFICIAL
+                .tild.is-child
+                  a(href="static/asset/nemsys/custom_nemsys.xml" download="custom_nemsys.xml") custom_nemsys.xml download
+div(hidden id='data-pass') !{JSON.stringify(profile)}
+script(src="static/asset/js/preview.js") 
