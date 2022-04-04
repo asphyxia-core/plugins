@@ -39,7 +39,7 @@ export const common: EPR = async (info, data, send) => {
     }
     case 'sv6_common': {
       //events = EVENT6;
-      EVENT6.forEach(val => events.push(Object.assign({}, val)));
+      EVENT6.forEach(val => events.push(val);
       courses = COURSES6;
       EXTENDS6.forEach(val => extend.push(Object.assign({}, val)));
       break;
