@@ -11,4 +11,6 @@ export interface Extra {
   list_1: number[];
   list_2: number[];
   list_3: number[];
+  recommend_musicid_list: number[];
+  reward_status: number[];
 }

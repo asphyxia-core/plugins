@@ -1,6 +1,6 @@
 import { gameInfoGet, shopInfoRegist } from "./handlers/info";
 import { playableMusic } from "./handlers/MusicList"
-import { getPlayer, check, regist, savePlayer } from "./handlers/profiles";
+import { getPlayer, check, regist, savePlayers } from "./handlers/profiles";
 import { updatePlayerInfo } from "./handlers/webui";
 import { isAsphyxiaDebugMode, isRequiredCoreVersion } from "./utils";
 import Logger from "./utils/logger";
@@ -64,7 +64,7 @@ export function register() {
   MultiRoute('cardutil.regist', regist);
   MultiRoute('cardutil.check', check);
   MultiRoute('gametop.get', getPlayer);
-  MultiRoute('gameend.regist', savePlayer);
+  MultiRoute('gameend.regist', savePlayers);
 
   // Misc
   R.Route('bemani_gakuen.get_music_info', true) 
