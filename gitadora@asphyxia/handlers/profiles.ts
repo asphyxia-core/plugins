@@ -391,13 +391,15 @@ export const getPlayer: EPR = async (info, data, send) => {
       },
       reward: {
      //   status: K.ARRAY('u32', extra.reward_status ?? Array(50).fill(0)),
-     status: K.ARRAY('u32', Array(50).fill(1)),
+     status: K.ARRAY('u32', Array(50).fill(0)),
       },
+      /*
       trbitem:  {
         item:  {
           itemid:  K.ITEM('s32', 707)  
         }
-      },     
+      },
+      */     
       rivaldata: {},
       frienddata: {},
       thanks_medal: {
@@ -528,8 +530,8 @@ export const getPlayer: EPR = async (info, data, send) => {
   }
 
   if (isAsphyxiaDebugMode())  {
-    await IO.WriteFile(`samples/lastGetPlayerRequest.json`, JSON.stringify(data, null, 4))
-    await IO.WriteFile(`samples/lastGetPlayerResponse.json`, JSON.stringify(response, null, 4))
+    await IO.WriteFile(`apisamples/lastGetPlayerRequest.json`, JSON.stringify(data, null, 4))
+    await IO.WriteFile(`apisamples/lastGetPlayerResponse.json`, JSON.stringify(response, null, 4))
   }
   send.object(response);
 }
@@ -807,8 +809,8 @@ export const savePlayers: EPR = async (info, data, send) => {
     }
 
   if (isAsphyxiaDebugMode()) {
-    await IO.WriteFile(`samples/lastSavePlayerRequest.json`, JSON.stringify(data, null, 4))
-    await IO.WriteFile(`samples/lastSavePlayerResponse.json`, JSON.stringify(response, null, 4))
+    await IO.WriteFile(`apisamples/lastSavePlayersRequest.json`, JSON.stringify(data, null, 4))
+    await IO.WriteFile(`apisamples/lastSavePlayersResponse.json`, JSON.stringify(response, null, 4))
   }
   await send.object(response);
   }
@@ -1004,7 +1006,7 @@ async function getPlayerRanking(refid: string, version: string, game: 'gf' | 'dm
   let idxA = _.findIndex(sortedProfilesA, (e) => e.__refid === refid)
   idxA = idxA > -1 ? idxA + 1 : playerCount     // Default to last place if not found in the DB.
   let idxB = _.findIndex(sortedProfilesB, (e) => e.__refid === refid)
-  idxA = idxB > -1 ? idxB + 1 : playerCount     // Default to last place if not found in the DB.
+  idxB = idxB > -1 ? idxB + 1 : playerCount     // Default to last place if not found in the DB.
 
   return {
     refid,
