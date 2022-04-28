@@ -1,3 +1,5 @@
+import Logger from "../../utils/logger";
+
 export interface CommonMusicDataField {
   id: KITEM<"s32">;
   cont_gf: KITEM<"bool">;
@@ -21,13 +23,17 @@ export enum DATAVersion {
 
 type processRawDataHandler = (path: string) => Promise<CommonMusicData>
 
+const logger = new Logger("mdb")
+
 export async function readXML(path: string) {
+  logger.debugInfo(`Loading MDB data from ${path}.`)
   const xml = await IO.ReadFile(path, 'utf-8');
   const json = U.parseXML(xml, false)
   return json
 }
 
 export async function readJSON(path: string) {
+  logger.debugInfo(`Loading MDB data from ${path}.`)
   const str = await IO.ReadFile(path, 'utf-8');
   const json = JSON.parse(str)
   return json
@@ -35,16 +41,19 @@ export async function readJSON(path: string) {
 
 export async function readJSONOrXML(jsonPath: string, xmlPath: string, processHandler: processRawDataHandler): Promise<CommonMusicData> {
   if (!IO.Exists(jsonPath)) {
+    logger.debugInfo(`Loading MDB data from ${xmlPath}.`)
     const data = await processHandler(xmlPath)
     await IO.WriteFile(jsonPath, JSON.stringify(data))
     return data
   } else {
+    logger.debugInfo(`Loading MDB data from ${jsonPath}.`)
     const json = JSON.parse(await IO.ReadFile(jsonPath, 'utf-8'))
     return json
   }
 }
 
 export async function readB64JSON(b64path: string) {
+  logger.debugInfo(`Loading MDB data from ${b64path}.`)
   const buff = await IO.ReadFile(b64path, 'utf-8');
   return JSON.parse(Buffer.from(buff, 'base64').toString('utf-8'));
 }
@@ -66,14 +75,13 @@ export function gameVerToDataVer(ver: string): DATAVersion {
 export async function processDataBuilder(gameVer: string, processHandler?: processRawDataHandler) {
   const ver = gameVerToDataVer(gameVer)
   const base = `data/mdb/${ver}`
-  if (IO.Exists(`${base}.b64`)) {
+  if (IO.Exists(`${base}.b64`)) {  
     return await readB64JSON(`${base}.b64`);
   }
   const { music } = await readJSONOrXML(`${base}.json`, `${base}.xml`, processHandler ?? defaultProcessRawData)
   // await IO.WriteFile(`${base}.b64`, Buffer.from(JSON.stringify({music})).toString("base64"))
   return { music };
 }
-
 
 export async function defaultProcessRawData(path: string): Promise<CommonMusicData> {
   const data = await readXML(path)
