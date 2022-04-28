@@ -387,19 +387,11 @@ export const getPlayer: EPR = async (info, data, send) => {
       chara_list: {},
       title_parts: {},
       information: {
-        info: K.ARRAY('u32', extra.information_info ?? Array(50).fill(0)),
+        info: K.ARRAY('u32', Array(50).fill(0)),
       },
       reward: {
-     //   status: K.ARRAY('u32', extra.reward_status ?? Array(50).fill(0)),
-     status: K.ARRAY('u32', Array(50).fill(0)),
-      },
-      /*
-      trbitem:  {
-        item:  {
-          itemid:  K.ITEM('s32', 707)  
-        }
-      },
-      */     
+        status: K.ARRAY('u32', Array(50).fill(0)),
+      },          
       rivaldata: {},
       frienddata: {},
       thanks_medal: {
@@ -741,7 +733,6 @@ async function registerUser(refid: string, version: string, id = _.random(0, 999
       list_3: Array(100).fill(-1),
       recommend_musicid_list: Array(5).fill(-1),
       reward_status: Array(50).fill(0),
-      information_info: Array(50).fill(0),
     }
   }
 
