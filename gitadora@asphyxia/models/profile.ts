@@ -1,3 +1,5 @@
+import { SecretMusicEntry } from "./secretmusicentry";
+
 export interface Profile {
   collection: 'profile';
 
@@ -54,4 +56,7 @@ export interface Profile {
   exce_music_num: number;
   clear_seq_num: number;
   classic_all_skill: number;
+  secretmusic: {
+    music: SecretMusicEntry[];    
+  }
 }
