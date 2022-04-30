@@ -22,7 +22,6 @@ export const playableMusic: EPR = async (info, data, send) => {
       music = _.get(await processDataBuilder(version), 'music', []);
   }
 
-
   await send.object({
     hot: {
       major: K.ITEM('s32', 1),

@@ -1,94 +1,78 @@
 import { PlayerInfo } from "../models/playerinfo";
+import { PlayerRanking } from "../models/playerranking";
 import { Profile } from "../models/profile";
 import { Record } from "../models/record";
 import { Extra } from "../models/extra";
 import { getVersion, isDM } from "../utils";
 import { Scores } from "../models/scores";
 import { PLUGIN_VER } from "../const";
+import Logger from "../utils/logger"
+import { isAsphyxiaDebugMode } from "../Utils/index";
+
+const logger = new Logger("profiles")
 
 export const regist: EPR = async (info, data, send) => {
+
   const refid = $(data).str('player.refid');
-  if (!refid) return send.deny();
+  if (!refid) {
+      logger.error("Request data is missing required parameter: player.refid")
+      return send.deny();
+  }
 
   const no = getPlayerNo(data);
   const version = getVersion(info);
+  const playerInfo = await getOrRegisterPlayerInfo(refid, version, no);
 
-  const playerInfo = await DB.FindOne<PlayerInfo>(refid, {
-    collection: 'playerinfo',
-    version
+  await send.object({
+    player: K.ATTR({ no: `${no}` }, {
+      is_succession: K.ITEM("bool", 0), //FIX THIS with upsert result.
+      did: K.ITEM("s32", playerInfo.id)
+    })
   })
 
-  if (playerInfo) {
-    send.object({
-      player: K.ATTR({ no: `${no}` }, {
-        is_succession: K.ITEM("bool", 0), //FIX THIS with upsert result.
-        did: K.ITEM("s32", playerInfo.id)
-      })
-    })
-  } else {
-    let info = await registerUser(refid, version)
-    send.object({
-      player: K.ATTR({ no: `${no}` }, {
-        is_succession: K.ITEM("bool", 0), //FIX THIS with upsert result.
-        did: K.ITEM("s32", info.id)
-      })
-    })
-  }
 }
 
 export const check: EPR = async (info, data, send) => {
+
   const refid = $(data).str('player.refid');
-  if (!refid) return send.deny();
+    if (!refid) {
+        logger.error("Request data is missing required parameter: player.refid")
+        return send.deny();
+    }
 
   const no = getPlayerNo(data);
   const version = getVersion(info)
+  const playerInfo = await getOrRegisterPlayerInfo(refid, version, no)
 
-  const playerInfo = await DB.FindOne<PlayerInfo>(refid, {
-    collection: 'playerinfo',
-    version
+  await send.object({
+    player: K.ATTR({ no: `${no}`, state: '2' }, {
+      name: K.ITEM('str', playerInfo.name),
+      charaid: K.ITEM('s32', 0),
+      did: K.ITEM('s32', playerInfo.id),
+      skilldata: {
+        skill: K.ITEM('s32', 0),
+        all_skill: K.ITEM('s32', 0),
+        old_skill: K.ITEM('s32', 0),
+        old_all_skill: K.ITEM('s32', 0),
+      }
+    })
   })
-
-  if (playerInfo) {
-    send.object({
-      player: K.ATTR({ no: `${no}`, state: '2' }, {
-        name: K.ITEM('str', playerInfo.name),
-        charaid: K.ITEM('s32', 0),
-        did: K.ITEM('s32', playerInfo.id),
-        skilldata: {
-          skill: K.ITEM('s32', 0),
-          all_skill: K.ITEM('s32', 0),
-          old_skill: K.ITEM('s32', 0),
-          old_all_skill: K.ITEM('s32', 0),
-        }
-      })
-    })
-  } else {
-    let info = await registerUser(refid, version)
-    send.object({
-      player: K.ATTR({ no: `${no}`, state: '2' }, {
-        name: K.ITEM('str', info.name),
-        charaid: K.ITEM('s32', 0),
-        did: K.ITEM('s32', info.id),
-        skilldata: {
-          skill: K.ITEM('s32', 0),
-          all_skill: K.ITEM('s32', 0),
-          old_skill: K.ITEM('s32', 0),
-          old_all_skill: K.ITEM('s32', 0),
-        }
-      })
-    })
-  }
 }
 
 export const getPlayer: EPR = async (info, data, send) => {
   const refid = $(data).str('player.refid');
-  if (!refid) return send.deny();
+    if (!refid) {
+        logger.error("Request data is missing required parameter: player.refid")
+        return send.deny();
+    }
 
   const no = getPlayerNo(data);
   const version = getVersion(info);
   const time = BigInt(31536000);
   const dm = isDM(info);
+  const game = dm ? 'dm' : 'gf';
 
+  logger.debugInfo(`Loading ${game} profile for player ${no} with refid: ${refid}`)
   const name = await DB.FindOne<PlayerInfo>(refid, {
     collection: 'playerinfo',
     version
@@ -343,6 +327,7 @@ export const getPlayer: EPR = async (info, data, send) => {
       list_2: K.ARRAY('s32', extra.list_2),
       list_3: K.ARRAY('s32', extra.list_3),
     },
+    recommend_musicid_list: K.ARRAY('s32', extra.recommend_musicid_list ?? Array(5).fill(-1)),
     record,
     groove: {
       extra_gauge: K.ITEM('s32', profile.extra_gauge),
@@ -354,6 +339,8 @@ export const getPlayer: EPR = async (info, data, send) => {
     musiclist: { '@attr': { nr: musicdata.length }, musicdata },
   };
 
+  const playerRanking = await getPlayerRanking(refid, version, game)
+  
   const addition: any = {
     monstar_subjugation: {},
     bear_fes: {},
@@ -387,7 +374,7 @@ export const getPlayer: EPR = async (info, data, send) => {
     }
   }
 
-  send.object({
+  const response = {
     player: K.ATTR({ 'no': `${no}` }, {
       now_date: K.ITEM('u64', time),
       secretmusic: { // TODO: FIX THIS
@@ -404,7 +391,7 @@ export const getPlayer: EPR = async (info, data, send) => {
       },
       reward: {
         status: K.ARRAY('u32', Array(50).fill(0)),
-      },
+      },          
       rivaldata: {},
       frienddata: {},
       thanks_medal: {
@@ -412,7 +399,7 @@ export const getPlayer: EPR = async (info, data, send) => {
         grant_medal: K.ITEM('s32', 0),
         grant_total_medal: K.ITEM('s32', 0),
       },
-      recommend_musicid_list: K.ARRAY('s32', [0, 0, 0, 0, 0]),
+      recommend_musicid_list:  K.ARRAY('s32', extra.recommend_musicid_list ?? Array(5).fill(-1)),
       skindata: {
         skin: K.ARRAY('u32', Array(100).fill(-1)),
       },
@@ -454,8 +441,8 @@ export const getPlayer: EPR = async (info, data, send) => {
       },
       is_free_ok: K.ITEM('bool', 0),
       ranking: {
-        skill: { rank: K.ITEM('s32', 1), total_nr: K.ITEM('s32', 1) },
-        all_skill: { rank: K.ITEM('s32', 1), total_nr: K.ITEM('s32', 1) },
+        skill: { rank: K.ITEM('s32', playerRanking.skill), total_nr: K.ITEM('s32', playerRanking.totalPlayers) },
+        all_skill: { rank: K.ITEM('s32', playerRanking.all_skill), total_nr: K.ITEM('s32', playerRanking.totalPlayers) },
       },
       stage_result: {},
       monthly_skill: {},
@@ -532,7 +519,26 @@ export const getPlayer: EPR = async (info, data, send) => {
       ...playerData,
       finish: K.ITEM('bool', 1),
     }),
+  }
+
+  if (isAsphyxiaDebugMode())  {
+    await IO.WriteFile(`apisamples/lastGetPlayerRequest.json`, JSON.stringify(data, null, 4))
+    await IO.WriteFile(`apisamples/lastGetPlayerResponse.json`, JSON.stringify(response, null, 4))
+  }
+  send.object(response);
+}
+
+async function getOrRegisterPlayerInfo(refid: string, version: string, no: number) {
+  let playerInfo = await DB.FindOne<PlayerInfo>(refid, {
+    collection: 'playerinfo',
+    version
   });
+
+  if (!playerInfo) {
+    logger.debugInfo(`Registering new profile for player ${no} with refid: ${refid}`);
+    playerInfo = await registerUser(refid, version);
+  }
+  return playerInfo;
 }
 
 function getPlayerNo(data: any): number {
@@ -725,7 +731,8 @@ async function registerUser(refid: string, version: string, id = _.random(0, 999
       list_1: Array(100).fill(-1),
       list_2: Array(100).fill(-1),
       list_3: Array(100).fill(-1),
-
+      recommend_musicid_list: Array(5).fill(-1),
+      reward_status: Array(50).fill(0),
     }
   }
 
@@ -755,20 +762,61 @@ async function registerUser(refid: string, version: string, id = _.random(0, 999
   return defaultInfo
 }
 
-export const savePlayer: EPR = async (info, data, send) => {
-  const refid = $(data).str('player.refid');
-  if (!refid) return send.deny();
+export const savePlayers: EPR = async (info, data, send) => {
 
-  const no = getPlayerNo(data);
   const version = getVersion(info);
   const dm = isDM(info);
-
   const game = dm ? 'dm' : 'gf';
 
+  let players = $(data).elements("player")
+
+  let response = { 
+    player: [],
+    gamemode: _.get(data, 'gamemode'),
+  };
+
+  try
+  {
+    for (let player of players) {
+
+      const no = parseInt(player.attr().no || '1', 10)
+      // Only save players that are using a profile. Don't try to save guest players.
+      const hasCard = player.attr().card === 'use'
+      if (!hasCard) {
+        logger.debugInfo(`Skipping save for guest ${game} player ${no}.`)
+        continue
+      }
+
+      const refid = player.str('refid')   
+      if (!refid)  {
+        throw "Request data is missing required parameter: player.refid"
+      }
+
+      await saveSinglePlayer(player, refid, no, version, game);
+
+      let ranking = await getPlayerRanking(refid, version, game)
+      let responsePart = getSaveProfileResponse(no, ranking)
+      response.player.push(responsePart)
+    }
+
+  if (isAsphyxiaDebugMode()) {
+    await IO.WriteFile(`apisamples/lastSavePlayersRequest.json`, JSON.stringify(data, null, 4))
+    await IO.WriteFile(`apisamples/lastSavePlayersResponse.json`, JSON.stringify(response, null, 4))
+  }
+  await send.object(response);
+  }
+  catch (e)  {
+    logger.error(e)
+    return send.deny();
+  }
+};
+
+async function saveSinglePlayer(dataplayer: KDataReader, refid: string, no: number, version: string, game: 'gf' | 'dm')
+{
+  logger.debugInfo(`Saving ${game} profile for player ${no} with refid: ${refid}`)
   const profile = await getProfile(refid, version, game) as any;
   const extra = await getExtra(refid, version, game) as any;
   const rec = await getRecord(refid, version, game) as any;
-  const dataplayer = $(data).element("player")
 
   const autoSet = (field: keyof Profile, path: string, array = false): void => {
     if (array) {
@@ -781,7 +829,7 @@ export const savePlayer: EPR = async (info, data, send) => {
   const autoExtra = (field: keyof Extra, path: string, array = false): void => {
     if (array) {
       extra[field] = dataplayer.numbers(path, extra[field])
-    } else {
+    } else {     
       extra[field] = dataplayer.number(path, extra[field])
     }
   };
@@ -887,6 +935,7 @@ export const savePlayer: EPR = async (info, data, send) => {
   autoExtra('list_1', 'favoritemusic.music_list_1', true);
   autoExtra('list_2', 'favoritemusic.music_list_2', true);
   autoExtra('list_3', 'favoritemusic.music_list_3', true);
+  autoExtra('recommend_musicid_list', 'recommend_musicid_list', true);
 
   autoExtra('playstyle', 'customdata.playstyle', true);
   autoExtra('custom', 'customdata.custom', true);
@@ -895,7 +944,7 @@ export const savePlayer: EPR = async (info, data, send) => {
   await DB.Upsert(refid, { collection: 'record', game, version }, rec)
   await DB.Upsert(refid, { collection: 'extra', game, version }, extra)
 
-  const stages = $(data).elements('player.stage');
+  const stages = dataplayer.elements('stage');
   const scores = (await getScore(refid, version, game)).scores;
   for (const stage of stages) {
     const mid = stage.number('musicid', -1);
@@ -937,25 +986,55 @@ export const savePlayer: EPR = async (info, data, send) => {
     };
   }
 
-  await saveScore(refid, version, game, scores);
+  await saveScore(refid, version, game, scores); 
+}
+async function getPlayerRanking(refid: string, version: string, game: 'gf' | 'dm') : Promise<PlayerRanking> {
+  let profiles = await getAllProfiles(version, game)
+  let playerCount = profiles.length
+  let sortedProfilesA = profiles.sort((a,b) => b.skill - a.skill)
+  let sortedProfilesB = profiles.sort((a,b) => b.all_skill - a.all_skill)
 
-  await send.object({
-    player: K.ATTR({ no: `${no}` }, {
-      skill: { rank: K.ITEM('s32', 1), total_nr: K.ITEM('s32', 1) },
-      all_skill: { rank: K.ITEM('s32', 1), total_nr: K.ITEM('s32', 1) },
-      kac2018: {
-        data: {
-          term: K.ITEM('s32', 0),
-          total_score: K.ITEM('s32', 0),
-          score: K.ARRAY('s32', [0, 0, 0, 0, 0, 0]),
-          music_type: K.ARRAY('s32', [0, 0, 0, 0, 0, 0]),
-          play_count: K.ARRAY('s32', [0, 0, 0, 0, 0, 0]),
-        },
+  let idxA = _.findIndex(sortedProfilesA, (e) => e.__refid === refid)
+  idxA = idxA > -1 ? idxA + 1 : playerCount     // Default to last place if not found in the DB.
+  let idxB = _.findIndex(sortedProfilesB, (e) => e.__refid === refid)
+  idxB = idxB > -1 ? idxB + 1 : playerCount     // Default to last place if not found in the DB.
+
+  return {
+    refid,
+    skill: idxA,
+    all_skill: idxB,
+    totalPlayers: playerCount  
+  }
+}
+
+function getSaveProfileResponse(playerNo: number, ranking : PlayerRanking)
+{
+
+  const result = K.ATTR({ no: `${playerNo}` }, {
+    skill: { rank: K.ITEM('s32', ranking.skill), total_nr: K.ITEM('s32', ranking.totalPlayers) },
+    all_skill: { rank: K.ITEM('s32', ranking.all_skill), total_nr: K.ITEM('s32', ranking.totalPlayers) },
+    kac2018: {
+      data: {
+        term: K.ITEM('s32', 0),
+        total_score: K.ITEM('s32', 0),
+        score: K.ARRAY('s32', [0, 0, 0, 0, 0, 0]),
+        music_type: K.ARRAY('s32', [0, 0, 0, 0, 0, 0]),
+        play_count: K.ARRAY('s32', [0, 0, 0, 0, 0, 0]),
       },
-    }),
-    gamemode: _.get(data, 'gamemode'),
-  });
-};
+    },
+  })
+
+  return result
+
+}
+
+async function getAllProfiles( version: string, game: 'gf' | 'dm') {
+  return await DB.Find<Profile>(null, {
+    collection: 'profile',
+    version: version,
+    game: game
+  })
+}
 
 async function getProfile(refid: string, version: string, game: 'gf' | 'dm') {
   return await DB.FindOne<Profile>(refid, {
