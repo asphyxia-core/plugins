@@ -8,6 +8,7 @@ import { Scores } from "../models/scores";
 import { PLUGIN_VER } from "../const";
 import Logger from "../utils/logger"
 import { isAsphyxiaDebugMode } from "../Utils/index";
+import { SecretMusicEntry } from "../models/secretmusicentry";
 
 const logger = new Logger("profiles")
 
@@ -374,15 +375,13 @@ export const getPlayer: EPR = async (info, data, send) => {
     }
   }
 
+  const innerSecretMusic = getSecretMusicResponse(profile)
+  
   const response = {
     player: K.ATTR({ 'no': `${no}` }, {
       now_date: K.ITEM('u64', time),
-      secretmusic: { // TODO: FIX THIS
-        music: {
-          musicid: K.ITEM('s32', 0),
-          seq: K.ITEM('u16', 255),
-          kind: K.ITEM('s32', 40),
-        }
+      secretmusic: {
+        music: innerSecretMusic
       },
       chara_list: {},
       title_parts: {},
@@ -390,7 +389,7 @@ export const getPlayer: EPR = async (info, data, send) => {
         info: K.ARRAY('u32', Array(50).fill(0)),
       },
       reward: {
-        status: K.ARRAY('u32', Array(50).fill(0)),
+        status: K.ARRAY('u32', extra.reward_status ??  Array(50).fill(0)),
       },          
       rivaldata: {},
       frienddata: {},
@@ -615,7 +614,10 @@ async function registerUser(refid: string, version: string, id = _.random(0, 999
       full_music_num: 0,
       exce_music_num: 0,
       clear_seq_num: 0,
-      classic_all_skill: 0
+      classic_all_skill: 0,
+      secretmusic: {
+        music: []     
+      }
     }
   };
 
@@ -842,6 +844,11 @@ async function saveSinglePlayer(dataplayer: KDataReader, refid: string, no: numb
     }
   };
 
+  let newSecretMusic = parseSecretMusic(dataplayer)
+  profile.secretmusic = {
+    music: newSecretMusic
+  }
+
   autoSet('max_skill', 'record.max.skill');
   autoSet('max_all_skill', 'record.max.all_skill');
   autoSet('clear_diff', 'record.max.clear_diff');
@@ -939,14 +946,20 @@ async function saveSinglePlayer(dataplayer: KDataReader, refid: string, no: numb
 
   autoExtra('playstyle', 'customdata.playstyle', true);
   autoExtra('custom', 'customdata.custom', true);
+  autoExtra('reward_status', 'reward.status', true)
 
   await DB.Upsert(refid, { collection: 'profile', game, version }, profile)
   await DB.Upsert(refid, { collection: 'record', game, version }, rec)
   await DB.Upsert(refid, { collection: 'extra', game, version }, extra)
 
-  const stages = dataplayer.elements('stage');
+  const playedStages = dataplayer.elements('stage');
+  const scores = await updatePlayerScoreCollection(refid, playedStages, version, game)
+  await saveScore(refid, version, game, scores); 
+}
+
+async function updatePlayerScoreCollection(refid, playedStages, version, game) {
   const scores = (await getScore(refid, version, game)).scores;
-  for (const stage of stages) {
+  for (const stage of playedStages) {
     const mid = stage.number('musicid', -1);
     const seq = stage.number('seq', -1);
 
@@ -986,8 +999,9 @@ async function saveSinglePlayer(dataplayer: KDataReader, refid: string, no: numb
     };
   }
 
-  await saveScore(refid, version, game, scores); 
+  return scores
 }
+
 async function getPlayerRanking(refid: string, version: string, game: 'gf' | 'dm') : Promise<PlayerRanking> {
   let profiles = await getAllProfiles(version, game)
   let playerCount = profiles.length
@@ -1086,3 +1100,43 @@ async function saveScore(refid: string, version: string, game: 'gf' | 'dm', scor
     scores
   })
 }
+
+function parseSecretMusic(playerData: KDataReader) : SecretMusicEntry[]
+{
+  let response : SecretMusicEntry[] = []
+
+  let elements = playerData.element('secretmusic')?.elements('music')
+  if (!elements) {
+    return response
+  }  
+  
+  for (let el of elements) {
+    let item : SecretMusicEntry = {
+      musicid: el.number('musicid'),
+      seq: el.number('seq'),
+      kind: el.number('kind')
+    }
+
+    response.push(item)    
+  }
+  return response
+}
+
+function getSecretMusicResponse(profile: Profile) {
+  let response = []
+
+  if (!profile.secretmusic?.music ) {
+    return response
+  }
+
+  for (let music of profile.secretmusic.music) {
+    response.push({
+      musicid: K.ITEM('s32', music.musicid),
+      seq: K.ITEM('u16', music.seq),
+      kind: K.ITEM('s32', music.kind)
+    })
+  }
+
+  return response
+}
+
