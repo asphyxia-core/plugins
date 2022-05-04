@@ -1,5 +1,6 @@
 import { getVersion } from "../utils";
-import { CommonMusicDataField, findMDBFile, readMDBFile, loadSongsForGameVersion } from "../data/mdb";
+import { findMDBFile, readMDBFile, loadSongsForGameVersion } from "../data/mdb";
+import { CommonMusicDataField } from "../models/commonmusicdata";
 import Logger from "../utils/logger"
 
 const logger = new Logger("MusicList")
