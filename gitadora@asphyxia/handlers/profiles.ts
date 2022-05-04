@@ -5,6 +5,8 @@ import { Record } from "../models/record";
 import { Extra } from "../models/extra";
 import { getVersion, isDM } from "../utils";
 import { Scores } from "../models/scores";
+import { PlayerStickerResponse } from "../models/playerstickerresponse";
+import { SecretMusicResponse } from "../models/secretmusicresponse";
 import { PLUGIN_VER } from "../const";
 import Logger from "../utils/logger"
 import { isAsphyxiaDebugMode } from "../Utils/index";
@@ -230,38 +232,7 @@ export const getPlayer: EPR = async (info, data, send) => {
     }));
   }
 
-  const sticker: any[] = [];
-
-  if (_.isArray(name.card)) {
-    for (const item of name.card) {
-      const id = _.get(item, 'id');
-      const posX = _.get(item, 'position.0');
-      const posY = _.get(item, 'position.1');
-      const scaleX = _.get(item, 'scale.0');
-      const scaleY = _.get(item, 'scale.1');
-      const rotation = _.get(item, 'rotation');
-
-      if (
-        !isFinite(id) ||
-        !isFinite(posX) ||
-        !isFinite(posY) ||
-        !isFinite(scaleX) ||
-        !isFinite(scaleY) ||
-        !isFinite(rotation)
-      ) {
-        continue;
-      }
-
-      sticker.push({
-        id: K.ITEM('s32', id),
-        pos_x: K.ITEM('float', posX),
-        pos_y: K.ITEM('float', posY),
-        scale_x: K.ITEM('float', scaleX),
-        scale_y: K.ITEM('float', scaleY),
-        rotate: K.ITEM('float', rotation),
-      });
-    }
-  }
+  const sticker: PlayerStickerResponse[] = getPlayerStickers(name.card);
 
   const playerData: any = {
     playerboard: {
@@ -376,6 +347,7 @@ export const getPlayer: EPR = async (info, data, send) => {
   }
 
   const innerSecretMusic = getSecretMusicResponse(profile)
+  const innerFriendData = getFriendDataResponse(profile)
   
   const response = {
     player: K.ATTR({ 'no': `${no}` }, {
@@ -392,7 +364,10 @@ export const getPlayer: EPR = async (info, data, send) => {
         status: K.ARRAY('u32', extra.reward_status ??  Array(50).fill(0)),
       },          
       rivaldata: {},
-      frienddata: {},
+      frienddata:  {
+        friend: innerFriendData
+      },
+      
       thanks_medal: {
         medal: K.ITEM('s32', 0),
         grant_medal: K.ITEM('s32', 0),
@@ -525,6 +500,42 @@ export const getPlayer: EPR = async (info, data, send) => {
     await IO.WriteFile(`apisamples/lastGetPlayerResponse.json`, JSON.stringify(response, null, 4))
   }
   send.object(response);
+}
+
+function getPlayerStickers(playerCard) : PlayerStickerResponse[] {
+  let stickers : PlayerStickerResponse[] = []
+  if (_.isArray(playerCard)) {
+    for (const item of playerCard) {
+      const id = _.get(item, 'id');
+      const posX = _.get(item, 'position.0');
+      const posY = _.get(item, 'position.1');
+      const scaleX = _.get(item, 'scale.0');
+      const scaleY = _.get(item, 'scale.1');
+      const rotation = _.get(item, 'rotation');
+
+      if (
+        !isFinite(id) ||
+        !isFinite(posX) ||
+        !isFinite(posY) ||
+        !isFinite(scaleX) ||
+        !isFinite(scaleY) ||
+        !isFinite(rotation)
+      ) {
+        continue;
+      }
+
+      stickers.push({
+        id: K.ITEM('s32', id),
+        pos_x: K.ITEM('float', posX),
+        pos_y: K.ITEM('float', posY),
+        scale_x: K.ITEM('float', scaleX),
+        scale_y: K.ITEM('float', scaleY),
+        rotate: K.ITEM('float', rotation),
+      });
+    }
+  }
+
+  return stickers
 }
 
 async function getOrRegisterPlayerInfo(refid: string, version: string, no: number) {
@@ -953,6 +964,8 @@ async function saveSinglePlayer(dataplayer: KDataReader, refid: string, no: numb
   await DB.Upsert(refid, { collection: 'extra', game, version }, extra)
 
   const playedStages = dataplayer.elements('stage');
+  // logStagesPlayed(playedStages)
+  
   const scores = await updatePlayerScoreCollection(refid, playedStages, version, game)
   await saveScore(refid, version, game, scores); 
 }
@@ -1122,8 +1135,8 @@ function parseSecretMusic(playerData: KDataReader) : SecretMusicEntry[]
   return response
 }
 
-function getSecretMusicResponse(profile: Profile) {
-  let response = []
+function getSecretMusicResponse(profile: Profile) : SecretMusicResponse[] {
+  let response : SecretMusicResponse[] = []
 
   if (!profile.secretmusic?.music ) {
     return response
@@ -1138,5 +1151,21 @@ function getSecretMusicResponse(profile: Profile) {
   }
 
   return response
+}
+
+function getFriendDataResponse(profile: Profile) {
+  let response = []
+  return response;
+}
+
+function logStagesPlayed(playedStages: KDataReader[]) {
+
+  let result = "Stages played: "
+  for (let stage of playedStages) {
+    let id = stage.number('musicid')
+    result += `${id}, `
+  }
+
+  logger.debugLog(result)
 }
 

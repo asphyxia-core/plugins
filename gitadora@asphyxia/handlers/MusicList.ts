@@ -6,11 +6,11 @@ const logger = new Logger("MusicList")
 
 export const playableMusic: EPR = async (info, data, send) => {
   const version = getVersion(info);
+
   let music: CommonMusicDataField[] = [];
   try {
     if (U.GetConfig("enable_custom_mdb")) {
       let customMdb = findMDBFile("custom")
-
       music = (await readMDBFile(customMdb)).music
     }
   } catch (e) {
@@ -23,7 +23,12 @@ export const playableMusic: EPR = async (info, data, send) => {
       music = (await loadSongsForGameVersion(version)).music
   }
 
-  await send.object({
+  let response = getPlayableMusicResponse(music)
+  await send.object(response)
+};
+
+function getPlayableMusicResponse(music) {
+  return {
     hot: {
       major: K.ITEM('s32', 1),
       minor: K.ITEM('s32', 1),
@@ -31,5 +36,5 @@ export const playableMusic: EPR = async (info, data, send) => {
     musicinfo: K.ATTR({ nr: `${music.length}` }, {
       music,
     }),
-  });
-};
+  }
+}

@@ -1,6 +1,19 @@
 //DATA//
   info: DB.Find(refid, { collection: 'playerinfo' })
+  profile: DB.Find(refid, { collection: 'profile' })
+-
 
+-
+  function getFullGameName(shortName) {
+    switch (shortName) {
+      case "dm" :
+        return "Drummania"
+        case "gf":
+        return "Guitar Freaks"
+        default: 
+        return "Unknown"
+    }
+  }
 -
 
 div
@@ -34,3 +47,38 @@ div
               span.icon
                 i.mdi.mdi-check
               span Submit
+
+div
+  each pr in profile 
+    .card 
+      .card-header 
+        p.card-header-title 
+          span.icon 
+            i.mdi.mdi-account-details
+          | Profile Detail (#{getFullGameName(pr.game)} #{pr.version})
+      .card-content
+        form(method="post")
+          .field 
+            label.label Skill
+            .control
+              input.input(type="text" name="skill", value=(pr.skill/100) readonly)
+          .field 
+            label.label Skill (All Songs)
+            .control
+              input.input(type="text" name="all_skill", value=(pr.all_skill/100) readonly)
+          .field 
+            label.label Stages Cleared
+            .control
+              input.input(type="text" name="clear_num", value=pr.clear_num readonly)
+          .field 
+            label.label Full Combos
+            .control
+              input.input(type="text" name="full_num", value=pr.full_num readonly)
+          .field 
+            label.label Excellent Full Combos
+            .control
+              input.input(type="text" name="exce_num", value=pr.exce_num readonly)
+          .field 
+            label.label Sessions
+            .control
+              input.input(type="text" name="session_cnt", value=pr.session_cnt readonly)

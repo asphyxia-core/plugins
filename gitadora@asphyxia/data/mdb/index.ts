@@ -1,18 +1,6 @@
 import Logger from "../../utils/logger";
+import { CommonMusicData } from "../../models/commonmusicdata";
 
-export interface CommonMusicDataField {
-  id: KITEM<"s32">;
-  cont_gf: KITEM<"bool">;
-  cont_dm: KITEM<"bool">;
-  is_secret: KITEM<"bool">;
-  is_hot: KITEM<"bool">;
-  data_ver: KITEM<"s32">;
-  diff: KARRAY<"u16">;
-}
-
-export interface CommonMusicData {
-  music: CommonMusicDataField[]
-}
 
 export enum DATAVersion {
   HIGHVOLTAGE = "hv",
@@ -68,7 +56,9 @@ export async function readMDBFile(path: string, processHandler?: processRawDataH
         throw `Invalid MDB file type: ${fileType}. Only .json, .xml, .b64 are supported.`
   }
 
-  logger.debugInfo(`Loaded ${result.music.length} songs from MDB file.`)
+  let gfCount = result.music.filter((e) => e.cont_gf["@content"][0]).length
+  let dmCount = result.music.filter((e) => e.cont_dm["@content"][0]).length
+  logger.debugInfo(`Loaded ${result.music.length} songs from MDB file. ${gfCount} songs for GF, ${dmCount} songs for DM.`)
   return result
 }
 
@@ -149,7 +139,7 @@ export async function defaultProcessRawXmlData(path: string): Promise<CommonMusi
       id: K.ITEM('s32', m.number("music_id")),
       cont_gf: K.ITEM('bool', gf == 0 ? 0 : 1),
       cont_dm: K.ITEM('bool', dm == 0 ? 0 : 1),
-      is_secret: K.ITEM('bool', 0),
+      is_secret: K.ITEM('bool', m.number("is_secret", 0)),
       is_hot: K.ITEM('bool', type == 2 ? 0 : 1),
       data_ver: K.ITEM('s32', m.number("data_ver", 115)),
       diff: K.ARRAY('u16', [
