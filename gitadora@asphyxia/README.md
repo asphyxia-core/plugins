@@ -33,9 +33,9 @@ Release Notes
 
 v1.2.2
 ----------------
-* Major improvements to the MDB (song data) loader. MDB files can now be in .json, .xml or .b64 format. This applies to both the per-version defaults and custom MDBs.
+* Major improvements to the MDB (song data) loader. MDB files can now be in .json, .xml or .b64 format. This applies to both the per-version defaults and custom MDBs. To use a custom MDB, enable it in the web UI, and place a 'custom.xml', 'custom.json' or 'custom.b64' file in the data/mdb subfolder.
 * Added several player profile stats to the web UI.
-* MDB loader now logs the number of loaded songs available to GF and DM.
+* MDB loader now logs the number of loaded songs available to GF and DM when in dev mode.
 * MDB: Fixed "is_secret" field being ignored (always set to false)
 
 v1.2.1
