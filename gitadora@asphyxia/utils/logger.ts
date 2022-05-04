@@ -7,7 +7,6 @@ export default class Logger {
         this.category = (category == null) ? null : `[${category}]`
     }
 
-
     public error(...args: any[]) {
         this.argsHandler(console.error, ...args)
     }
@@ -17,7 +16,6 @@ export default class Logger {
             this.argsHandler(console.error, ...args)
         }
     }
-
 
     public warn(...args: any[]) {
         this.argsHandler(console.warn, ...args)
@@ -29,7 +27,6 @@ export default class Logger {
         }
     }
 
-
     public info(...args: any[]) {
         this.argsHandler(console.info, ...args)
     }
@@ -40,7 +37,6 @@ export default class Logger {
         }
     }
 
-
     public log(...args: any[]) {
         this.argsHandler(console.log, ...args)
     }
@@ -50,7 +46,6 @@ export default class Logger {
             this.argsHandler(console.log, ...args)
         }
     }
-
 
     private argsHandler(target: Function, ...args: any[]) {
         if (this.category == null) {

@@ -1,18 +1,6 @@
 import Logger from "../../utils/logger";
+import { CommonMusicData } from "../../models/commonmusicdata";
 
-export interface CommonMusicDataField {
-  id: KITEM<"s32">;
-  cont_gf: KITEM<"bool">;
-  cont_dm: KITEM<"bool">;
-  is_secret: KITEM<"bool">;
-  is_hot: KITEM<"bool">;
-  data_ver: KITEM<"s32">;
-  diff: KARRAY<"u16">;
-}
-
-export interface CommonMusicData {
-  music: CommonMusicDataField[]
-}
 
 export enum DATAVersion {
   HIGHVOLTAGE = "hv",
@@ -20,6 +8,9 @@ export enum DATAVersion {
   EXCHAIN     = "ex",
   MATTIX      = "mt"
 }
+
+const allowedFormats = ['.json', '.xml', '.b64']
+const mdbFolder =  "data/mdb/"
 
 type processRawDataHandler = (path: string) => Promise<CommonMusicData>
 
@@ -32,30 +23,43 @@ export async function readXML(path: string) {
   return json
 }
 
-export async function readJSON(path: string) {
-  logger.debugInfo(`Loading MDB data from ${path}.`)
-  const str = await IO.ReadFile(path, 'utf-8');
-  const json = JSON.parse(str)
-  return json
-}
+export async function readMDBFile(path: string, processHandler?: processRawDataHandler): Promise<CommonMusicData> {
 
-export async function readJSONOrXML(jsonPath: string, xmlPath: string, processHandler: processRawDataHandler): Promise<CommonMusicData> {
-  if (!IO.Exists(jsonPath)) {
-    logger.debugInfo(`Loading MDB data from ${xmlPath}.`)
-    const data = await processHandler(xmlPath)
-    await IO.WriteFile(jsonPath, JSON.stringify(data))
-    return data
-  } else {
-    logger.debugInfo(`Loading MDB data from ${jsonPath}.`)
-    const json = JSON.parse(await IO.ReadFile(jsonPath, 'utf-8'))
-    return json
+  if (!IO.Exists(path)) {
+    throw "Unable to find MDB file at " + path
   }
-}
 
-export async function readB64JSON(b64path: string) {
-  logger.debugInfo(`Loading MDB data from ${b64path}.`)
-  const buff = await IO.ReadFile(b64path, 'utf-8');
-  return JSON.parse(Buffer.from(buff, 'base64').toString('utf-8'));
+  logger.debugInfo(`Loading MDB data from ${path}.`)
+
+  let result : CommonMusicData;
+  const fileType = path.substring(path.lastIndexOf('.')).toLowerCase()
+
+  switch (fileType) {
+    case '.json':
+      const str = await IO.ReadFile(path, 'utf-8');
+      result = JSON.parse(str)
+    break;
+    case '.xml':
+      processHandler ?? defaultProcessRawXmlData
+      result = await processHandler(path)
+      // Uncomment to save the loaded XML file as JSON.
+      // await IO.WriteFile(path.replace(".xml", ".json"), JSON.stringify(data))
+    break;
+    case '.b64':
+      const buff = await IO.ReadFile(path, 'utf-8');
+      const json = Buffer.from(buff, 'base64').toString('utf-8')
+      // Uncomment to save the decoded base64 file as JSON.
+      // await IO.WriteFile(path.replace(".b64",".json"), json)
+      result = JSON.parse(json)
+    break;
+      default:
+        throw `Invalid MDB file type: ${fileType}. Only .json, .xml, .b64 are supported.`
+  }
+
+  let gfCount = result.music.filter((e) => e.cont_gf["@content"][0]).length
+  let dmCount = result.music.filter((e) => e.cont_dm["@content"][0]).length
+  logger.debugInfo(`Loaded ${result.music.length} songs from MDB file. ${gfCount} songs for GF, ${dmCount} songs for DM.`)
+  return result
 }
 
 export function gameVerToDataVer(ver: string): DATAVersion {
@@ -72,18 +76,47 @@ export function gameVerToDataVer(ver: string): DATAVersion {
   }
 }
 
-export async function processDataBuilder(gameVer: string, processHandler?: processRawDataHandler) {
-  const ver = gameVerToDataVer(gameVer)
-  const base = `data/mdb/${ver}`
-  if (IO.Exists(`${base}.b64`)) {  
-    return await readB64JSON(`${base}.b64`);
+/**
+ * Attempts to find a .json, .xml, or .b64 file (in that order) matching the given name in the specified folder.
+ * @param fileNameWithoutExtension - The name of the file to find (without the extension).
+ * @param path - The path to the folder to search. If left null, the default MDB folder ('data/mdb' in the plugin folder) will be used.
+ * @returns - The path of the first matching file found, or null if no file was found.
+ */
+export function findMDBFile(fileNameWithoutExtension: string, path: string = null): string {
+
+  path = path ?? mdbFolder
+  if (!IO.Exists(path)) {
+    throw `Path does not exist: ${path}`
   }
-  const { music } = await readJSONOrXML(`${base}.json`, `${base}.xml`, processHandler ?? defaultProcessRawData)
-  // await IO.WriteFile(`${base}.b64`, Buffer.from(JSON.stringify({music})).toString("base64"))
-  return { music };
+
+  if (!path.endsWith("/")) {
+    path += "/"
+  }
+
+  for (const ext of allowedFormats) {
+    const filePath = path + fileNameWithoutExtension + ext
+    if (IO.Exists(filePath)) {
+      return filePath
+    }
+  }
+
+  return null
 }
 
-export async function defaultProcessRawData(path: string): Promise<CommonMusicData> {
+export async function loadSongsForGameVersion(gameVer: string, processHandler?: processRawDataHandler) {
+  const ver = gameVerToDataVer(gameVer)
+
+  let mdbFile = findMDBFile(ver, mdbFolder)
+
+  if (mdbFile == null) {
+    throw `No valid MDB files were found in the data/mdb subfolder. Ensure that this folder contains at least one of the following: ${ver}.json, ${ver}.xml or ${ver}.b64`
+  }
+
+  const music = await readMDBFile(mdbFile, processHandler ?? defaultProcessRawXmlData)
+  return music   
+}
+
+export async function defaultProcessRawXmlData(path: string): Promise<CommonMusicData> {
   const data = await readXML(path)
   const mdb = $(data).elements("mdb.mdb_data");
   const music: any[] = [];
@@ -106,7 +139,7 @@ export async function defaultProcessRawData(path: string): Promise<CommonMusicDa
       id: K.ITEM('s32', m.number("music_id")),
       cont_gf: K.ITEM('bool', gf == 0 ? 0 : 1),
       cont_dm: K.ITEM('bool', dm == 0 ? 0 : 1),
-      is_secret: K.ITEM('bool', 0),
+      is_secret: K.ITEM('bool', m.number("is_secret", 0)),
       is_hot: K.ITEM('bool', type == 2 ? 0 : 1),
       data_ver: K.ITEM('s32', m.number("data_ver", 115)),
       diff: K.ARRAY('u16', [

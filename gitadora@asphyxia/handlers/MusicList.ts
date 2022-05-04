@@ -1,16 +1,17 @@
 import { getVersion } from "../utils";
-import { defaultProcessRawData, processDataBuilder } from "../data/mdb"
-import { CommonMusicDataField, readJSONOrXML, readXML } from "../data/mdb";
+import { CommonMusicDataField, findMDBFile, readMDBFile, loadSongsForGameVersion } from "../data/mdb";
 import Logger from "../utils/logger"
 
 const logger = new Logger("MusicList")
 
 export const playableMusic: EPR = async (info, data, send) => {
   const version = getVersion(info);
+
   let music: CommonMusicDataField[] = [];
   try {
     if (U.GetConfig("enable_custom_mdb")) {
-      music = (await defaultProcessRawData('data/mdb/custom.xml')).music
+      let customMdb = findMDBFile("custom")
+      music = (await readMDBFile(customMdb)).music
     }
   } catch (e) {
     logger.warn("Read Custom MDB failed. Using default MDB as a fallback.")
@@ -19,10 +20,15 @@ export const playableMusic: EPR = async (info, data, send) => {
   }
 
   if (music.length == 0) {
-      music = _.get(await processDataBuilder(version), 'music', []);
+      music = (await loadSongsForGameVersion(version)).music
   }
 
-  await send.object({
+  let response = getPlayableMusicResponse(music)
+  await send.object(response)
+};
+
+function getPlayableMusicResponse(music) {
+  return {
     hot: {
       major: K.ITEM('s32', 1),
       minor: K.ITEM('s32', 1),
@@ -30,5 +36,5 @@ export const playableMusic: EPR = async (info, data, send) => {
     musicinfo: K.ATTR({ nr: `${music.length}` }, {
       music,
     }),
-  });
-};
+  }
+}

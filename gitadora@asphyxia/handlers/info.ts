@@ -1,5 +1,7 @@
 import { getEncoreStageData } from "../data/extrastage";
+import Logger from "../utils/logger";
 
+const logger = new Logger('info');
 export const shopInfoRegist: EPR = async (info, data, send) => {
   send.object({
     data: {
@@ -16,64 +18,8 @@ export const shopInfoRegist: EPR = async (info, data, send) => {
 }
 
 export const gameInfoGet: EPR = async (info, data, send) => {
-  const addition: any = {
-    monstar_subjugation: {
-      bonus_musicid: K.ITEM('s32', 0),
-    },
-    bear_fes: {},
-    nextadium: {},
-  };
-  const time = BigInt(31536000);
-  for (let i = 1; i <= 20; ++i) {
-    const obj = {
-      term: K.ITEM('u8', 0),
-      start_date_ms: K.ITEM('u64', time),
-      end_date_ms: K.ITEM('u64', time),
-    };
-    if (i == 1) {
-      addition[`phrase_combo_challenge`] = obj;
-      addition[`long_otobear_fes_1`] = {
-        term: K.ITEM('u8', 0),
-        start_date_ms: K.ITEM('u64', time),
-        end_date_ms: K.ITEM('u64', time),
-        bonus_musicid: {},
-      };
-      addition[`sdvx_stamprally3`] = obj;
-      addition[`chronicle_1`] = obj;
-      addition[`paseli_point_lottery`] = obj;
-      addition['sticker_campaign'] = {
-        term: K.ITEM('u8', 0),
-        sticker_list: {},
-      };
-      addition['thanksgiving'] = {
-        ...obj,
-        box_term: {
-          state: K.ITEM('u8', 0)
-        }
-      };
-      addition['lotterybox'] = {
-        ...obj,
-        box_term: {
-          state: K.ITEM('u8', 0)
-        }
-      };
-    } else {
-      addition[`phrase_combo_challenge_${i}`] = obj;
-    }
-
-    if (i <= 4) {
-      addition['monstar_subjugation'][`monstar_subjugation_${i}`] = obj;
-      addition['bear_fes'][`bear_fes_${i}`] = obj;
-    }
-
-    if (i <= 3) {
-      addition[`kouyou_challenge_${i}`] = {
-        term: K.ITEM('u8', 0),
-        bonus_musicid: K.ITEM('s32', 0),
-      };
-    }
-  }
-
+  
+  const eventData = getEventDataResponse()
   const extraData = getEncoreStageData(info)
 
   await send.object({
@@ -157,6 +103,70 @@ export const gameInfoGet: EPR = async (info, data, send) => {
         },
       },
     },
-    ...addition,
+    ...eventData,
   });
 };
+
+function getEventDataResponse() {
+  const addition: any = {
+    monstar_subjugation: {
+      bonus_musicid: K.ITEM('s32', 0),
+    },
+    bear_fes: {},
+    nextadium: {},
+  };
+  const time = BigInt(31536000);
+
+  for (let i = 1; i <= 20; ++i) {
+    const obj = {
+      term: K.ITEM('u8', 0),
+      start_date_ms: K.ITEM('u64', time),
+      end_date_ms: K.ITEM('u64', time),
+    };
+    if (i == 1) {
+      addition[`phrase_combo_challenge`] = obj;
+      addition[`long_otobear_fes_1`] = {
+        term: K.ITEM('u8', 0),
+        start_date_ms: K.ITEM('u64', time),
+        end_date_ms: K.ITEM('u64', time),
+        bonus_musicid: {},
+      };
+      addition[`sdvx_stamprally3`] = obj;
+      addition[`chronicle_1`] = obj;
+      addition[`paseli_point_lottery`] = obj;
+      addition['sticker_campaign'] = {
+        term: K.ITEM('u8', 0),
+        sticker_list: {},
+      };
+      addition['thanksgiving'] = {
+        ...obj,
+        box_term: {
+          state: K.ITEM('u8', 0)
+        }
+      };
+      addition['lotterybox'] = {
+        ...obj,
+        box_term: {
+          state: K.ITEM('u8', 0)
+        }
+      };
+    } else {
+
+      addition[`phrase_combo_challenge_${i}`] = obj;
+    }
+
+    if (i <= 4) {
+      addition['monstar_subjugation'][`monstar_subjugation_${i}`] = obj;
+      addition['bear_fes'][`bear_fes_${i}`] = obj;
+    }
+
+    if (i <= 3) {
+      addition[`kouyou_challenge_${i}`] = {
+        term: K.ITEM('u8', 0),
+        bonus_musicid: K.ITEM('s32', 0),
+      };
+    }
+  }
+
+  return addition
+}

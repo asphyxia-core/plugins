@@ -1,6 +1,6 @@
 GITADORA Plugin for Asphyxia-Core
 =================================
-![Version: v1.2.1](https://img.shields.io/badge/version-v1.2.1-blue)
+![Version: v1.2.2](https://img.shields.io/badge/version-v1.2.2-blue)
 
 This plugin is based on converted from public-exported Asphyxia's Routes.
 
@@ -26,9 +26,17 @@ Known Issues
  * ~Information dialog keep showing as plugin doesn't store item data currently.~ (Fixed as of version 1.2.1)
  * Special Premium Encore on Nextage
    - Bandage solution is implemented. Try it.
+ * Friends and Rivals are unimplemented.
 
 Release Notes
 =============
+
+v1.2.2
+----------------
+* Major improvements to the MDB (song data) loader. MDB files can now be in .json, .xml or .b64 format. This applies to both the per-version defaults and custom MDBs. To use a custom MDB, enable it in the web UI, and place a 'custom.xml', 'custom.json' or 'custom.b64' file in the data/mdb subfolder.
+* Added several player profile stats to the web UI.
+* MDB loader now logs the number of loaded songs available to GF and DM when in dev mode.
+* MDB: Fixed "is_secret" field being ignored (always set to false)
 
 v1.2.1
 ----------------

@@ -25,14 +25,15 @@ export function register() {
     name: "Dummy Encore for SPE (Nextage Only)",
     desc: "Since Nextage's Special Premium Encore system is bit complicated, \n"
         + "SPE System isn't fully implemented. \n"
-        + "This thing is bandage of these problem as limiting some Encores for SPE.",
+        + "This option is a workaround for this issue as limiting some Encores for SPE.",
     type: "boolean",
     default: false
   })
 
   R.Config("enable_custom_mdb", {
     name: "Enable Custom MDB",
-    desc: "For who uses own MDB. eg) Omnimix.",
+    desc: "If disabled, the server will provide the default MDB (song list) to Gitadora clients, depending on which version of the game they are running." + 
+    "Enable this option to provide your own custom MDB instead. MDB files are stored in the 'gitadora@asphyxia/data/mdb' folder, and can be in .xml, .json or .b64 format.",
     type: "boolean",
     default: false,
   })
@@ -40,7 +41,7 @@ export function register() {
   R.DataFile("data/mdb/custom.xml", {
     accept: ".xml",
     name: "Custom MDB",
-    desc: "You need to enable Custom MDB option first."
+    desc: "You need to enable the 'Enable Custom MDB' option for the uploaded file to have any effect."
   })
 
   R.WebUIEvent('updatePlayerInfo', updatePlayerInfo);
