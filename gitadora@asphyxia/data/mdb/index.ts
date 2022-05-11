@@ -17,7 +17,6 @@ type processRawDataHandler = (path: string) => Promise<CommonMusicData>
 const logger = new Logger("mdb")
 
 export async function readXML(path: string) {
-  logger.debugInfo(`Loading MDB data from ${path}.`)
   const xml = await IO.ReadFile(path, 'utf-8');
   const json = U.parseXML(xml, false)
   return json
@@ -40,7 +39,7 @@ export async function readMDBFile(path: string, processHandler?: processRawDataH
       result = JSON.parse(str)
     break;
     case '.xml':
-      processHandler ?? defaultProcessRawXmlData
+      processHandler = processHandler ?? defaultProcessRawXmlData
       result = await processHandler(path)
       // Uncomment to save the loaded XML file as JSON.
       // await IO.WriteFile(path.replace(".xml", ".json"), JSON.stringify(data))
