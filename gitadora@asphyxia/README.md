@@ -1,6 +1,6 @@
 GITADORA Plugin for Asphyxia-Core
 =================================
-![Version: v1.2.2](https://img.shields.io/badge/version-v1.2.2-blue)
+![Version: v1.2.3](https://img.shields.io/badge/version-v1.2.3-blue)
 
 This plugin is based on converted from public-exported Asphyxia's Routes.
 
@@ -30,6 +30,10 @@ Known Issues
 
 Release Notes
 =============
+
+v1.2.3
+----------------
+ * Fixed bug preventing MDB files in XML format from loading (Thanks to DualEdge for reporting this ).
 
 v1.2.2
 ----------------
