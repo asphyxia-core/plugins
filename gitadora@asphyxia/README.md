@@ -1,6 +1,6 @@
 GITADORA Plugin for Asphyxia-Core
 =================================
-![Version: v1.2.3](https://img.shields.io/badge/version-v1.2.3-blue)
+![Version: v1.2.4](https://img.shields.io/badge/version-v1.2.4-blue)
 
 This plugin is based on converted from public-exported Asphyxia's Routes.
 
@@ -30,6 +30,11 @@ Known Issues
 
 Release Notes
 =============
+
+v1.2.4
+----------------
+* Fixed note scroll speed defaulting to 0.5x for newly registered profiles.
+* Misc code cleanup. No changes expected to plugin behaviour.
 
 v1.2.3
 ----------------

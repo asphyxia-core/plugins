@@ -1,3 +1,5 @@
+import { PLUGIN_VER } from "../const";
+
 export interface Scores {
   collection: 'scores';
 
@@ -22,3 +24,13 @@ export interface Scores {
     };
   };
 }
+
+export function getDefaultScores (game: 'gf' | 'dm', version: string): Scores {
+  return {
+    collection: 'scores',
+    version,
+    pluginVer: PLUGIN_VER,
+    game,
+    scores: {}
+  }
+};
