@@ -1,6 +1,6 @@
 GITADORA Plugin for Asphyxia-Core
 =================================
-![Version: v1.2.3](https://img.shields.io/badge/version-v1.2.3-blue)
+![Version: v1.3.0](https://img.shields.io/badge/version-v1.3.0-blue)
 
 This plugin is based on converted from public-exported Asphyxia's Routes.
 
@@ -20,16 +20,18 @@ The folder structure between v1.0 and v1.1 is quite different. Do not overwrite 
 2. Ctrl-C and Ctrl-V the newest version of `gitadora@asphyxia`
 3. (Custom MDB Users) Reupload MDB or move `data/custom_mdb.xml` to `data/mdb/custom.xml`
 
-
 Known Issues
 ============
  * ~Information dialog keep showing as plugin doesn't store item data currently.~ (Fixed as of version 1.2.1)
- * Special Premium Encore on Nextage
-   - Bandage solution is implemented. Try it.
+ * Special Premium Encore on Nextage is unimplemented. However, a workaround is available. Try it.
  * Friends and Rivals are unimplemented.
 
 Release Notes
 =============
+
+v1.3.0
+----------------
+ * Added experimental 'Shared Favorite Songs' option. If disabled, players will be able to keep separate lists of favorite songs for each version of Gitadora, as well as between Guitar Freaks and Drummania. Enable this option to have a single unified list of favorite songs for both games, and across all versions. Default is false, to match original arcade behaviour.
 
 v1.2.3
 ----------------
@@ -47,7 +49,7 @@ v1.2.1
 * Secret Music (unlocked songs) are now saved and loaded correctly. Partially fixes Github issue #34. Note that all songs are already marked as unlocked by the server - there is no need to unlock them manually. If you would like to lock them, consider using a custom MDB.
 * Rewards field is now saved and loaded correctly. Fixes Github issue #34
 
-NOTE: Rewards and secret music is saved at the end of each session, so you will see the unlock notifications one last time after updating the plugin to this version.
+NOTE: Rewards and secret music data is saved at the end of each session, so you will see the unlock notifications one last time after updating the plugin to this version.
 
 v1.2.0
 ----------------

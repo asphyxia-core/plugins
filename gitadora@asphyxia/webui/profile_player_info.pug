@@ -79,6 +79,18 @@ div
             .control
               input.input(type="text" name="exce_num", value=pr.exce_num readonly)
           .field 
+            label.label Highest Difficulty Cleared
+            .control
+              input.input(type="text" name="max_clear_diff", value=(pr.max_clear_diff/100) readonly)
+          .field 
+            label.label Highest Difficulty Full Combo
+            .control
+              input.input(type="text" name="max_full_diff", value=(pr.max_full_diff/100) readonly)
+          .field 
+            label.label Highest Difficulty Excellent Full Combo
+            .control
+              input.input(type="text" name="max_exce_diff", value=(pr.max_exce_diff/100) readonly)
+          .field 
             label.label Sessions
             .control
               input.input(type="text" name="session_cnt", value=pr.session_cnt readonly)

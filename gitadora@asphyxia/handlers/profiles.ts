@@ -11,6 +11,7 @@ import { PLUGIN_VER } from "../const";
 import Logger from "../utils/logger"
 import { isAsphyxiaDebugMode } from "../Utils/index";
 import { SecretMusicEntry } from "../models/secretmusicentry";
+import { applySharedFavoriteMusicToExtra, saveSharedFavoriteMusicFromExtra } from "./FavoriteMusic";
 
 const logger = new Logger("profiles")
 
@@ -91,6 +92,8 @@ export const getPlayer: EPR = async (info, data, send) => {
 
   const profile = dm ? dmProfile : gfProfile;
   const extra = dm ? dmExtra : gfExtra;
+
+  await applySharedFavoriteMusicToExtra(refid, extra)
 
   const record: any = {
     gf: {},
@@ -820,6 +823,7 @@ export const savePlayers: EPR = async (info, data, send) => {
   }
   catch (e)  {
     logger.error(e)
+    logger.error(e.stack)
     return send.deny();
   }
 };
@@ -831,7 +835,7 @@ async function saveSinglePlayer(dataplayer: KDataReader, refid: string, no: numb
   const extra = await getExtra(refid, version, game) as any;
   const rec = await getRecord(refid, version, game) as any;
 
-  const autoSet = (field: keyof Profile, path: string, array = false): void => {
+  const autoSet = function (field: keyof Profile, path: string, array = false): void  {
     if (array) {
       profile[field] = dataplayer.numbers(path, profile[field])
     } else {
@@ -964,10 +968,11 @@ async function saveSinglePlayer(dataplayer: KDataReader, refid: string, no: numb
   await DB.Upsert(refid, { collection: 'extra', game, version }, extra)
 
   const playedStages = dataplayer.elements('stage');
-  // logStagesPlayed(playedStages)
+  logStagesPlayed(playedStages)
   
   const scores = await updatePlayerScoreCollection(refid, playedStages, version, game)
   await saveScore(refid, version, game, scores); 
+  await saveSharedFavoriteMusicFromExtra(refid, extra)
 }
 
 async function updatePlayerScoreCollection(refid, playedStages, version, game) {

@@ -9,7 +9,7 @@ const logger = new Logger("main")
 
 export function register() {
   if(!isRequiredCoreVersion(1, 20)) {
-    console.error("You need newer version of Core. v1.20 or newer required.")
+    console.error("A newer version of Asphyxia Core (v1.20 or later) is required.")
   }
 
   R.GameCode('M32');
@@ -38,10 +38,18 @@ export function register() {
     default: false,
   })
 
+  R.Config("shared_favorite_songs", {
+    name: "Shared Favorite Songs (Experimental)",
+    desc: "If disabled, players will be able to keep separate lists of favorite songs for each version of Gitadora, as well as between Guitar Freaks and Drummania. " + 
+    "Enable this option to have a single unified list of favorite songs for both games, and across all versions. Default is false, to match original arcade behaviour.",
+    type: "boolean",
+    default: false,
+  })
+
   R.DataFile("data/mdb/custom.xml", {
     accept: ".xml",
     name: "Custom MDB",
-    desc: "You need to enable the 'Enable Custom MDB' option for the uploaded file to have any effect."
+    desc: "Remember to enable the 'Enable Custom MDB' option for the uploaded file to have any effect."
   })
 
   R.WebUIEvent('updatePlayerInfo', updatePlayerInfo);

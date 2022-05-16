@@ -18,7 +18,11 @@ export function isRequiredCoreVersion(major: number, minor: number) {
   return core_major > major || (core_major === major && core_minor >= minor)
 };
 
-export function isAsphyxiaDebugMode() {
+export function isAsphyxiaDebugMode() : boolean  {
   const argv = process.argv
   return argv.includes("--dev") || argv.includes("--console")
+}
+
+export function isSharedFavoriteMusicEnabled() : boolean{
+  return  Boolean(U.GetConfig("shared_favorite_songs"))
 }

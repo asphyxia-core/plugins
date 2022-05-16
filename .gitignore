@@ -11,3 +11,4 @@ package.json
 package-lock.json
 typedoc.json
 tsconfig.json
+gitadora@asphyxia/data/mdb/blacklist.txt
