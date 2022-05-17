@@ -29,6 +29,11 @@ Known Issues
 Release Notes
 =============
 
+v1.2.4
+----------------
+* Fixed note scroll speed defaulting to 0.5x for newly registered profiles.
+* Misc code cleanup. No changes expected to plugin behaviour.
+
 v1.3.0
 ----------------
  * Added experimental 'Shared Favorite Songs' option. If disabled, players will be able to keep separate lists of favorite songs for each version of Gitadora, as well as between Guitar Freaks and Drummania. Enable this option to have a single unified list of favorite songs for both games, and across all versions. Default is false, to match original arcade behaviour.

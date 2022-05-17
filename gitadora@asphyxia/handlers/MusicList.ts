@@ -2,12 +2,13 @@ import { getVersion } from "../utils";
 import { findMDBFile, readMDBFile, loadSongsForGameVersion } from "../data/mdb";
 import { CommonMusicDataField } from "../models/commonmusicdata";
 import Logger from "../utils/logger"
+import { getPlayableMusicResponse, PlayableMusicResponse } from "../models/Responses/playablemusicresponse";
 
 const logger = new Logger("MusicList")
 
 export const playableMusic: EPR = async (info, data, send) => {
   const version = getVersion(info);
-
+  const start = Date.now()
   let music: CommonMusicDataField[] = [];
   try {
     if (U.GetConfig("enable_custom_mdb")) {
@@ -24,18 +25,11 @@ export const playableMusic: EPR = async (info, data, send) => {
       music = (await loadSongsForGameVersion(version)).music
   }
 
-  let response = getPlayableMusicResponse(music)
+  const end = Date.now()
+  const timeDiff = end - start
+  logger.debugInfo(`MDB loading took ${timeDiff} ms`)
+
+  let response : PlayableMusicResponse = getPlayableMusicResponse(music)
   await send.object(response)
 };
 
-function getPlayableMusicResponse(music) {
-  return {
-    hot: {
-      major: K.ITEM('s32', 1),
-      minor: K.ITEM('s32', 1),
-    },
-    musicinfo: K.ATTR({ nr: `${music.length}` }, {
-      music,
-    }),
-  }
-}

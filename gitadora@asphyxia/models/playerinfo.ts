@@ -1,7 +1,9 @@
+import { PLUGIN_VER } from "../const";
+
 export interface PlayerInfo {
   collection: 'playerinfo',
 
-  pluginVer: Number;
+  pluginVer: number;
 
   id: number;
   version: string,
@@ -16,4 +18,15 @@ export interface PlayerInfo {
   }[];
 
   // TODO: Add Board things.
+}
+
+export function getDefaultPlayerInfo(version: string, id: number) : PlayerInfo {
+  return {
+    collection: 'playerinfo',
+    pluginVer: PLUGIN_VER,
+    id,
+    version,
+    name: 'ASPHYXIA-CORE USER',
+    title: 'Please edit on WebUI',
+  }
 }
