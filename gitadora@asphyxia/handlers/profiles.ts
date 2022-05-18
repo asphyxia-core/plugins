@@ -1,16 +1,20 @@
-import { PlayerInfo } from "../models/playerinfo";
+import { getDefaultPlayerInfo, PlayerInfo } from "../models/playerinfo";
 import { PlayerRanking } from "../models/playerranking";
-import { Profile } from "../models/profile";
-import { Record } from "../models/record";
-import { Extra } from "../models/extra";
+import { getDefaultProfile, Profile } from "../models/profile";
+import { getDefaultRecord, Record } from "../models/record";
+import { Extra, getDefaultExtra } from "../models/extra";
 import { getVersion, isDM } from "../utils";
-import { Scores } from "../models/scores";
-import { PlayerStickerResponse } from "../models/playerstickerresponse";
-import { SecretMusicResponse } from "../models/secretmusicresponse";
+import { getDefaultScores, Scores } from "../models/scores";
+
 import { PLUGIN_VER } from "../const";
 import Logger from "../utils/logger"
 import { isAsphyxiaDebugMode } from "../Utils/index";
 import { SecretMusicEntry } from "../models/secretmusicentry";
+import { CheckPlayerResponse, getCheckPlayerResponse } from "../models/Responses/checkplayerresponse";
+import { getPlayerStickerResponse, PlayerStickerResponse } from "../models/Responses/playerstickerresponse";
+import { getSecretMusicResponse, SecretMusicResponse } from "../models/Responses/secretmusicresponse";
+import { getSaveProfileResponse } from "../models/Responses/saveprofileresponse";
+import { getDefaultBattleDataResponse } from "../models/Responses/battledataresponse";
 
 const logger = new Logger("profiles")
 
@@ -47,19 +51,8 @@ export const check: EPR = async (info, data, send) => {
   const version = getVersion(info)
   const playerInfo = await getOrRegisterPlayerInfo(refid, version, no)
 
-  await send.object({
-    player: K.ATTR({ no: `${no}`, state: '2' }, {
-      name: K.ITEM('str', playerInfo.name),
-      charaid: K.ITEM('s32', 0),
-      did: K.ITEM('s32', playerInfo.id),
-      skilldata: {
-        skill: K.ITEM('s32', 0),
-        all_skill: K.ITEM('s32', 0),
-        old_skill: K.ITEM('s32', 0),
-        old_all_skill: K.ITEM('s32', 0),
-      }
-    })
-  })
+  const result : CheckPlayerResponse = getCheckPlayerResponse(no, playerInfo.name, playerInfo.id)
+  await send.object(result)  
 }
 
 export const getPlayer: EPR = async (info, data, send) => {
@@ -232,7 +225,7 @@ export const getPlayer: EPR = async (info, data, send) => {
     }));
   }
 
-  const sticker: PlayerStickerResponse[] = getPlayerStickers(name.card);
+  const sticker: PlayerStickerResponse[] = getPlayerStickerResponse(name.card);
 
   const playerData: any = {
     playerboard: {
@@ -348,6 +341,7 @@ export const getPlayer: EPR = async (info, data, send) => {
 
   const innerSecretMusic = getSecretMusicResponse(profile)
   const innerFriendData = getFriendDataResponse(profile)
+  const innerBattleData = getDefaultBattleDataResponse()
   
   const response = {
     player: K.ATTR({ 'no': `${no}` }, {
@@ -377,42 +371,7 @@ export const getPlayer: EPR = async (info, data, send) => {
       skindata: {
         skin: K.ARRAY('u32', Array(100).fill(-1)),
       },
-      battledata: {
-        info: {
-          orb: K.ITEM('s32', 0),
-          get_gb_point: K.ITEM('s32', 0),
-          send_gb_point: K.ITEM('s32', 0),
-        },
-        greeting: {
-          greeting_1: K.ITEM('str', ''),
-          greeting_2: K.ITEM('str', ''),
-          greeting_3: K.ITEM('str', ''),
-          greeting_4: K.ITEM('str', ''),
-          greeting_5: K.ITEM('str', ''),
-          greeting_6: K.ITEM('str', ''),
-          greeting_7: K.ITEM('str', ''),
-          greeting_8: K.ITEM('str', ''),
-          greeting_9: K.ITEM('str', ''),
-        },
-        setting: {
-          matching: K.ITEM('s32', 0),
-          info_level: K.ITEM('s32', 0),
-        },
-        score: {
-          battle_class: K.ITEM('s32', 0),
-          max_battle_class: K.ITEM('s32', 0),
-          battle_point: K.ITEM('s32', 0),
-          win: K.ITEM('s32', 0),
-          lose: K.ITEM('s32', 0),
-          draw: K.ITEM('s32', 0),
-          consecutive_win: K.ITEM('s32', 0),
-          max_consecutive_win: K.ITEM('s32', 0),
-          glorious_win: K.ITEM('s32', 0),
-          max_defeat_skill: K.ITEM('s32', 0),
-          latest_result: K.ITEM('s32', 0),
-        },
-        history: {},
-      },
+      battledata: innerBattleData,
       is_free_ok: K.ITEM('bool', 0),
       ranking: {
         skill: { rank: K.ITEM('s32', playerRanking.skill), total_nr: K.ITEM('s32', playerRanking.totalPlayers) },
@@ -502,42 +461,6 @@ export const getPlayer: EPR = async (info, data, send) => {
   send.object(response);
 }
 
-function getPlayerStickers(playerCard) : PlayerStickerResponse[] {
-  let stickers : PlayerStickerResponse[] = []
-  if (_.isArray(playerCard)) {
-    for (const item of playerCard) {
-      const id = _.get(item, 'id');
-      const posX = _.get(item, 'position.0');
-      const posY = _.get(item, 'position.1');
-      const scaleX = _.get(item, 'scale.0');
-      const scaleY = _.get(item, 'scale.1');
-      const rotation = _.get(item, 'rotation');
-
-      if (
-        !isFinite(id) ||
-        !isFinite(posX) ||
-        !isFinite(posY) ||
-        !isFinite(scaleX) ||
-        !isFinite(scaleY) ||
-        !isFinite(rotation)
-      ) {
-        continue;
-      }
-
-      stickers.push({
-        id: K.ITEM('s32', id),
-        pos_x: K.ITEM('float', posX),
-        pos_y: K.ITEM('float', posY),
-        scale_x: K.ITEM('float', scaleX),
-        scale_y: K.ITEM('float', scaleY),
-        rotate: K.ITEM('float', rotation),
-      });
-    }
-  }
-
-  return stickers
-}
-
 async function getOrRegisterPlayerInfo(refid: string, version: string, no: number) {
   let playerInfo = await DB.FindOne<PlayerInfo>(refid, {
     collection: 'playerinfo',
@@ -556,221 +479,24 @@ function getPlayerNo(data: any): number {
 }
 
 async function registerUser(refid: string, version: string, id = _.random(0, 99999999)) {
-  while (await DB.FindOne<PlayerInfo>(null, { collecttion: 'profile', id })) {
+  while (await DB.FindOne<Profile>(null, { collection: 'profile', id })) {
     id = _.random(0, 99999999);
   }
 
-  const defaultInfo: PlayerInfo = {
-    collection: 'playerinfo',
-    pluginVer: PLUGIN_VER,
-    id,
-    version,
-    name: 'ASPHYXIA-CORE USER',
-    title: 'Please edit on WebUI',
-  }
-
-  const defaultProfile = (game: 'gf' | 'dm'): Profile => {
-    return {
-      collection: 'profile',
-      pluginVer: PLUGIN_VER,
-
-      game,
-      version,
-      id,
-
-      play: 0,
-      playtime: 0,
-      playterm: 0,
-      session_cnt: 0,
-      extra_stage: 0,
-      extra_play: 0,
-      extra_clear: 0,
-      encore_play: 0,
-      encore_clear: 0,
-      pencore_play: 0,
-      pencore_clear: 0,
-      max_clear_diff: 0,
-      max_full_diff: 0,
-      max_exce_diff: 0,
-      clear_num: 0,
-      full_num: 0,
-      exce_num: 0,
-      no_num: 0,
-      e_num: 0,
-      d_num: 0,
-      c_num: 0,
-      b_num: 0,
-      a_num: 0,
-      s_num: 0,
-      ss_num: 0,
-      last_category: 0,
-      last_musicid: -1,
-      last_seq: 0,
-      disp_level: 0,
-      progress: 0,
-      disp_state: 0,
-      skill: 0,
-      all_skill: 0,
-      extra_gauge: 0,
-      encore_gauge: 0,
-      encore_cnt: 0,
-      encore_success: 0,
-      unlock_point: 0,
-      max_skill: 0,
-      max_all_skill: 0,
-      clear_diff: 0,
-      full_diff: 0,
-      exce_diff: 0,
-      clear_music_num: 0,
-      full_music_num: 0,
-      exce_music_num: 0,
-      clear_seq_num: 0,
-      classic_all_skill: 0,
-      secretmusic: {
-        music: []     
-      }
-    }
-  };
-
-  const defaultRecord = (game: 'gf' | 'dm'): Record => {
-    return {
-      collection: 'record',
-      pluginVer: PLUGIN_VER,
-
-      game,
-      version,
-
-      diff_100_nr: 0,
-      diff_150_nr: 0,
-      diff_200_nr: 0,
-      diff_250_nr: 0,
-      diff_300_nr: 0,
-      diff_350_nr: 0,
-      diff_400_nr: 0,
-      diff_450_nr: 0,
-      diff_500_nr: 0,
-      diff_550_nr: 0,
-      diff_600_nr: 0,
-      diff_650_nr: 0,
-      diff_700_nr: 0,
-      diff_750_nr: 0,
-      diff_800_nr: 0,
-      diff_850_nr: 0,
-      diff_900_nr: 0,
-      diff_950_nr: 0,
-      diff_100_clear: [0, 0, 0, 0, 0, 0, 0],
-      diff_150_clear: [0, 0, 0, 0, 0, 0, 0],
-      diff_200_clear: [0, 0, 0, 0, 0, 0, 0],
-      diff_250_clear: [0, 0, 0, 0, 0, 0, 0],
-      diff_300_clear: [0, 0, 0, 0, 0, 0, 0],
-      diff_350_clear: [0, 0, 0, 0, 0, 0, 0],
-      diff_400_clear: [0, 0, 0, 0, 0, 0, 0],
-      diff_450_clear: [0, 0, 0, 0, 0, 0, 0],
-      diff_500_clear: [0, 0, 0, 0, 0, 0, 0],
-      diff_550_clear: [0, 0, 0, 0, 0, 0, 0],
-      diff_600_clear: [0, 0, 0, 0, 0, 0, 0],
-      diff_650_clear: [0, 0, 0, 0, 0, 0, 0],
-      diff_700_clear: [0, 0, 0, 0, 0, 0, 0],
-      diff_750_clear: [0, 0, 0, 0, 0, 0, 0],
-      diff_800_clear: [0, 0, 0, 0, 0, 0, 0],
-      diff_850_clear: [0, 0, 0, 0, 0, 0, 0],
-      diff_900_clear: [0, 0, 0, 0, 0, 0, 0],
-      diff_950_clear: [0, 0, 0, 0, 0, 0, 0],
-    }
-  }
-
-  const defaultExtra = (game: 'gf' | 'dm'): Extra => {
-    return {
-      collection: 'extra',
-      pluginVer: PLUGIN_VER,
-
-      game,
-      version,
-      id,
-
-      playstyle: [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        20,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        20,
-        0,
-      ],
-      custom: Array(50).fill(0),
-      list_1: Array(100).fill(-1),
-      list_2: Array(100).fill(-1),
-      list_3: Array(100).fill(-1),
-      recommend_musicid_list: Array(5).fill(-1),
-      reward_status: Array(50).fill(0),
-    }
-  }
-
-  const defaultScores = (game: 'gf' | 'dm'): Scores => {
-    return {
-      collection: 'scores',
-      version,
-      pluginVer: PLUGIN_VER,
-      game,
-      scores: {}
-    }
-  };
+  const defaultInfo: PlayerInfo = getDefaultPlayerInfo(version, id)
 
   const gf = { game: 'gf', version };
   const dm = { game: 'dm', version };
 
   await DB.Upsert(refid, { collection: 'playerinfo', version }, defaultInfo);
-  await DB.Upsert(refid, { collection: 'profile', ...gf }, defaultProfile('gf'));
-  await DB.Upsert(refid, { collection: 'profile', ...dm }, defaultProfile('dm'));
-  await DB.Upsert(refid, { collection: 'record', ...gf }, defaultRecord('gf'));
-  await DB.Upsert(refid, { collection: 'record', ...dm }, defaultRecord('dm'));
-  await DB.Upsert(refid, { collection: 'extra', ...gf }, defaultExtra('gf'));
-  await DB.Upsert(refid, { collection: 'extra', ...dm }, defaultExtra('dm'));
-  await DB.Upsert(refid, { collection: 'scores', ...gf }, defaultScores('gf'));
-  await DB.Upsert(refid, { collection: 'scores', ...dm }, defaultScores('dm'));
+  await DB.Upsert(refid, { collection: 'profile', ...gf }, getDefaultProfile('gf', version, id));
+  await DB.Upsert(refid, { collection: 'profile', ...dm }, getDefaultProfile('dm', version, id));
+  await DB.Upsert(refid, { collection: 'record', ...gf }, getDefaultRecord('gf', version));
+  await DB.Upsert(refid, { collection: 'record', ...dm }, getDefaultRecord('dm', version));
+  await DB.Upsert(refid, { collection: 'extra', ...gf }, getDefaultExtra('gf', version, id));
+  await DB.Upsert(refid, { collection: 'extra', ...dm }, getDefaultExtra('dm', version, id));
+  await DB.Upsert(refid, { collection: 'scores', ...gf }, getDefaultScores('gf', version));
+  await DB.Upsert(refid, { collection: 'scores', ...dm }, getDefaultScores('dm', version));
 
   return defaultInfo
 }
@@ -1034,27 +760,6 @@ async function getPlayerRanking(refid: string, version: string, game: 'gf' | 'dm
   }
 }
 
-function getSaveProfileResponse(playerNo: number, ranking : PlayerRanking)
-{
-
-  const result = K.ATTR({ no: `${playerNo}` }, {
-    skill: { rank: K.ITEM('s32', ranking.skill), total_nr: K.ITEM('s32', ranking.totalPlayers) },
-    all_skill: { rank: K.ITEM('s32', ranking.all_skill), total_nr: K.ITEM('s32', ranking.totalPlayers) },
-    kac2018: {
-      data: {
-        term: K.ITEM('s32', 0),
-        total_score: K.ITEM('s32', 0),
-        score: K.ARRAY('s32', [0, 0, 0, 0, 0, 0]),
-        music_type: K.ARRAY('s32', [0, 0, 0, 0, 0, 0]),
-        play_count: K.ARRAY('s32', [0, 0, 0, 0, 0, 0]),
-      },
-    },
-  })
-
-  return result
-
-}
-
 async function getAllProfiles( version: string, game: 'gf' | 'dm') {
   return await DB.Find<Profile>(null, {
     collection: 'profile',
@@ -1135,24 +840,6 @@ function parseSecretMusic(playerData: KDataReader) : SecretMusicEntry[]
   return response
 }
 
-function getSecretMusicResponse(profile: Profile) : SecretMusicResponse[] {
-  let response : SecretMusicResponse[] = []
-
-  if (!profile.secretmusic?.music ) {
-    return response
-  }
-
-  for (let music of profile.secretmusic.music) {
-    response.push({
-      musicid: K.ITEM('s32', music.musicid),
-      seq: K.ITEM('u16', music.seq),
-      kind: K.ITEM('s32', music.kind)
-    })
-  }
-
-  return response
-}
-
 function getFriendDataResponse(profile: Profile) {
   let response = []
   return response;
@@ -1168,4 +855,3 @@ function logStagesPlayed(playedStages: KDataReader[]) {
 
   logger.debugLog(result)
 }
-
