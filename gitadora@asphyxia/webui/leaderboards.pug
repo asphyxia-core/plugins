@@ -1,0 +1,85 @@
+//DATA//
+  infos: DB.Find(null, { collection: 'playerinfo' })
+  profiles: DB.Find(null, { collection: 'profile' })
+-
+
+-
+  function getFullGameName(shortName) {
+    switch (shortName) {
+      case "dm" :
+        return "Drummania"
+        case "gf":
+        return "Guitar Freaks"
+        default: 
+        return "Unknown"
+    }
+  }
+
+  const versions = ["exchain", "nextage"]
+  const games = ["gf", "dm"]
+
+  function generateLeaderboards(infos, profiles) {
+      let result = []
+
+      for (const version of versions) {
+          for (const game of games) {
+              result.push(generateLeaderboard(infos, profiles, version, game))
+          }
+      }
+
+      // Hide versions and games with no entries
+      result = result.filter((e) => e.entries.length > 0)
+      return result
+  }
+
+  function generateLeaderboard(infos, profiles, version, game) {
+      let entries = []
+      let idx = 1
+      let currentProfiles = profiles.filter((e) => e.game === game && e.version === version)
+      currentProfiles = currentProfiles.sort((a, b) => b.skill - a.skill)
+
+      for (const profile of currentProfiles) {
+          const info = infos.find(i => i.__refid === profile.__refid)
+          const name = info ? info.name : "Unknown"
+          const scoreData = {
+              rank: idx,
+              name: name,
+              skill: profile.skill / 100,
+              all_skill: profile.all_skill / 100,
+              clear_music_num : profile.clear_music_num,
+              clear_diff: profile.clear_diff / 100
+          }
+          entries.push(scoreData)
+          idx++      
+      }
+
+      let result = {
+          version: version,
+          game: game,
+          entries: entries
+      }
+      return result
+  }
+
+-
+
+each board in generateLeaderboards(infos, profiles) 
+  h3 #{getFullGameName(board.game)} #{board.version}
+  table
+    tr 
+      th Rank 
+      th Name 
+      th Skill 
+      th All Skill
+      th Songs Cleared
+      th Hardest Clear
+    each e in board.entries
+      tr 
+        td #{e.rank}
+        td #{e.name}
+        td #{e.skill}
+        td #{e.all_skill}
+        td #{e.clear_music_num}
+        td #{e.clear_diff}
+      
+script(src="js/leaderboards.js")

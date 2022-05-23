@@ -15,6 +15,9 @@ import { getPlayerStickerResponse, PlayerStickerResponse } from "../models/Respo
 import { getSecretMusicResponse, SecretMusicResponse } from "../models/Responses/secretmusicresponse";
 import { getSaveProfileResponse } from "../models/Responses/saveprofileresponse";
 import { getDefaultBattleDataResponse } from "../models/Responses/battledataresponse";
+import { applySharedFavoriteMusicToExtra, saveSharedFavoriteMusicFromExtra } from "./FavoriteMusic";
+import { getPlayerRecordResponse } from "../models/Responses/playerrecordresponse";
+import { getPlayerPlayInfoResponse, PlayerPlayInfoResponse } from "../models/Responses/playerplayinforesponse";
 
 const logger = new Logger("profiles")
 
@@ -85,66 +88,12 @@ export const getPlayer: EPR = async (info, data, send) => {
   const profile = dm ? dmProfile : gfProfile;
   const extra = dm ? dmExtra : gfExtra;
 
+  await applySharedFavoriteMusicToExtra(refid, extra)
+
   const record: any = {
-    gf: {},
-    dm: {},
+    gf: getPlayerRecordResponse(gfProfile, gfRecord),
+    dm: getPlayerRecordResponse(dmProfile, dmRecord),
   };
-  for (const mode of ['dm', 'gf']) {
-    let game = mode == 'gf' ? gfProfile : dmProfile;
-    let rec = mode == 'gf' ? gfRecord : dmRecord;
-    record[mode] = {
-      max_record: {
-        skill: K.ITEM('s32', game.max_skill),
-        all_skill: K.ITEM('s32', game.max_all_skill),
-        clear_diff: K.ITEM('s32', game.clear_diff),
-        full_diff: K.ITEM('s32', game.full_diff),
-        exce_diff: K.ITEM('s32', game.exce_diff),
-        clear_music_num: K.ITEM('s32', game.clear_music_num),
-        full_music_num: K.ITEM('s32', game.full_music_num),
-        exce_music_num: K.ITEM('s32', game.exce_music_num),
-        clear_seq_num: K.ITEM('s32', game.clear_seq_num),
-        classic_all_skill: K.ITEM('s32', game.classic_all_skill),
-      },
-      diff_record: {
-        diff_100_nr: K.ITEM('s32', rec.diff_100_nr),
-        diff_150_nr: K.ITEM('s32', rec.diff_150_nr),
-        diff_200_nr: K.ITEM('s32', rec.diff_200_nr),
-        diff_250_nr: K.ITEM('s32', rec.diff_250_nr),
-        diff_300_nr: K.ITEM('s32', rec.diff_300_nr),
-        diff_350_nr: K.ITEM('s32', rec.diff_350_nr),
-        diff_400_nr: K.ITEM('s32', rec.diff_400_nr),
-        diff_450_nr: K.ITEM('s32', rec.diff_450_nr),
-        diff_500_nr: K.ITEM('s32', rec.diff_500_nr),
-        diff_550_nr: K.ITEM('s32', rec.diff_550_nr),
-        diff_600_nr: K.ITEM('s32', rec.diff_600_nr),
-        diff_650_nr: K.ITEM('s32', rec.diff_650_nr),
-        diff_700_nr: K.ITEM('s32', rec.diff_700_nr),
-        diff_750_nr: K.ITEM('s32', rec.diff_750_nr),
-        diff_800_nr: K.ITEM('s32', rec.diff_800_nr),
-        diff_850_nr: K.ITEM('s32', rec.diff_850_nr),
-        diff_900_nr: K.ITEM('s32', rec.diff_900_nr),
-        diff_950_nr: K.ITEM('s32', rec.diff_950_nr),
-        diff_100_clear: K.ARRAY('s32', rec.diff_100_clear),
-        diff_150_clear: K.ARRAY('s32', rec.diff_150_clear),
-        diff_200_clear: K.ARRAY('s32', rec.diff_200_clear),
-        diff_250_clear: K.ARRAY('s32', rec.diff_250_clear),
-        diff_300_clear: K.ARRAY('s32', rec.diff_300_clear),
-        diff_350_clear: K.ARRAY('s32', rec.diff_350_clear),
-        diff_400_clear: K.ARRAY('s32', rec.diff_400_clear),
-        diff_450_clear: K.ARRAY('s32', rec.diff_450_clear),
-        diff_500_clear: K.ARRAY('s32', rec.diff_500_clear),
-        diff_550_clear: K.ARRAY('s32', rec.diff_550_clear),
-        diff_600_clear: K.ARRAY('s32', rec.diff_600_clear),
-        diff_650_clear: K.ARRAY('s32', rec.diff_650_clear),
-        diff_700_clear: K.ARRAY('s32', rec.diff_700_clear),
-        diff_750_clear: K.ARRAY('s32', rec.diff_750_clear),
-        diff_800_clear: K.ARRAY('s32', rec.diff_800_clear),
-        diff_850_clear: K.ARRAY('s32', rec.diff_850_clear),
-        diff_900_clear: K.ARRAY('s32', rec.diff_900_clear),
-        diff_950_clear: K.ARRAY('s32', rec.diff_950_clear),
-      },
-    };
-  }
 
   // Format scores
   const musicdata = [];
@@ -226,6 +175,7 @@ export const getPlayer: EPR = async (info, data, send) => {
   }
 
   const sticker: PlayerStickerResponse[] = getPlayerStickerResponse(name.card);
+  const playinfo: PlayerPlayInfoResponse = getPlayerPlayInfoResponse(profile);
 
   const playerData: any = {
     playerboard: {
@@ -244,39 +194,7 @@ export const getPlayer: EPR = async (info, data, send) => {
       playstyle: K.ARRAY('s32', extra.playstyle),
       custom: K.ARRAY('s32', extra.custom),
     },
-    playinfo: {
-      cabid: K.ITEM('s32', 0),
-      play: K.ITEM('s32', profile.play),
-      playtime: K.ITEM('s32', profile.playtime),
-      playterm: K.ITEM('s32', profile.playterm),
-      session_cnt: K.ITEM('s32', profile.session_cnt),
-      matching_num: K.ITEM('s32', 0),
-      extra_stage: K.ITEM('s32', profile.extra_stage),
-      extra_play: K.ITEM('s32', profile.extra_play),
-      extra_clear: K.ITEM('s32', profile.extra_clear),
-      encore_play: K.ITEM('s32', profile.encore_play),
-      encore_clear: K.ITEM('s32', profile.encore_clear),
-      pencore_play: K.ITEM('s32', profile.pencore_play),
-      pencore_clear: K.ITEM('s32', profile.pencore_clear),
-      max_clear_diff: K.ITEM('s32', profile.max_clear_diff),
-      max_full_diff: K.ITEM('s32', profile.max_full_diff),
-      max_exce_diff: K.ITEM('s32', profile.max_exce_diff),
-      clear_num: K.ITEM('s32', profile.clear_num),
-      full_num: K.ITEM('s32', profile.full_num),
-      exce_num: K.ITEM('s32', profile.exce_num),
-      no_num: K.ITEM('s32', profile.no_num),
-      e_num: K.ITEM('s32', profile.e_num),
-      d_num: K.ITEM('s32', profile.d_num),
-      c_num: K.ITEM('s32', profile.c_num),
-      b_num: K.ITEM('s32', profile.b_num),
-      a_num: K.ITEM('s32', profile.a_num),
-      s_num: K.ITEM('s32', profile.s_num),
-      ss_num: K.ITEM('s32', profile.ss_num),
-      last_category: K.ITEM('s32', profile.last_category),
-      last_musicid: K.ITEM('s32', profile.last_musicid),
-      last_seq: K.ITEM('s32', profile.last_seq),
-      disp_level: K.ITEM('s32', profile.disp_level),
-    },
+    playinfo: playinfo,
     tutorial: {
       progress: K.ITEM('s32', profile.progress),
       disp_state: K.ITEM('u32', profile.disp_state),
@@ -546,6 +464,7 @@ export const savePlayers: EPR = async (info, data, send) => {
   }
   catch (e)  {
     logger.error(e)
+    logger.error(e.stack)
     return send.deny();
   }
 };
@@ -557,7 +476,7 @@ async function saveSinglePlayer(dataplayer: KDataReader, refid: string, no: numb
   const extra = await getExtra(refid, version, game) as any;
   const rec = await getRecord(refid, version, game) as any;
 
-  const autoSet = (field: keyof Profile, path: string, array = false): void => {
+  const autoSet = function (field: keyof Profile, path: string, array = false): void  {
     if (array) {
       profile[field] = dataplayer.numbers(path, profile[field])
     } else {
@@ -690,10 +609,11 @@ async function saveSinglePlayer(dataplayer: KDataReader, refid: string, no: numb
   await DB.Upsert(refid, { collection: 'extra', game, version }, extra)
 
   const playedStages = dataplayer.elements('stage');
-  // logStagesPlayed(playedStages)
+  logStagesPlayed(playedStages)
   
   const scores = await updatePlayerScoreCollection(refid, playedStages, version, game)
   await saveScore(refid, version, game, scores); 
+  await saveSharedFavoriteMusicFromExtra(refid, extra)
 }
 
 async function updatePlayerScoreCollection(refid, playedStages, version, game) {
