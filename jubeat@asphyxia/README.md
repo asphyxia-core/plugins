@@ -1,43 +1,18 @@
-# Jubeat
+# jubeat
 
-Plugin Version: **v1.5.0**
+Plugin Version: **v1.0.0**
 
-### Supported Versions
+---
 
-***
+**jubeat** is music simulation game.  
+Touch the panel on a screen at the right timing and rhythm to the music.
 
-- knit
-- knit APPEND
-- copious
-- copious APPEND
-- saucer
-- saucer fulfill
+## Supported Versions
 
-### Changelogs
+- ripples
 
-***
+## Changelog
 
-#### 1.5.0
-
-- saucer fulfill support
-
-#### 1.4.1
-
-- saucer support
-- Change profile structure
-
-#### 1.3.0
-
-- Matching Support (Experimental)
-
-#### 1.2.0
-
-- copious (APPEND) support
-
-#### 1.1.0
-
-- Fix profile structure
-
-#### 1.0.0
+### 1.0.0
 
 - Initial Release

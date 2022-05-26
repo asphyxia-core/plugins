@@ -1,15 +1,16 @@
 export interface Score {
-  collection: "score";
+  collection: 'score';
 
   musicId: number;
-  seq: number;
+  seqId: number;
   score: number;
-  clear: number;
-  musicRate: number;
-  bar: number[];
+  clearFlag: number;
+  maxCombo: number;
+  marker: number;
+  theme: number;
+  musicBar: number[];
   playCount: number;
   clearCount: number;
-  fullcomboCount: number;
-  excellentCount: number;
-  isHardMode: boolean;
+  fullComboCount: number;
+  excCount: number;
 }
