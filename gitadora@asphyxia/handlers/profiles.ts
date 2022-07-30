@@ -8,7 +8,7 @@ import { getDefaultScores, Scores } from "../models/scores";
 
 import { PLUGIN_VER } from "../const";
 import Logger from "../utils/logger"
-import { isAsphyxiaDebugMode } from "../Utils/index";
+import { isAsphyxiaDebugMode } from "../utils/index";
 import { SecretMusicEntry } from "../models/secretmusicentry";
 import { CheckPlayerResponse, getCheckPlayerResponse } from "../models/Responses/checkplayerresponse";
 import { getPlayerStickerResponse, PlayerStickerResponse } from "../models/Responses/playerstickerresponse";
