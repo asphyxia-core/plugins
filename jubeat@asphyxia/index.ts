@@ -1,38 +1,31 @@
-// nodemon --exec "asphyxia-core-x64 --dev" -e ts --watch plugins
+import ShopInfo from "./routes/shopinfo";
+import {getProfile, Getinfo, loadScore, Meeting} from "./routes/gametop";
+import {saveProfile} from "./routes/gameend";
+import {Check, Entry, Refresh, Report} from "./routes/lobby";
 
-import { demodata, shopRegist } from './handlers/common';
-import { lobby } from './handlers/matching';
-import { profile } from './handlers/profile';
+export async function register() {
+    if (CORE_VERSION_MAJOR <= 1 && CORE_VERSION_MINOR < 31) {
+      console.error("The current version of Asphyxia Core is not supported. Requires version '1.31' or later.");
+      return;
+    }
+    R.GameCode("L44");
+    R.Contributor("yuanqiuye", "https://github.com/yuanqiuye")
+    R.Route("gametop.regist",getProfile);
+    R.Route("gametop.get_info", Getinfo);
+    R.Route("gametop.get_pdata", getProfile);
+    R.Route("gametop.get_mdata", loadScore);
+    R.Route("gametop.get_meeting", Meeting);
+  
+    R.Route("gameend.final", true);
+    R.Route("gameend.regist", saveProfile);
 
-export function register() {
-  if (CORE_VERSION_MAJOR <= 1 && CORE_VERSION_MINOR < 31) {
-    console.error(
-      "The current version of Asphyxia Core is not supported. Requires version '1.31' or later."
-    );
-    return;
+    R.Route("shopinfo.regist", ShopInfo);
+    R.Route("lobby.check", Check);
+    R.Route("lobby.entry", Entry);
+    R.Route("lobby.refresh", Refresh);
+    R.Route("lobby.report", Report);
+  
+    R.Route("netlog.send", true);
+    R.Route("logger.report", true);
+    R.Unhandled();
   }
-
-  R.Contributor('Kirito', 'https://github.com/Kirito3481');
-
-  R.GameCode('I44');
-
-  R.Route('shopinfo.regist', shopRegist);
-
-  R.Route('demodata.getnews', demodata.getNews);
-
-  R.Route('gametop.regist', profile.regist);
-  R.Route('gametop.get', profile.get);
-  R.Route('meeting.get', profile.meeting);
-
-  R.Route('gameend.regist', profile.save);
-  R.Route('gameend.log', true);
-
-  R.Route('lobby.check', lobby.check);
-  R.Route('lobby.entry', lobby.entry);
-  R.Route('lobby.refresh', lobby.refresh);
-  R.Route('lobby.report', lobby.report);
-
-  R.Route('netlog.send', true);
-
-  R.Unhandled();
-}
