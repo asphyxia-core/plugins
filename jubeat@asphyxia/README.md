@@ -1,18 +1,26 @@
-# jubeat
+# Jubeat Plugin
 
-Plugin Version: **v1.0.0**
+Jubeat Plugin for Asphyxia Core
 
----
+# Supported Versions
 
-**jubeat** is music simulation game.  
-Touch the panel on a screen at the right timing and rhythm to the music.
+- Festo
 
-## Supported Versions
+# Versions
 
-- ripples
+- V1.0.0 (2021/12/16)
+    - Only support normal mode score saving.
 
-## Changelog
+- V2.0.0 (2022/08/14)
+    - Now Support Festo Final
+    - Support hard mode score saving
+    - Support Turn Run
 
-### 1.0.0
+# TODO
 
-- Initial Release
+- [ ] Customized Turn Run. (Currently can't cuz Jubeat courses limit is 60, need someone to find how to patch it.)
+
+# Credits
+
+- Thanks [asesidaa](https://github.com/asesidaa?tab=repositories) for help!
+- And also the other open-soured Jubeat lovers!
