@@ -65,7 +65,7 @@ export interface AchievementsEclale extends Achievements {
 }
 
 export interface AchievementsUsaneko extends Achievements {
-  version: 'v24' | 'v25',
+  version: 'v24' | 'v25' | 'v26',
 
   areas: {
     [id: string]: {
@@ -94,6 +94,13 @@ export interface AchievementsUsaneko extends Achievements {
     };
   };
 
+  missions: {
+    [id: string]: {
+      gauge_point: number;
+      mission_comp: number;
+    };
+  };
+
   items: {
     [key: string]: number;
   };
@@ -104,5 +111,15 @@ export interface AchievementsUsaneko extends Achievements {
 
   stamps: {
     [stamp_id: string]: number;
+  };
+
+  riddles: {
+    [id: number]: {
+      kaimei_gauge: number;
+      is_cleared: boolean;
+      riddles_cleared: boolean;
+      select_count: number;
+      other_count: number;
+    };
   };
 }
