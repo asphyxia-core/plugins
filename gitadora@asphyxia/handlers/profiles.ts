@@ -102,22 +102,22 @@ export const getPlayer: EPR = async (info, data, send) => {
     musicdata.push(K.ATTR({ musicid }, {
       mdata: K.ARRAY('s16', [
         -1,
-        _.get(score, 'diffs.1.perc', -2),
-        _.get(score, 'diffs.2.perc', -2),
-        _.get(score, 'diffs.3.perc', -2),
-        _.get(score, 'diffs.4.perc', -2),
-        _.get(score, 'diffs.5.perc', -2),
-        _.get(score, 'diffs.6.perc', -2),
-        _.get(score, 'diffs.7.perc', -2),
-        _.get(score, 'diffs.8.perc', -2),
-        _.get(score, 'diffs.1.rank', 0),
-        _.get(score, 'diffs.2.rank', 0),
-        _.get(score, 'diffs.3.rank', 0),
-        _.get(score, 'diffs.4.rank', 0),
-        _.get(score, 'diffs.5.rank', 0),
-        _.get(score, 'diffs.6.rank', 0),
-        _.get(score, 'diffs.7.rank', 0),
-        _.get(score, 'diffs.8.rank', 0),
+        _.get(score, 'diffs.1.clear', false) ? _.get(score, 'diffs.1.perc', -2) : -1,
+        _.get(score, 'diffs.2.clear', false) ? _.get(score, 'diffs.2.perc', -2) : -1,
+        _.get(score, 'diffs.3.clear', false) ? _.get(score, 'diffs.3.perc', -2) : -1,
+        _.get(score, 'diffs.4.clear', false) ? _.get(score, 'diffs.4.perc', -2) : -1,
+        _.get(score, 'diffs.5.clear', false) ? _.get(score, 'diffs.5.perc', -2) : -1,
+        _.get(score, 'diffs.6.clear', false) ? _.get(score, 'diffs.6.perc', -2) : -1,
+        _.get(score, 'diffs.7.clear', false) ? _.get(score, 'diffs.7.perc', -2) : -1,
+        _.get(score, 'diffs.8.clear', false) ? _.get(score, 'diffs.8.perc', -2) : -1,
+        _.get(score, 'diffs.1.clear', false) ? _.get(score, 'diffs.1.rank', 0) : -1,
+        _.get(score, 'diffs.2.clear', false) ? _.get(score, 'diffs.2.rank', 0) : -1,
+        _.get(score, 'diffs.3.clear', false) ? _.get(score, 'diffs.3.rank', 0) : -1,
+        _.get(score, 'diffs.4.clear', false) ? _.get(score, 'diffs.4.rank', 0) : -1,
+        _.get(score, 'diffs.5.clear', false) ? _.get(score, 'diffs.5.rank', 0) : -1,
+        _.get(score, 'diffs.6.clear', false) ? _.get(score, 'diffs.6.rank', 0) : -1,
+        _.get(score, 'diffs.7.clear', false) ? _.get(score, 'diffs.7.rank', 0) : -1,
+        _.get(score, 'diffs.8.clear', false) ? _.get(score, 'diffs.8.rank', 0) : -1,
         0,
         0,
         0,
@@ -629,6 +629,7 @@ async function updatePlayerScoreCollection(refid, playedStages, version, game) {
     const clear = stage.bool('clear');
     const fc = stage.bool('fullcombo');
     const ex = stage.bool('excellent');
+    const newMeter = stage.bool('is_new_meter');
 
     const perc = stage.number('perc', 0);
     const rank = stage.number('rank', 0);
@@ -650,7 +651,7 @@ async function updatePlayerScoreCollection(refid, playedStages, version, game) {
     scores[mid].diffs[seq] = { //FIXME: Real server is bit complicated. this one is too buggy.
       perc: Math.max(_.get(scores[mid].diffs[seq], 'perc', 0), perc),
       rank: Math.max(_.get(scores[mid].diffs[seq], 'rank', 0), rank),
-      meter: meter.toString(),
+      meter: newMeter ? meter.toString() : _.get(scores[mid].diffs[seq], 'meter', 0),
       prog: Math.max(_.get(scores[mid].diffs[seq], 'prog', 0), prog),
       clear: _.get(scores[mid].diffs[seq], 'clear') || clear,
       fc: _.get(scores[mid].diffs[seq], 'fc') || fc,

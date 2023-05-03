@@ -7,15 +7,28 @@
   function getFullGameName(shortName) {
     switch (shortName) {
       case "dm" :
-        return "Drummania"
-        case "gf":
-        return "Guitar Freaks"
-        default: 
+        return "DrumMania"
+      case "gf":
+        return "GuitarFreaks"
+      default:
         return "Unknown"
     }
   }
 
-  const versions = ["exchain", "nextage"]
+  function getFullVersionName(shortName) {
+    switch (shortName) {
+      case "exchain" :
+        return "GITADORA EXCHAIN"
+      case "nextage":
+        return "GITADORA NEX+AGE"
+      case "highvoltage":
+        return "GITADORA HIGH-VOLTAGE"
+      default:
+        return "Unknown"
+    }
+  }
+
+  const versions = ["exchain", "nextage", "highvoltage"]
   const games = ["gf", "dm"]
 
   function generateLeaderboards(infos, profiles) {
@@ -64,7 +77,7 @@
 -
 
 each board in generateLeaderboards(infos, profiles) 
-  h3 #{getFullGameName(board.game)} #{board.version}
+  h3 #{getFullVersionName(board.version)} #{getFullGameName(board.game)}
   table
     tr 
       th Rank 
