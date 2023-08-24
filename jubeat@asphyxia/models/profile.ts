@@ -1,34 +1,57 @@
 export default interface Profile {
-  collection: 'profile';
+    collection: "profile";
+    navi?: number,
+    jubeatId: number;
+    eventFlag: number;
+    name: string;
+    emo: number[];
+    lastPlayTime?: number;
+    lastShopname: string;
+    lastAreaname: string;
+    isFirstplay: boolean;
+    musicId?: number;
+    seqId?: number;
+    seqEditId?: string;
+    rankSort?: number;
+    comboDisp?: number;
 
-  jid: number;
-  name: string;
+    jubility?: number;
+    jubilityYday?: number;
+    tuneCount?: number;
+    clearCount?: number;
+    saveCount?: number;
+    savedCount?: number;
+    fcCount?: number;
+    exCount?: number;
+    matchCount?: number;
+    bonusPoints?: number;
+    isBonusPlayed?: boolean;
+    totalBestScore?: number;
+    clearMaxLevel?: number;
+    fcMaxLevel?: number;
+    exMaxLevel?: number;
 
-  ripples?: Ripples;
-}
+    emblem?: number[];
+    marker?: number;
+    theme?: number;
+    title?: number;
+    parts?: number;
+    sort?: number;
+    category?: number;
+    expertOption?: number;
+    matching?: number;
+    hazard?: number;
+    hard?: number;
 
-export interface Ripples {
-  info?: {
-    onlineCount: number;
-    multiCount: number;
-    matchCount: number;
-    beatCount: number;
-    saveCount: number;
-    savedCount: number;
-    grade: number;
-    gradePoint: number;
-  };
+    secretList?: number[];
+    themeList?: number;
+    markerList?: number[];
+    titleList?: number[];
+    commuList?: number[];
+    partsList?: number[];
 
-  last?: {
-    mode: number;
-    musicId: number;
-    seqId: number;
-    marker: number;
-    title: number;
-    theme: number;
-    sort: number;
-    filter: number;
-    rankSort: number;
-    comboDisp: number;
-  };
+    secretListNew?: number[];
+    themeListNew?: number[];
+    markerListNew?: number[];
+    titleListNew?: number[];
 }

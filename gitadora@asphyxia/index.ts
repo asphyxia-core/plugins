@@ -59,6 +59,7 @@ export function register() {
     R.Route(`exchain_${method}`, handler);
     R.Route(`matixx_${method}`, handler);
     R.Route(`nextage_${method}`, handler)
+    R.Route(`highvoltage_${method}`, handler)
     // TODO: TB, TBRE and more older version?
   };
 

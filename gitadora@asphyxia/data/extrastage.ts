@@ -11,6 +11,20 @@ export function getEncoreStageData(info: EamuseInfo): EncoreStageData {
     const level: number = U.GetConfig("encore_version")
     const ntDummyEncore = U.GetConfig("nextage_dummy_encore")
     switch (getVersion(info)) {
+        case 'highvoltage':
+            return {
+                level,
+                musics: [
+                    2686, // CYCLONICxSTORM
+                    2687, // Heptagram
+                    2700, // Saiph
+                    2706, // LUCID NIGHTMARE
+                    2740, // Mobius
+                    2748, // Under The Shades Of The Divine Ray
+                    2772, // REBELLION
+                    2812, // THE LAST OF FIREFACE
+                ]
+            }
         case 'nextage':
             return {
                 level,
