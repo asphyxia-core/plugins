@@ -26,8 +26,8 @@ const getInfoCommon = (req: EamuseInfo) => {
     };
 
     // Phase
-    const date: number = parseInt(req.model.match(/:(\d*)$/)[1]);
-    let phaseData: Phase[] = PHASE[getVersion(req)];
+    const version = getVersion(req);
+    const phaseData = getPhase(version);
 
     for (const phase of phaseData) {
         result.phase.push({
@@ -166,7 +166,6 @@ const readScore = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<
 const getScores = async (refid: string, version: string, forFriend: boolean = false) => {
     const scoresData = await utils.readScores(refid, version);
     const result = [];
-    const maxMusicId = GAME_MAX_MUSIC_ID[isOmni ? 'omni' : version];
 
     for (const key in scoresData.scores) {
         const keyData = key.split(':');
@@ -187,7 +186,7 @@ const getScores = async (refid: string, version: string, forFriend: boolean = fa
             1100: 11,
         }[score.clear_type] || 0;
 
-        if (music > maxMusicId) {
+        if (!isOmni && (music > GAME_MAX_MUSIC_ID[version])) {
             continue;
         }
         if ([0, 1, 2, 3].indexOf(sheet) == -1) {
@@ -377,25 +376,8 @@ const getProfile = async (refid: string, version: string, name?: string) => {
                 friendship: K.ITEM('s32', 0),
             },
         },
-        // TODO: Daily missions
-        mission: [
-            {
-                mission_id: K.ITEM('u32', 170),
-                gauge_point: K.ITEM('u32', 0),
-                mission_comp: K.ITEM('u32', 0),
-            },
-            {
-                mission_id: K.ITEM('u32', 157),
-                gauge_point: K.ITEM('u32', 0),
-                mission_comp: K.ITEM('u32', 0),
-            },
-            {
-                mission_id: K.ITEM('u32', 47),
-                gauge_point: K.ITEM('u32', 0),
-                mission_comp: K.ITEM('u32', 0),
-            },
-        ],
         music: await getScores(refid, version),
+        mission: [],
         area: [],
         course_data: [],
         fes: [],
@@ -403,6 +385,10 @@ const getProfile = async (refid: string, version: string, name?: string) => {
         chara_param: [],
         stamp: [],
     };
+
+    // Add version specific datas
+    let params = await utils.readParams(refid, version);
+    utils.addExtraData(player, params, EXTRA_DATA);
 
     const achievements = <AchievementsUsaneko>await utils.readAchievements(refid, version, { ...defaultAchievements, version });
 
@@ -467,20 +453,94 @@ const getProfile = async (refid: string, version: string, name?: string) => {
         const type = parseInt(keyData[0], 10);
         const id = parseInt(keyData[1], 10);
 
-        const item: any = {
+        player.item.push({
             type: K.ITEM('u8', type),
             id: K.ITEM('u16', id),
             param: K.ITEM('u16', profileItems[key]),
             is_new: K.ITEM('bool', 0),
             get_time: K.ITEM('u64', BigInt(0)),
-        };
-
-        player.item.push(item);
+        });
     }
 
-    // Add version specific datas
-    let params = await utils.readParams(refid, version);
-    utils.addExtraData(player, params, EXTRA_DATA);
+    // Usaneko events
+    if (version == 'v24') {        
+        const date = new Date();
+        const currentDate = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate();
+
+        if (!params.params.mission_date) {
+            params.params.mission_date = currentDate;
+        }
+
+        // Daily missions
+        const missions = achievements.missions || { 1: {}, 2: {}, 3: {} };
+        let maxId = parseInt(_.max(Object.keys(missions)), 10);
+
+        for (const id in missions) {
+            const mission = missions[id];
+
+            if (currentDate != params.params.mission_date) {
+                // New day => Check completion
+                if(mission.mission_comp == 1) {
+                    // Mission completed => New mission
+                    _.max(Object.keys(missions)) + 1
+                    player.mission.push({
+                        mission_id: K.ITEM('u32', ++maxId),
+                        gauge_point: K.ITEM('u32', 0),
+                        mission_comp: K.ITEM('u32', 0),
+                    });
+                } else {
+                    // Mission not completed => Reset counter
+                    player.mission.push({
+                        mission_id: K.ITEM('u32', parseInt(id, 10)),
+                        gauge_point: K.ITEM('u32', 0),
+                        mission_comp: K.ITEM('u32', 0),
+                    });
+                }
+            } else {
+                player.mission.push({
+                    mission_id: K.ITEM('u32', parseInt(id, 10)),
+                    gauge_point: K.ITEM('u32', mission.gauge_point || 0),
+                    mission_comp: K.ITEM('u32', mission.mission_comp || 0),
+                });
+            }
+        }
+    }
+
+    // Kaimei events
+    if (version == 'v26') {
+        // Kaimei! MN tanteisha
+        player.riddles_data = {
+            sp_riddles: [],
+            sh_riddles: []
+        }
+        player.riddles_data.sp_riddles = [];
+
+        const riddles = achievements.riddles || {};
+
+        let i = 0;
+        while (riddles[i] != undefined) {
+            const riddle = riddles[i];
+            player.riddles_data.sp_riddles.push({
+                kaimei_gauge: K.ITEM('u16', riddle.kaimei_gauge || 0),
+                is_cleared: K.ITEM('bool', riddle.is_cleared || false),
+                riddles_cleared: K.ITEM('bool', riddle.riddles_cleared || false),
+                select_count: K.ITEM('u8', riddle.select_count || 0),
+                other_count: K.ITEM('u32', riddle.other_count || 0),
+            });
+            i++;
+        };
+
+        // riddle id : 1 to 20
+        let randomRiddles = [];
+        for (let i = 0; i < 3; i++) {
+            let riddle = 0;
+            do {
+                riddle = Math.floor(Math.random() * 20) + 1;
+            } while (randomRiddles.indexOf(riddle) >= 0);
+
+            player.riddles_data.sh_riddles.push({ sh_riddles_id: K.ITEM('u32', riddle) });
+        }
+    }
 
     return player;
 }
@@ -628,6 +688,71 @@ const write = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any>
         achievements.stamps[id] = cnt;
     }
 
+    // usaneko (v24)
+    if (version == 'v24') {
+        // Daily missions
+        const date = new Date();
+        params.params.mission_date = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate();
+
+        let missions = _.get(data, 'mission', []);
+        achievements.missions = {};
+
+        if (!_.isArray(missions)) {
+            missions = [missions];
+        }
+
+        for (const mission of missions) {
+            const id = $(mission).number('mission_id');
+            const gauge_point = $(mission).number('gauge_point');
+            const mission_comp = $(mission).number('mission_comp');
+
+            achievements.missions[id] = {
+                gauge_point,
+                mission_comp,
+            };
+        }
+    }
+
+    // riddles (v26)
+    if (version == 'v26') {
+        const playedRiddle = <number>params.params.sp_riddles_id;
+        let riddlesData = _.get(data, 'riddles_data', []);
+        let riddles = _.get(riddlesData, 'sp_riddles', []);
+        if (!achievements.riddles) {
+            achievements.riddles = {};
+        }
+
+        if (!_.isArray(riddles)) {
+            riddles = [riddles];
+        }
+
+        let i = 0;
+        for (const riddle of riddles) {
+            const kaimei_gauge = $(riddle).number('kaimei_gauge', 0);
+            const is_cleared = $(riddle).bool('is_cleared');
+            const riddles_cleared = $(riddle).bool('riddles_cleared');
+            let select_count = $(riddle).number('select_count', 0);
+            const other_count = $(riddle).number('other_count', 0);
+
+            if (riddles_cleared || select_count >= 3) {
+                // Show all hint if riddle cleared.
+                select_count = 3
+            } else if (playedRiddle == i) {
+                // Add a hint if riddle is select. 
+                select_count++;
+            }
+
+            achievements.riddles[i] = {
+                kaimei_gauge,
+                is_cleared,
+                riddles_cleared,
+                select_count,
+                other_count,
+            };
+            i++;
+        }
+    }
+
     await utils.writeParams(refid, version, params);
     await utils.writeAchievements(refid, version, achievements);
 
@@ -666,17 +791,32 @@ const friend = async (req: EamuseInfo, data: any, send: EamuseSend): Promise<any
     send.object(friend);
 }
 
+const getPhase = (version: String): Phase[] => {
+    let phase = [];
+    switch(version) {
+        case 'v26':
+            phase = PHASE['v26'];
+        case 'v25':
+            phase = _.unionBy(phase, PHASE['v25'], 'id');
+        case 'v24':
+            phase = _.unionBy(phase, PHASE['v24'], 'id');
+    }
+    return _.sortBy(phase, 'id');
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-let isOmni= false;
+let isOmni = false;
 
 const getVersion = (req: EamuseInfo): string => {
-    if(req.model.indexOf('J:A:X') >= 0) {
+    if (req.model.indexOf('J:A:X') >= 0 || req.model.indexOf('J:B:X') >= 0 || req.model.indexOf('J:C:X') >= 0) {
         isOmni = true;
     }
-    
+
     const date: number = parseInt(req.model.match(/:(\d*)$/)[1]);
-    if (date >= 2018101700) {
+    if (date > 2020120900) {
+        return 'v26';
+    } else if (date >= 2018101700 && date <= 2020120900) {
         return 'v25';
     } else {
         return 'v24';
@@ -686,7 +826,7 @@ const getVersion = (req: EamuseInfo): string => {
 const GAME_MAX_MUSIC_ID = {
     v24: 1704,
     v25: 1877,
-    omni: 3155
+    v26: 2019
 }
 
 const defaultAchievements: AchievementsUsaneko = {
@@ -698,6 +838,8 @@ const defaultAchievements: AchievementsUsaneko = {
     items: {},
     charas: {},
     stamps: {},
+    riddles: {},
+    missions: {},
 }
 
 const PHASE = {
@@ -711,7 +853,7 @@ const PHASE = {
         { id: 6, p: 1 }, // Enable NAVI-kun shunkyoku toujou, allows song 1608 to be unlocked (0-1)
         { id: 7, p: 1 },
         { id: 8, p: 2 },
-        { id: 9, p: 0 }, // Daily Mission (0-2)
+        { id: 9, p: 2 }, // Daily Mission (0-2)
         { id: 10, p: 15 }, // NAVI-kun Song phase availability (0-15)
         { id: 11, p: 1 },
         { id: 12, p: 2 },
@@ -720,18 +862,8 @@ const PHASE = {
     v25: [
         { id: 0, p: 23 },
         { id: 1, p: 4 },
-        { id: 2, p: 2 },
-        { id: 3, p: 4 },
-        { id: 4, p: 1 },
-        { id: 5, p: 0 }, // Enable Net Taisen (0-1)
-        { id: 6, p: 1 },
-        { id: 7, p: 1 },
-        { id: 8, p: 2 },
-        { id: 9, p: 0 }, // Daily Mission (0-2)
         { id: 10, p: 30 },
-        { id: 11, p: 1 },
-        { id: 12, p: 2 },
-        { id: 13, p: 1 },
+        // New params
         { id: 14, p: 39 },
         { id: 15, p: 2 },
         { id: 16, p: 3 },
@@ -743,6 +875,24 @@ const PHASE = {
         { id: 22, p: 2 },
         { id: 23, p: 1 },
         { id: 24, p: 1 },
+    ],
+    v26: [
+        // Music phase
+        // Phase 24: Seize The Day, 知りたい
+        // Phase 25: Triple Cross
+        // Phase 26: GO²TOS, Jailbreaker
+        // Phase 27: Aftermath
+        // Phase 28: 「Sweet Love」
+        // Phase 29: GET WILD (UPPER), シュガーソングとビターステップ (UPPER)
+        // Phase 30 (MAX): 群像夏
+        { id: 0, p: 30 },
+        // New params
+        { id: 25, p: 62 }, // M&N event (0: disable, 62: all characters)
+        { id: 26, p: 3 }, // Unknown event (0-3)
+        { id: 27, p: 2 }, // peace soundtrack hatsubai kinen SP (0: not started, 1: enabled, 2: ended)
+        { id: 28, p: 2 }, // MZD no kimagure tanteisha joshu (0: not started, 1: enabled, 2: ended)
+        { id: 29, p: 5 }, // Shutchou! pop'n quest Lively (0: not started, 1-4: step enabled, 5: ended)
+        { id: 30, p: 6 }, // Shutchou! pop'n quest Lively II (0: not started, 1-5: step enabled, 6: ended)
     ]
 }
 
@@ -772,6 +922,15 @@ const EXTRA_DATA: ExtraData = {
     power_point: { type: 's32', path: 'account', default: 0 },
     player_point: { type: 's32', path: 'account', default: 300 },
     power_point_list: { type: 's32', path: 'account', default: [0], isArray: true },
+
+    //v26
+    card_again_count: { type: 's16', path: 'account', default: 0 },
+    sp_riddles_id: { type: 's16', path: 'account', default: -1 },
+    point: { type: 'u32', path: 'event2021', default: 0 }, // for peace soundtrack hatsubai kinen SP
+    step: { type: 'u8', path: 'event2021', default: 0 }, // for Shutchou! pop'n quest Lively
+    quest_point: { type: 'u32', path: 'event2021', default: Array(8).fill(0), isArray: true }, // for Shutchou! pop'n quest Lively
+    step_nos: { type: 'u8', path: 'event2021', default: 0 }, // for Shutchou! pop'n quest Lively II
+    quest_point_nos: { type: 'u32', path: 'event2021', default: Array(13).fill(0), isArray: true }, // for Shutchou! pop'n quest Lively II
 
     mode: { type: 'u8', path: 'config', default: 0 },
     chara: { type: 's16', path: 'config', default: 0 },

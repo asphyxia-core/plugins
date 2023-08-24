@@ -42,7 +42,7 @@ export async function readMDBFile(path: string, processHandler?: processRawDataH
       processHandler = processHandler ?? defaultProcessRawXmlData
       result = await processHandler(path)
       // Uncomment to save the loaded XML file as JSON.
-      // await IO.WriteFile(path.replace(".xml", ".json"), JSON.stringify(data))
+      // await IO.WriteFile(path.replace(".xml", ".json"), JSON.stringify(result))
     break;
     case '.b64':
       const buff = await IO.ReadFile(path, 'utf-8');
