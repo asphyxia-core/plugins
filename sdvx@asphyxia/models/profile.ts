@@ -21,6 +21,8 @@ export interface Profile {
   blasterEnergy: number;
   blasterCount: number;
   extrackEnergy: number;
+  appeal_frame: number;
+  support_team: number;
 
   hiSpeed: number;
   laneSpeed: number;
@@ -41,6 +43,11 @@ export interface Profile {
   stampB: number;
   stampC: number;
   stampD: number;
+
+  stampA_R: number;
+  stampB_R: number;
+  stampC_R: number;
+  stampD_R: number;
 
   boothFrame: number[];
 }

@@ -1,14 +1,14 @@
-var music_db;
+let music_db;
 
 function zeroPad(num, places) {
-    var zero = places - num.toString().length + 1;
+    let zero = places - num.toString().length + 1;
     return Array(+(zero > 0 && zero)).join("0") + num;
 }
 
 function getSongName(musicid) {
     //console.log(music_db["mdb"]["music"])
     //console.log(musicid+" "+type);
-    var result = music_db["mdb"]["music"].filter(object => object["@id"] == musicid);
+    let result = music_db["mdb"]["music"].filter(object => object["@id"] == musicid);
     if (result.length == 0) {
         return "Custom Song";
     }
@@ -17,12 +17,11 @@ function getSongName(musicid) {
 }
 
 function getDifficulty(musicid, type) {
-    var result = music_db["mdb"]["music"].filter(object => object["@id"] == musicid);
+    let result = music_db["mdb"]["music"].filter(object => object["@id"] == musicid);
     if (result.length == 0) {
         return "NOV";
     }
-    var inf_ver = result[0]["info"]["inf_ver"]["#text"] ? result[0]["info"]["inf_ver"]["#text"] : 5;
-    //console.log([type,inf_ver]);
+    let inf_ver = result[0]["info"]["inf_ver"]["#text"] ? result[0]["info"]["inf_ver"]["#text"] : 5;
     switch (type) {
         case 0:
             return "NOV";
@@ -41,10 +40,33 @@ function getDifficulty(musicid, type) {
                         return "HVN";
                     case "5":
                         return "VVD";
+                    case "6":
+                        return "XCD";
                 }
             }
         case 4:
             return "MXM";
+    }
+}
+
+function getLevel(musicid, type){
+    let result = music_db["mdb"]["music"].filter(object => object["@id"] == musicid);
+    if (result.length == 0) {
+        return 0;
+    }
+    let info = result[0]["difficulty"];
+
+    switch (type) {
+        case 0:
+            return parseInt(info["novice"]["difnum"]["#text"]);
+        case 1:
+            return parseInt(info["advanced"]["difnum"]["#text"]);
+        case 2:
+            return parseInt(info["exhaust"]["difnum"]["#text"]);
+        case 3:
+            return parseInt(info["infinite"]["difnum"]["#text"]);
+        case 4:
+            return parseInt(info["maximum"]["difnum"]["#text"]);
     }
 }
 
@@ -109,8 +131,10 @@ function difficultySort(d) {
             return 6;
         case "VVD":
             return 7;
-        case "MXM":
+        case "XCD":
             return 8;
+        case "MXM":
+            return 9;
     }
     return 0;
 };
@@ -163,47 +187,47 @@ function gradeSort(d) {
 
 $(document).ready(function() {
     jQuery.fn.dataTableExt.oSort['diff-asc'] = function(a, b) {
-        var x = difficultySort(a);
-        var y = difficultySort(b);
+        let x = difficultySort(a);
+        let y = difficultySort(b);
 
         return ((x < y) ? -1 : ((x > y) ? 1 : 0));
     };
 
     jQuery.fn.dataTableExt.oSort['diff-desc'] = function(a, b) {
-        var x = difficultySort(a);
-        var y = difficultySort(b);
+        let x = difficultySort(a);
+        let y = difficultySort(b);
 
         return ((x < y) ? 1 : ((x > y) ? -1 : 0));
     };
 
     jQuery.fn.dataTableExt.oSort['grade-asc'] = function(a, b) {
-        var x = gradeSort(a);
-        var y = gradeSort(b);
+        let x = gradeSort(a);
+        let y = gradeSort(b);
 
         return ((x < y) ? -1 : ((x > y) ? 1 : 0));
     };
 
     jQuery.fn.dataTableExt.oSort['grade-desc'] = function(a, b) {
-        var x = gradeSort(a);
-        var y = gradeSort(b);
+        let x = gradeSort(a);
+        let y = gradeSort(b);
 
         return ((x < y) ? 1 : ((x > y) ? -1 : 0));
     };
 
     jQuery.fn.dataTableExt.oSort['clear-mark-asc'] = function(a, b) {
-        var x = markSort(a);
-        var y = markSort(b);
+        let x = markSort(a);
+        let y = markSort(b);
 
         return ((x < y) ? -1 : ((x > y) ? 1 : 0));
     };
 
     jQuery.fn.dataTableExt.oSort['clear-mark-desc'] = function(a, b) {
-        var x = markSort(a);
-        var y = markSort(b);
+        let x = markSort(a);
+        let y = markSort(b);
 
         return ((x < y) ? 1 : ((x > y) ? -1 : 0));
     };
-    var profile_data = JSON.parse(document.getElementById("data-pass").innerText);
+    let profile_data = JSON.parse(document.getElementById("data-pass").innerText);
     profile_data = profile_data.sort(function(a, b) {
         if (a.mid > b.mid) return 1;
         if (a.mid < b.mid) return -1;
@@ -215,14 +239,16 @@ $(document).ready(function() {
 
     $.getJSON("static/asset/json/music_db.json", function(json) {
         music_db = json;
-        var music_data = [];
+        let music_data = [];
 
+        
 
-        for (var i in profile_data) {
-            var temp_data = {};
+        for (let i in profile_data) {
+            let temp_data = {};
             temp_data.mid = profile_data[i].mid;
             temp_data.songname = getSongName(profile_data[i].mid);
             temp_data.diff = getDifficulty(profile_data[i].mid, profile_data[i].type);
+            temp_data.level = getLevel(profile_data[i].mid, profile_data[i].type);
             temp_data.score = profile_data[i].score;
             temp_data.exscore = ((profile_data[i].exscore) ? profile_data[i].exscore : 0);
             temp_data.grade = getGrade(profile_data[i].grade);
@@ -240,12 +266,14 @@ $(document).ready(function() {
             // getSongName(1);
         }
 
+
         $('#music_score').DataTable({
             data: music_data,
             columns: [
                 { data: 'mid' },
                 { data: 'songname' },
                 { data: 'diff', "type": "diff" },
+                { data: 'level'},
                 { data: 'score', },
                 { data: 'exscore' },
                 { data: 'grade', "type": "grade" },
@@ -258,13 +286,13 @@ $(document).ready(function() {
                 details: {
                     display: $.fn.dataTable.Responsive.display.modal({
                         header: function(row) {
-                            var data = row.data();
+                            let data = row.data();
                             return 'Details for ' + data.songname;
                         }
                     })
                 }
             },
-
+            scrollY: "400px",
         });
 
 

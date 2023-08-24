@@ -8,6 +8,19 @@
   const sdvxid = `${padded.slice(0, 4)}-${padded.slice(4)}`;
 
 link(rel="stylesheet" href="static/asset/css/detail.css")
+//- <progress class="progress is-medium is-dark" max="100">45%</progress>
+
+.uiblocker 
+  .lds-roller
+    div
+    div
+    div
+    div
+    div
+    div
+    div
+    div
+    p#loading_text Loading...
 div
   .card
     .card-header
@@ -21,11 +34,6 @@ div
             .control
               .select
                 select(name="version_select" id="version_select")
-      div(style="width:100%;text-align:center;vertical-align:middle;")
-        div(class="dots is-centered" ) 
-          div 
-          div 
-          div 
       div.is-centered(id="test" style="text-align: center;")
       
 div(hidden id='data-pass') !{JSON.stringify(profile)}

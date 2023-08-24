@@ -6,3 +6,221 @@ body{
     overflow-x: hidden;
 }
 
+.uiblocker{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 9999;
+}
+
+.uiblocker.fade{
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s 0.5s, opacity 0.5s linear;
+}
+
+#nemsys_pre,
+#sub_pre,
+#a_pre,
+#b_pre,
+#c_pre,
+#d_pre,
+#ar_pre,
+#br_pre,
+#cr_pre,
+#dr_pre{
+    opacity: 1;
+    transition: transform 0s;
+    z-index: 99;
+    position: relative;
+}
+
+#nemsys_pre:hover,
+#sub_pre:hover,
+#a_pre:hover,
+#b_pre:hover,
+#c_pre:hover,
+#d_pre:hover,
+#ar_pre:hover,
+#br_pre:hover,
+#cr_pre:hover,
+#dr_pre:hover{
+    cursor: pointer;
+}
+
+#nemsys_pre.fade,
+#sub_pre.fade,
+#a_pre.fade,
+#b_pre.fade,
+#c_pre.fade,
+#d_pre.fade,
+#ar_pre.fade,
+#br_pre.fade,
+#cr_pre.fade,
+#dr_pre.fade{
+    /* animation: fadeOut 0.5s linear; */
+    animation: fadeOut 0.5s linear;
+}
+
+#nemsys_pre_fade,
+#sub_pre_fade,
+#a_pre_fade,
+#b_pre_fade,
+#c_pre_fade,
+#d_pre_fade,
+#ar_pre_fade,
+#br_pre_fade,
+#cr_pre_fade,
+#dr_pre_fade{
+    position: absolute; 
+    left: 15px;
+    z-index: 1;
+    opacity: 0;
+}
+
+#nemsys_pre_fade.fade,
+#sub_pre_fade.fade,
+#a_pre_fade.fade,
+#b_pre_fade.fade,
+#c_pre_fade.fade,
+#d_pre_fade.fade,
+#ar_pre_fade.fade,
+#br_pre_fade.fade,
+#cr_pre_fade.fade,
+#dr_pre_fade.fade{
+    /* animation: fadeIn 0.5s cubic-bezier(0, 0.12, 0.12, 1); */
+    animation: fadeIn 0.5s linear;
+    display: inline;
+}
+
+
+.tile.is-child.with_relative {
+    position: relative;
+}
+
+@keyframes fadeOut {
+    0%,25%{ opacity: 1 }
+    /* 50% { opacity: 0 } */
+    25%,100% { 
+        opacity: 0;
+        transform: translateX(-15px); 
+    }
+}
+
+@keyframes fadeIn {
+    0%{ opacity: 0 }
+    /* 50%{ opacity: 0 } */
+    50%,100% { 
+        opacity: 1;
+        left: 0;
+    }
+}
+
+
+
+html.has-aside-left.has-aside-mobile-transition.has-navbar-fixed-top.has-aside-expanded body div#app div#main-content.content div.simplebar-wrapper div.simplebar-mask div.simplebar-offset div.simplebar-content-wrapper div.simplebar-content{
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+.lds-roller {
+    display: inline-block;
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+  }
+  .lds-roller div {
+    animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    transform-origin: 40px 40px;
+  }
+  .lds-roller div:after {
+    content: " ";
+    display: block;
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #136bc0;
+    margin: -4px 0 0 -4px;
+  }
+  .lds-roller div:nth-child(1) {
+    animation-delay: -0.036s;
+  }
+  .lds-roller div:nth-child(1):after {
+    top: 63px;
+    left: 63px;
+  }
+  .lds-roller div:nth-child(2) {
+    animation-delay: -0.072s;
+  }
+  .lds-roller div:nth-child(2):after {
+    top: 68px;
+    left: 56px;
+  }
+  .lds-roller div:nth-child(3) {
+    animation-delay: -0.108s;
+  }
+  .lds-roller div:nth-child(3):after {
+    top: 71px;
+    left: 48px;
+  }
+  .lds-roller div:nth-child(4) {
+    animation-delay: -0.144s;
+  }
+  .lds-roller div:nth-child(4):after {
+    top: 72px;
+    left: 40px;
+  }
+  .lds-roller div:nth-child(5) {
+    animation-delay: -0.18s;
+  }
+  .lds-roller div:nth-child(5):after {
+    top: 71px;
+    left: 32px;
+  }
+  .lds-roller div:nth-child(6) {
+    animation-delay: -0.216s;
+  }
+  .lds-roller div:nth-child(6):after {
+    top: 68px;
+    left: 24px;
+  }
+  .lds-roller div:nth-child(7) {
+    animation-delay: -0.252s;
+  }
+  .lds-roller div:nth-child(7):after {
+    top: 63px;
+    left: 17px;
+  }
+  .lds-roller div:nth-child(8) {
+    animation-delay: -0.288s;
+  }
+  .lds-roller div:nth-child(8):after {
+    top: 56px;
+    left: 12px;
+  }
+  @keyframes lds-roller {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  p#loading_text{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-45%, 100%);
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }

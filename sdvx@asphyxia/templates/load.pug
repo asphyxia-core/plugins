@@ -29,6 +29,7 @@ game
   kac_id(__type="str") #{name}
 
   skill_level(__type="s16") #{skill.level}
+  skill_type(_type="s16") #{skill.type}
   skill_base_id(__type="s16") #{skill.base}
   skill_name_id(__type="s16") #{skill.name}
   
@@ -51,6 +52,7 @@ game
       course
         ssnid(__type="s16") #{course.sid}
         crsid(__type="s16") #{course.cid}
+        st(__type="s16") 0
         sc(__type="s32") #{course.score}
         ex(__type="s32") 0
         ct(__type="s16") #{course.clear}
@@ -96,6 +98,25 @@ game
   week_chain(__type="u32") 31
   max_week_chain(__type="u32") 31
 
+  creator_item
+    info
+      creator_type(__type="u32") #{appeal_frame}
+      item_id(__type="u32") 0
+      param(__type="u32") 0
+
+
+  arena
+    last_play_season(__type="s32") 3
+    rank_point(__type="s32") 30000
+    shop_point(__type="s32") 0
+    ultimate_rate(__type="s32") 0
+    rank_play_cnt(__type="s32") 1
+    ultimate_play_cnt(__type="s32") 1
+  
+  //- additional_info
+
+  support_team_id(__type="s32") #{support_team}
+
   if mixes
     each mix in mixes
       automation
@@ -109,3 +130,4 @@ game
         jacket_id(__type="s32") #{mix.jacket}
         tag_bit(__type="s32") #{mix.tag}
         like_flg(__type="u8") 0
+  

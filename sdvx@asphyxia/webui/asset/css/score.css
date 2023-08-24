@@ -1,0 +1,27 @@
+@font-face {
+    font-family: testfont;
+    src: url("font/0001.ttf");
+}
+
+@font-face {
+    font-family: ffff;
+    src: url("font/0002.ttf");
+}
+
+img.jk {
+    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    perspective: 30px;
+}
+
+div.sc:hover {
+    scale: 1.03;
+}
+
+div.sc {
+    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.card.is-inlineblocked {
+    /* display: inline-block; */
+    margin: 1em 2em
+}

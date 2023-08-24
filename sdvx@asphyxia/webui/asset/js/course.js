@@ -1,19 +1,62 @@
-var course_db, music_db;
-var version_name = ["", "Booth", "Infinite Infection", "Gravity Wars", "Heavenly Haven", "Vividwave", "Exceed Gear"];
+let course_db, music_db;
+let version_name = ["", "Booth", "Infinite Infection", "Gravity Wars", "Heavenly Haven", "Vividwave", "Exceed Gear"];
 
-var ii = [];
-var gw = [];
-var hh = [];
-var vw = [];
-var eg = [];
+let ii = [];
+let gw = [];
+let hh = [];
+let vw = [];
+let eg = [];
+
+let special_name = {
+    "4":{},
+    "5":{
+        "13": "U.S.O",
+        "14": "",
+        "15": "",
+        "16": "",
+    },
+    "6":{
+        "13": "BMK2021",
+    },
+}
 
 function zeroPad(num, places) {
-    var zero = places - num.toString().length + 1;
+    let zero = places - num.toString().length + 1;
     return Array(+(zero > 0 && zero)).join("0") + num;
 }
 
-function getSkillAsset(skill) {
-    return "static/asset/skill_lv/skill_" + zeroPad(skill, 2) + ".png";
+function getSkillAsset(skill, special_name) {
+    // return "static/asset/skill_lv/skill_" + zeroPad(skill, 2) + ".png";
+    let t = $('<div>')
+    let c = $('<img class="is-50">')
+
+    let p = "";
+    if(special_name != undefined){
+        p = special_name;
+    }
+    console.log(p);
+    let canvas = document.createElement("canvas");
+    canvas.width = 228;
+    canvas.height = 66;
+    
+    loadImage("static/asset/skill_lv/skill_" + zeroPad(skill, 2) + ".png").then(image => {
+        let ctx = canvas.getContext("2d");
+        ctx.drawImage(image, 0, 0);
+        ctx.font = "40px course";
+
+        let gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        gradient.addColorStop("0.2", "grey");
+        gradient.addColorStop("0.5", "white");
+        gradient.addColorStop("0.7", "grey");
+
+        ctx.fillStyle = gradient;
+        ctx.textAlign = "center";
+        ctx.fillText(p, 133, 47);
+        c.attr("src", canvas.toDataURL());
+    })
+
+    // return t.append(c);
+    return c;
 }
 
 function getMedalAsset(medal) {
@@ -25,7 +68,7 @@ function getRateAsset(rate) {
 }
 
 function getRate(rate) {
-    var rateArray = Array.from(rate.toString());
+    let rateArray = Array.from(rate.toString());
     switch (rateArray.length) {
         case 1:
             rateArray[2] = rateArray[0];
@@ -37,27 +80,63 @@ function getRate(rate) {
             rateArray[0] = 0;
             break;
     }
-    return $('<span>').append(
-        $('<img>').attr('src', getRateAsset(rateArray[0]))
-        .attr('style', "height: 30px;")
-    ).append(
-        $('<img>').attr('src', getRateAsset(rateArray[1]))
-        .attr('style', "height: 30px;")
-    ).append(
-        $('<img>').attr('src', getRateAsset(rateArray[2]))
-        .attr('style', "height: 30px;")
-    ).append(
-        $('<img>').attr('src', "static/asset/skill_tex_percent.png")
-        .attr('style', "height: 20px;")
-    ).attr('style', "vertical-align: middle;height:100%;")
 
+    let c = $('<img class="is-50">');
+
+    let canvas = document.createElement("canvas");
+    canvas.width = 188;
+    canvas.height = 52;
+    
+    loadImage(getRateAsset(rateArray[0])).then(image => {
+        let ctx = canvas.getContext("2d");
+        if(rateArray[0] == 0){
+            ctx.globalAlpha = 0.4;
+        }else{
+            ctx.globalAlpha = 1;
+        }
+        ctx.drawImage(image, 0, 0);
+    }).finally(() => {
+        loadImage(getRateAsset(rateArray[1])).then(image => {
+            let ctx = canvas.getContext("2d");
+            ctx.globalAlpha = 1;
+            ctx.drawImage(image, 52, 0);
+        }).finally(() => {
+            loadImage(getRateAsset(rateArray[2])).then(image => {
+                let ctx = canvas.getContext("2d");
+                ctx.drawImage(image, 104, 0);
+            }).finally(() => {
+                loadImage("static/asset/skill_tex_percent.png").then(image => {
+                    let ctx = canvas.getContext("2d");
+                    ctx.drawImage(image, 156, 24);
+                    c.attr("src", canvas.toDataURL());
+                })
+            })
+        })
+    })
+
+
+    // return $('<span>').append(
+    //     $('<img>').attr('src', getRateAsset(rateArray[0]))
+    //     .attr('style', "height: 50px;")
+    // ).append(
+    //     $('<img>').attr('src', getRateAsset(rateArray[1]))
+    //     .attr('style', "height: 50px;")
+    // ).append(
+    //     $('<img>').attr('src', getRateAsset(rateArray[2]))
+    //     .attr('style', "height: 50px;")
+    // ).append(
+    //     $('<img>').attr('src', "static/asset/skill_tex_percent.png")
+    //     .attr('style', "height: 32px;")
+    // ).attr('style', "vertical-align: middle;height:100%;")
+    return c;
 
 
 }
 
 function getSongLevel(musicid, type) {
-    var result = music_db["mdb"]["music"].filter(object => object["@id"] == musicid);
-    var resultDifficulty = result[0]["difficulty"];
+    let result = music_db["mdb"]["music"].filter(object => object["@id"] == musicid);
+    let resultDifficulty = result[0]["difficulty"];
+    console.log(result);
     switch (type) {
         case 0:
             return resultDifficulty["novice"]["difnum"]["#text"];
@@ -75,15 +154,15 @@ function getSongLevel(musicid, type) {
 
 function getSongName(musicid) {
     //console.log(music_db["mdb"]["music"])
-    //console.log(musicid+" "+type);
-    var result = music_db["mdb"]["music"].filter(object => object["@id"] == musicid);
+    console.log(musicid);
+    let result = music_db["mdb"]["music"].filter(object => object["@id"] == musicid);
     return result[0]["info"]["title_name"]
         //console.log(result);
 }
 
 function getDifficulty(musicid, type) {
-    var result = music_db["mdb"]["music"].filter(object => object["@id"] == musicid);
-    var inf_ver = result[0]["info"]["inf_ver"]["#text"];
+    let result = music_db["mdb"]["music"].filter(object => object["@id"] == musicid);
+    let inf_ver = result[0]["info"]["inf_ver"]["#text"];
     console.log([type, inf_ver]);
     switch (type) {
         case 0:
@@ -103,6 +182,8 @@ function getDifficulty(musicid, type) {
                         return "HVN";
                     case "5":
                         return "VVD";
+                    case "6":
+                        return "XCD";
                 }
             }
         case 4:
@@ -110,25 +191,64 @@ function getDifficulty(musicid, type) {
     }
 }
 
-function getDifficultyAsset(type, level) {
-    //var diff = getDifficulty(musicid, type); //.toLowerCase();
-    //return "static/asset/difficulty/level_small_" + diff + ".png";
-    var t = $('<div>').append(
-        $('<img>').attr("src", "static/asset/difficulty/level_small_" + type + ".png")
-        //.attr("style", "position: relative; width: 100%;")
-    ).append(
-        $('<div>').append(level)
-        .attr("style", "position:absolute;text-align:right;top:1px;width: 100%;padding: 0 1em 0 0;font-family:\"testfont\";font-weight:\"bold\";color:white;")
-    ).attr("style", "position: relative; width: 100%;");
+function loadImage(url) {
+    return new Promise(resolve => {
+        const image = new Image();
+        image.addEventListener('load', () => {
+            resolve(image);
+        });
+        image.src = url; 
+    });
+}
 
-    return t;
+
+function getDifficultyAsset(type, level) {
+    let t = $('<div>')
+    let c = $('<img>')
+    
+    // ).append(
+    //     $('<div>').append(level)
+    //     .attr("style", `position:absolute;
+    //     text-align:right;
+    //     top:1px;
+    //     width: 100%;
+    //     font-family:\"testfont\";
+    //     font-weight:\"bold\";
+    //     color:white;`)
+    // ).attr("style", "position: relative; width: 100%; contain: size;");
+
+
+    let canvas = document.createElement("canvas");
+    canvas.width = 108;
+    canvas.height = 26;
+    
+    loadImage("static/asset/difficulty/level_small_" + type + ".png").then(image => {
+        // return new Promise(resolve => {
+        //     let font = new FontFace("number-font", "url(static/asset/css/font/0001.ttf)");
+        //     font.load().then(font => {
+        //         resolve(image, font);
+        //     });
+        // })
+        let ctx = canvas.getContext("2d");
+        ctx.drawImage(image, 0, 0);
+        ctx.font = "17px testfont";
+        ctx.fillStyle = "white";
+        ctx.textAlign = "center";
+        ctx.fillText(level, 90, 19.3);
+        c.attr("src", canvas.toDataURL());
+    })
+    // .then((image, font) => {
+        
+    // });
+
+    return t.append(c);
 }
 
 
 
 
 function getTrackInfo(track) {
-    var currentTrack = {};
+    let currentTrack = {};
     currentTrack.name = getSongName(track.mid);
     currentTrack.mid = track.mid;
     currentTrack.type = getDifficulty(track.mid, track.mty);
@@ -137,12 +257,12 @@ function getTrackInfo(track) {
 }
 
 function getCourseInfo(sid, cid, version) {
-    var course = {}
-    var courseVersionFiltered = course_db.courseData.filter(function(a) {
+    let course = {}
+    let courseVersionFiltered = course_db.courseData.filter(function(a) {
         return a.version == version;
     });
     console.log(courseVersionFiltered);
-    var courseSeasonFiltered = courseVersionFiltered[0].info.filter(function(a) {
+    let courseSeasonFiltered = courseVersionFiltered[0].info.filter(function(a) {
         return a.id == sid;
     });
     console.log(courseSeasonFiltered);
@@ -150,39 +270,43 @@ function getCourseInfo(sid, cid, version) {
         course.seasonName = "Custom Season";
         course.skillName = "Custom Skill";
         course.level = 0;
-        var tracksInfo = [];
+        let tracksInfo = [];
 
-        for (var i in courseLevelFiltered.tracks) {
-            tracksInfo.push(getTrackInfo(
-                [{
-                    mid: 1,
-                    type: 0
-                }, {
-                    mid: 1,
-                    type: 0
-                }, {
-                    mid: 1,
-                    type: 0
-                }]
-            ));
-        }
+        // for (let i in courseLevelFiltered.tracks) {
+        tracksInfo.push(getTrackInfo(
+            [{
+                mid: 2,
+                type: 0
+            }, {
+                mid: 2,
+                type: 0
+            }, {
+                mid: 2,
+                type: 0
+            }]
+        ));
+        // }
         course.tracks = tracksInfo;
         return course;
     }
     course.seasonName = courseSeasonFiltered[0].name;
-    var courseLevelFiltered = courseSeasonFiltered[0].courses.filter(function(a) {
+    let courseLevelFiltered = courseSeasonFiltered[0].courses.filter(function(a) {
         return a.id == cid;
     });
     courseLevelFiltered = courseLevelFiltered[0] ? courseLevelFiltered[0] : 0;
     console.log(courseLevelFiltered);
     course.skillName = courseLevelFiltered.name;
-    var tracksInfo = [];
-    for (var i in courseLevelFiltered.tracks) {
+    let tracksInfo = [];
+    for (let i in courseLevelFiltered.tracks) {
         tracksInfo.push(getTrackInfo(courseLevelFiltered.tracks[i]));
     }
     course.level = courseLevelFiltered.level;
     course.tracks = tracksInfo;
-    console.log(course.tracks);
+    console.log(courseLevelFiltered.special_name);
+    if(special_name[`${version}`][`${courseLevelFiltered.nameID}`] != undefined){
+        course.specialName = special_name[`${version}`][`${courseLevelFiltered.nameID}`];
+    }
+    console.log(course);
     return course;
 }
 
@@ -191,118 +315,83 @@ function getCourseInfo(sid, cid, version) {
 
 
 function setCourseInfo(courseArray) {
-    var courseCtx = $('#course_content');
+    let courseCtx = $('#course_content');
     courseCtx.empty();
     console.log(courseArray);
-    for (var i in courseArray) {
-        var courseSeason = courseArray[i].sid;
-        var cid = courseArray[i].cid;
-        var version = courseArray[i].version;
-        var score = courseArray[i].score;
-        var rate = courseArray[i].rate;
-        var info = getCourseInfo(courseSeason, cid, version);
-        var clear_medal = courseArray[i].clear;
-        var clear_rate = Math.trunc(courseArray[i].rate / 100);
-        //var inner = $('div').append(info)
+    for (let i in courseArray) {
+        let courseSeason = courseArray[i].sid;
+        let cid = courseArray[i].cid;
+        let version = courseArray[i].version;
+        let score = courseArray[i].score;
+        let rate = courseArray[i].rate;
+        let info = getCourseInfo(courseSeason, cid, version);
+        let clear_medal = courseArray[i].clear;
+        let clear_rate = Math.trunc(courseArray[i].rate / 100);
         courseCtx.append(
-            $('<div class="card  is-inlineblocked">').append(
-                $('<div class="card-header">').append(
-                    $('<p class="card-header-title">').append(
-                        $('<span class="icon">').append(
-                            $('<i class="mdi mdi-account-edit">')
-                        )
-                    ).append(info.seasonName)
-                )
-            ).append(
-                $('<div class="card-content">').append(
-                    $('<div class="course-content">').append(
-                        $('<table class="is-center">').append(
-                            $('<tr>').append(
-                                $('<td>').append(info.skillName)
+            $('<div class="column is-half">').append(
+                $('<div class="card">').append(
+                    $('<div class="card-header">').append(
+                        $('<p class="card-header-title">').append(
+                            $('<span class="icon">').append(
+                                $('<i class="mdi mdi-account-edit">')
                             )
-                        )
-                        .append(
-                            $('<tr>').append(
-                                $('<td>').append( //info.level
-                                    $('<img>').attr('src', getSkillAsset(info.level))
+                        ).append(info.seasonName)
+                    )
+                ).append(
+                    $('<div class="card-content">').append(
+                        $('<div class="course-content">').append(
+                            $('<div class="tile is-ancestor">').append(
+                                $('<div class="tile is-vertical">').append(
+                                    $('<div class="tile is-parent">').append(
+                                        $('<div class="tile is-child">').append(
+                                            $('<div class="box">').append(
+                                                info.skillName
+                                            )
+                                        )
+                                    )
                                 ).append(
-                                    $('<img>').attr('src', getMedalAsset(clear_medal))
+                                    $('<div class="tile is-parent">').append(
+                                        $('<div class="tile is-child">').append(getSkillAsset(info.level, info.specialName))
+                                    ).append(
+                                        $('<div class="tile is-child">').append($('<img class="is-50">').attr('src', getMedalAsset(clear_medal)))
+                                    ).append(
+                                        $('<div class="tile is-child">').append(getRate(clear_rate))
+                                    ).attr('style', 'display: flex;align-items: center;width:100%;')
                                 ).append(
-                                    getRate(clear_rate)
-                                ).attr('style', 'display: inline-flex;align-items: center;width:100%;')
-                            )
-                        ).attr('style', "table-color:#00000000")
-                    ).append(
-                        $('<table class="is-borderless">').append(
-                            $('<tr>').append(
-                                $('<td>').append(
-                                    $('<div style="vertical-align: top;">').append(
-                                        $('<div style="width:80%;display:inline-block;vertical-align: center;font-family:ffff">')
-                                        .append(info.tracks[0].name)
-
+                                    $('<div class="tile is-parent">').append(
+                                        $('<div class="tile is-child is-8" style="font-family:ffff">').append(info.tracks[0].name)
+                                    ).append(
+                                        $('<div class="tile is-child is-4">').append(
+                                            getDifficultyAsset(info.tracks[0].type.toLowerCase(), info.tracks[0].level)
+                                        )
                                     )
-                                    .append(
-                                        $('<div style="width:20%;display:inline-block;vertical-align: center;">')
-                                        .append(getDifficultyAsset(info.tracks[0].type.toLowerCase(), info.tracks[0].level)) //.append(info.tracks[0].level)
-                                        //.css('background-image', 'url(' + "static/asset/difficulty/level_small_" + info.tracks[0].type.toLowerCase() + ".png" + ')')
+                                ).append(
+                                    $('<div class="tile is-parent">').append(
+                                        $('<div class="tile is-child is-8" style="font-family:ffff">').append(info.tracks[1].name)
+                                    ).append(
+                                        $('<div class="tile is-child is-4">').append(
+                                            getDifficultyAsset(info.tracks[1].type.toLowerCase(), info.tracks[1].level)
+                                        )
                                     )
-                                ).attr('style', "padding:1em 2em")
-                            )
-                        ).append(
-                            $('<tr>').append(
-                                $('<td>').append(
-                                    $('<div style="vertical-align: top;">').append(
-                                        $('<div style="width:80%;display:inline-block;vertical-align: center;font-family:ffff">')
-                                        .append(info.tracks[1].name)
+                                ).append(
+                                    $('<div class="tile is-parent">').append(
+                                        $('<div class="tile is-child is-8" style="font-family:ffff">').append(info.tracks[2].name)
+                                    ).append(
+                                        $('<div class="tile is-child is-4">').append(
+                                            getDifficultyAsset(info.tracks[2].type.toLowerCase(), info.tracks[2].level)
+                                        )
                                     )
-                                    .append(
-                                        $('<div style="width:20%;display:inline-block;vertical-align: center;">')
-                                        .append(getDifficultyAsset(info.tracks[1].type.toLowerCase(), info.tracks[1].level)) //.append(info.tracks[1].level)
-                                        //.css('background-image', 'url(' + "static/asset/difficulty/level_small_" + info.tracks[1].type.toLowerCase() + ".png" + ')')
-                                    )
-                                ).attr('style', "padding:1em 2em")
-                            )
-                        ).append(
-                            $('<tr>').append(
-                                $('<td>').append(
-                                    $('<div style="vertical-align: top;">').append(
-                                        $('<div style="width:80%;display:inline-block;vertical-align: center;font-family:ffff">')
-                                        .append(info.tracks[2].name)
-                                    )
-                                    .append(
-                                        $('<div style="width:20%;display:inline-block;vertical-align: center;">')
-                                        .append(getDifficultyAsset(info.tracks[2].type.toLowerCase(), info.tracks[2].level)) //info.tracks[2].level)
-                                        //.css('background-image', 'url(' + "static/asset/difficulty/level_small_" + info.tracks[2].type.toLowerCase() + ".png" + ')')
-                                    )
-                                ).attr('style', "padding:1em 2em")
+                                )
                             )
                         )
-                    ).attr('style', "table-color:#00000000")
+                    )
                 )
             )
         );
-        // $('<div>').append(
-        //     $('<div>').append("Season Name: " + info.seasonName)
-        // ).append(
-        //     $('<div>').append("Course Name: " + info.skillName)
-        // ).append(
-        //     $('<div>').append("Clear Mark: " + clear_medal)
-        // ).append(
-        //     $('<div>').append("Tracks: ").append(
-        //         $('<div>').append('&emsp;' + info.tracks[0].name + info.tracks[0].type + info.tracks[0].level)
-        //     ).append(
-        //         $('<div>').append('&emsp;' + info.tracks[1].name + info.tracks[1].type + info.tracks[1].level)
-        //     ).append(
-        //         $('<div>').append('&emsp;' + info.tracks[2].name + info.tracks[2].type + info.tracks[2].level)
-        //     )
-        // ));
-        //console.log("SET");
     }
-    //console.log(content);
 }
 
 function setDataSource(dataSource) {
-    //console.log("currentDATA" + dataSource);
     switch (parseInt(dataSource)) {
         case 2:
             setCourseInfo(ii);
@@ -334,7 +423,7 @@ $('#version_select').change(function() {
 
 
 $(document).ready(function() {
-    var profile_data = JSON.parse(document.getElementById("data-pass").innerText);
+    let profile_data = JSON.parse(document.getElementById("data-pass").innerText);
     profile_data = profile_data.sort(function(a, b) {
         if (a.version > b.version) return 1;
         if (a.version < b.version) return -1;
@@ -346,7 +435,7 @@ $(document).ready(function() {
         if (a.sid < b.sid) return -1;
     });
 
-    for (var i in profile_data) {
+    for (let i in profile_data) {
         switch (profile_data[i].version) {
             case 2:
                 ii.push(profile_data[i]);
@@ -377,8 +466,8 @@ $(document).ready(function() {
             course_db = json;
         })
     ).then(function() {
-        var arr = [];
-        for (var i in music_db["mdb"]["music"]) {
+        let arr = [];
+        for (let i in music_db["mdb"]["music"]) {
             arr.push(music_db["mdb"]["music"][i]["info"]["title_name"]);
         }
         console.log(arr);
