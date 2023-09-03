@@ -34,12 +34,12 @@ export const hiscore: EPR = async (info, data, send) => {
         l_sc: K.ITEM('u32', r.score),
         ax_sq: K.ITEM('str', IDToCode(profiles[r.__refid][0].id)),
         ax_nm: K.ITEM('str', profiles[r.__refid][0].name),
-        ax_sc: K.ITEM('u32', r.exscore),
+        ax_sc: K.ITEM('u32', r.exscore ?? 0),
         lx_sq: K.ITEM('str', IDToCode(profiles[r.__refid][0].id)),
         lx_nm: K.ITEM('str', profiles[r.__refid][0].name),
-        lx_sc: K.ITEM('u32', r.exscore),
+        lx_sc: K.ITEM('u32', r.exscore ?? 0),
         avg_sc: K.ITEM('u32', r.score),
-        cr: K.ITEM('s32', 10000)
+        cr: K.ITEM('s32', 8763)
       })),
     },
   });
