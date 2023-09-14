@@ -272,7 +272,7 @@ export const save: EPR = async (info, data, send) => {
         base: $(data).number('skill_base_id'),
         level: $(data).number('skill_level'),
         name: $(data).number('skill_name_id'),
-        type: $(data).number('skill_type')
+        stype: $(data).number('skill_type')
       },
     }
   );
@@ -302,9 +302,9 @@ export const load: EPR = async (info, data, send) => {
   let skill = (await DB.FindOne<Skill>(refid, {
     collection: 'skill',
     version,
-  })) || { base: 0, name: 0, level: 0, type:0 };
+  })) || { base: 0, name: 0, level: 0, stype:0 };
 
-  skill.type = skill.type ?? 0;
+  skill.stype = skill.stype ?? 0;
 
 
   const courses = await DB.Find<CourseRecord>(refid, { collection: 'course', version });

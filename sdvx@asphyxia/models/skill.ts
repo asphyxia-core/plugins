@@ -6,5 +6,5 @@ export interface Skill {
   level: number;
   base: number;
   name: number;
-  type: number;
+  stype: number;
 }
