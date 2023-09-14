@@ -23,6 +23,7 @@ export const updateProfile = async (data: {
   stampB_R?: string;
   stampC_R?: string;
   stampD_R?: string;
+  mainbg?: string;
   appeal_frame?: string;
   support_team?: string;
 }) => {
@@ -111,6 +112,11 @@ export const updateProfile = async (data: {
   if (data.stampD_R && data.stampD_R.length > 0) {
     const validStampD_R = parseInt(data.stampD_R);
     if (!_.isNaN(validStampD_R)) update.stampD_R = validStampD_R;
+  }
+
+  if (data.mainbg && data.mainbg.length > 0) {
+    const validMainbg = parseInt(data.mainbg);
+    if (!_.isNaN(validMainbg)) update.mainbg = validMainbg;
   }
 
   await DB.Update<Profile>(
