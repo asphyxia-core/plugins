@@ -48,6 +48,7 @@ export interface Profile {
   stampB_R: number;
   stampC_R: number;
   stampD_R: number;
+  mainbg: number;
 
   boothFrame: number[];
 }

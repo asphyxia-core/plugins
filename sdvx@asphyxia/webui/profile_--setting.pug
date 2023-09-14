@@ -186,6 +186,12 @@ div
                       select(name="stampD_R")
                     //input.input(type="number" step=1 name="stampD", placeholder=profile.stampD)
                 .field
+                  label.label Main BG
+                  .control
+                    .select.is-fullwidth
+                      select(name="mainbg")
+                    //input.input(type="number" step=1 name="stampD", placeholder=profile.stampD)
+                .field
                   button.button.is-primary(type="submit") 
                     span.icon
                       i.mdi.mdi-check
@@ -202,6 +208,7 @@ div
                     p Submonitor Preview
                     img(src='static/asset/submonitor_bg/subbg_0000.png' id="sub_pre")
                     img(src='static/asset/submonitor_bg/subbg_0000.png' id="sub_pre_fade")
+                    video(id='sub_video_pre' style='display:none;')
               .tile 
                 .tile.is-parent.btm
                   .tile.is-child.with_relative
@@ -244,11 +251,21 @@ div
                     p D_R
                     img(src='static/asset/nostamp.png' id="dr_pre")
                     img(src='static/asset/nostamp.png' id="dr_pre_fade")
-              .tile.is-parent.is-vertical(id='bgm_pre')
-                p BGM preview
-                audio(controls style="display:none;" src='static/asset/audio/custom_00/0.mp3' type='audio/mp3' id='custom_0')
-              .tile.is-parent.is-vertical(id='sel_pre')
-                p Song selection preview
-                audio(controls style="display:none;" src='static/asset/audio/custom_00/1.mp3' type='audio/mp3' id='custom_1')
+              .tile 
+                .tile.is-parent.btm
+                  .tile 
+                    .tile.is-child(id='bgm_pre')
+                      span BGM preview
+                      audio(controls style="display:none;" src='static/asset/audio/custom_00/0.mp3' type='audio/mp3' id='custom_0')
+                    .tile.is-child(id='sel_pre')
+                      span Song selection preview
+                      audio(controls style="display:none;" src='static/asset/audio/custom_00/1.mp3' type='audio/mp3' id='custom_1')
+              .tile.is-parent.is-vertical
+                .tile.is-child(id='mainbg_pre')
+                  p Main BG Preview
+                  video(id='mainbg_video_pre')
+
+
+                  
 div(hidden id='data-pass') !{JSON.stringify(profile)}
 script(src="static/asset/js/preview.js") 

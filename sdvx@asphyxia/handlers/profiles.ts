@@ -206,14 +206,15 @@ export const save: EPR = async (info, data, send) => {
   if(!_.isNil(course)){
       const sid = course.number('ssnid');
       const cid = course.number('crsid');
-      // const skill_type = course.number('st');
+      const skill_type = course.number('st');
       if (!(_.isNil(sid) || _.isNil(cid))){
         await DB.Upsert<CourseRecord>(
           refid,
-          { collection: 'course', sid, cid, version },
+          { collection: 'course', sid, cid, version, skill_type },
           {
             $max: {
               score: course.number('sc', 0),
+              exscore: course.number('ex', 0),
               clear: course.number('ct', 0),
               grade: course.number('gr', 0),
               rate: course.number('ar', 0),
@@ -307,6 +308,13 @@ export const load: EPR = async (info, data, send) => {
 
 
   const courses = await DB.Find<CourseRecord>(refid, { collection: 'course', version });
+
+  for(const c of courses){
+    c.skill_type = c.skill_type ?? 0;
+    c.exscore = c.exscore ?? 0;
+  }
+
+
   const items = await DB.Find<Item>(refid, { collection: 'item' });
   const params = await DB.Find<Param>(refid, { collection: 'param' });
   let time = new Date();
@@ -333,10 +341,10 @@ export const load: EPR = async (info, data, send) => {
   const stampB_R = profile.stampB_R ? profile.stampB_R : 0;
   const stampC_R = profile.stampC_R ? profile.stampC_R : 0;
   const stampD_R = profile.stampD_R ? profile.stampD_R : 0;
-
+  const mainbg = profile.mainbg ? profile.mainbg : 0;
 
   const customize = [];
-  customize.push(bgm, subbg, nemsys, stampA, stampB, stampC, stampD, stampA_R, stampB_R, stampC_R, stampD_R);
+  customize.push(bgm, subbg, nemsys, stampA, stampB, stampC, stampD, stampA_R, stampB_R, stampC_R, stampD_R, mainbg);
 
 
   let tempCustom = params.findIndex((e) => (e.type == 2 && e.id == 2))
@@ -426,6 +434,7 @@ export const create: EPR = async (info, data, send) => {
     stampB_R: 0,
     stampC_R: 0,
     stampD_R: 0,
+    mainbg: 0,
     appeal_frame: 0,
     support_team: 0,
 

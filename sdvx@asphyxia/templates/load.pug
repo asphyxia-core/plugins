@@ -32,6 +32,8 @@ game
   skill_type(_type="s16") #{skill.type}
   skill_base_id(__type="s16") #{skill.base}
   skill_name_id(__type="s16") #{skill.name}
+
+  
   
   ea_shop
     packet_booster(__type="s32") 1
@@ -52,9 +54,9 @@ game
       course
         ssnid(__type="s16") #{course.sid}
         crsid(__type="s16") #{course.cid}
-        st(__type="s16") 0
+        st(__type="s16") #{course.skill_type}
         sc(__type="s32") #{course.score}
-        ex(__type="s32") 0
+        ex(__type="s32") #{course.exscore}
         ct(__type="s16") #{course.clear}
         gr(__type="s16") #{course.grade}
         ar(__type="s16") #{course.rate}

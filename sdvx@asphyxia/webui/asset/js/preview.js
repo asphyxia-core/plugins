@@ -18,11 +18,7 @@ function generateElements(html) {
 }
 
 function isSlideShow(num){
-    if((num >= 166 && num <= 185 )|| (num>=214 && num <=223) || (num>=256 &&num<=272)){ //256-272 214-223
-        return true;
-    }else{
-        return false;
-    }
+    return database["subbg"].filter(x => x.value == num)[0]["multi"] ?? false;
 }
 
 function isScroll(num){ //238-255 200-213
@@ -31,6 +27,10 @@ function isScroll(num){ //238-255 200-213
     }else{
         return false;
     }
+}
+
+function isVideo(num){
+    return database["subbg"].filter(x => x.value == num)[0]["video"] ?? false;
 }
 
 
@@ -134,8 +134,21 @@ subbg_select.addEventListener('change', ()=>{
                 cnt = 1;
             }
         }, 1000);
+    }else if(isVideo(value)){
+        preview.setAttribute("style", "display: none;")
+        preview_fade.setAttribute("style", "display: none;")
+        let video = document.querySelector('#sub_video_pre');
+        video.setAttribute("style", "display: block;")
+        video.setAttribute("src", "static/asset/submonitor_bg/subbg_" + zeroPad(value, 4) + ".mp4");
+        video.setAttribute("autoplay", "");
+        video.setAttribute("loop", "");
     }else{
         clearInterval(interval);
+        let video = document.querySelector('#sub_video_pre');
+        video.setAttribute("style", "display: none;")
+        video.pause();
+        preview.setAttribute("style", "")
+        preview_fade.setAttribute("style", "")
     }
 });
 
@@ -174,7 +187,7 @@ $('[name="bgm"]').change(function() {
             gain = audioContext.createGain();
             play.connect(gain);
             gain.connect(audioContext.destination);
-            gain.gain.value = 0.5;
+            gain.gain.value = 0.2;
             play.buffer = audioBuffer;
             play.loop = true;
             // play.loopStart = 1.2;
@@ -338,6 +351,10 @@ $('[name="stampD_R"]').change(function() {
     $('#dr_pre').fadeIn(200);
 });
 
+$('[name="mainbg"]').change(function() {
+    
+});
+
 
 // $('#custom_0').on('ended', function() {
 //     $('#custom_0').currentTime = 0;
@@ -448,6 +465,17 @@ document.addEventListener('DOMContentLoaded', function() {
             stampB_R.dispatchEvent(new Event('change'));
             stampC_R.dispatchEvent(new Event('change'));
             stampD_R.dispatchEvent(new Event('change'));
+
+            let mainbg = document.querySelector('[name="mainbg"]');
+            let mainbg_option = ""
+
+            json["mainbg"].forEach(x => {
+                mainbg_option += `<option value="${x.value}">${x.name}</option>`;
+            });
+            mainbg.innerHTML = mainbg_option;
+            mainbg.value = profile_data["mainbg"];
+            mainbg.dispatchEvent(new Event('change'));
+
             document.querySelector('html.has-aside-left.has-aside-mobile-transition.has-navbar-fixed-top.has-aside-expanded body div#app div#main-content.content div.simplebar-wrapper div.simplebar-mask div.simplebar-offset div.simplebar-content-wrapper div.simplebar-content')
                 .style["overflow-y"] = "auto";
             // document.querySelector('.uiblocker').style.display = 'none';
@@ -479,7 +507,7 @@ document.addEventListener('DOMContentLoaded', function() {
         play_bgm = !play_bgm;
     });
 
-    let play_bgm_outer_div = generateElements('<div class="buttons"></div>');
+    let play_bgm_outer_div = generateElements('<div class="buttons" style="border-top:2px solid #333333;padding-top: 10px; margin-right: 20px;"></div>');
     play_bgm_outer_div.append(play_bgm_button);
     document.querySelector('#bgm_pre').append(play_bgm_outer_div);
 
@@ -496,7 +524,7 @@ document.addEventListener('DOMContentLoaded', function() {
         play_sel = !play_sel;
     });
 
-    let play_sel_outer_div = generateElements('<div class="buttons"></div>');
+    let play_sel_outer_div = generateElements('<div class="buttons" style="border-top:2px solid #333333;padding-top: 10px; margin-right: 20px;"></div>');
     play_sel_outer_div.append(play_sel_button);
     document.querySelector('#sel_pre').append(play_sel_outer_div);
 })
