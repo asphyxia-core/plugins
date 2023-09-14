@@ -31,6 +31,11 @@ Remember to import asset from the game files first time when using webui.
 Change Log
 ===========
 
+## 6.1.1
+
+1. Support EG version up to 2023091200.
+2. Added ability to select Main Screen Background.
+
 ## 6.1.0
 
 1. Support EG version up to 2023053001.
@@ -39,6 +44,7 @@ Change Log
 4. Added support for import asset from game directly to webui usage, this function is still is testing phase, which may cause some problem, use it with caution.
 5. Added function to edit the unlock song count, which is editable from webui, defaulted to 2200.
 6. Temporarily support Valkyrie Generator, but since webui is able to change everything, the data won't be saved but you can do as much gacha as you want.
+7. Remove support for versions other than EG.
 
 ## 6.0.0
 
@@ -52,5 +58,5 @@ Change Log
 TODO
 ===========
 
-- Save Arena Level
-- Convert BGM directly using pure nodejs without any additional library.
+This is confirmed need to use addition library, and need more time to do the core update.
+- Convert BGM directly using pure nodejs without any additional library. 
