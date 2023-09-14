@@ -1,6 +1,6 @@
 # SOUND VOLTEX
 
-Plugin Version: **v6.1.0**
+Plugin Version: **v6.1.2**
 
 ## Provide out of box usable exprience, everything is unlocked and good to go.  
 
@@ -30,6 +30,10 @@ Remember to import asset from the game files first time when using webui.
 
 Change Log
 ===========
+
+## 6.1.2
+
+1. Hotfix for 神 skill analyzer not showing after passed.
 
 ## 6.1.1
 
