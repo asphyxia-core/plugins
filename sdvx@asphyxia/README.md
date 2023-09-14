@@ -31,6 +31,10 @@ Remember to import asset from the game files first time when using webui.
 Change Log
 ===========
 
+## 6.1.2
+
+1. Hotfix for 神 skill analyzer not showing after passed.
+
 ## 6.1.1
 
 1. Support EG version up to 2023091200.
