@@ -351,8 +351,34 @@ $('[name="stampD_R"]').change(function() {
     $('#dr_pre').fadeIn(200);
 });
 
+let disable_bg = false;
+
 $('[name="mainbg"]').change(function() {
-    
+    let filestr = ""
+    disable_bg = false;
+    document.querySelector('.card').style["background-color"] = "#0a0a0a99";
+    switch($('[name="mainbg"]').val()){
+        case "0":
+            filestr = ""
+            disable_bg = true;
+            document.querySelector('.card').style["background-color"] = "#0a0a0a";
+            break;
+        case "1":
+            filestr = "booth"
+            break;
+        case "2":
+            filestr = "ii"
+            break;
+        case "3":
+            filestr = "iii"
+            break;
+    }
+
+    let video = document.querySelector('#mainbg_video_pre');
+    // video.setAttribute("style", "")
+    video.setAttribute("src", 'static/asset/video/'+filestr+'.mp4');
+    video.setAttribute("autoplay", "");
+    video.setAttribute("loop", "");
 });
 
 
@@ -378,9 +404,11 @@ let play_bgm = false;
 let play_sel = false;
 let first = true;
 
+let bg_opacity = false;
+
 document.addEventListener('DOMContentLoaded', function() {
     profile_data = JSON.parse(document.getElementById("data-pass").innerText);
-
+    document.querySelector('.card').style["background-color"] = "#0a0a0a99";
     fetch("static/asset/json/data.json")
         .then(res => {return res.json()})
         .then(json => {
@@ -476,6 +504,10 @@ document.addEventListener('DOMContentLoaded', function() {
             mainbg.value = profile_data["mainbg"];
             mainbg.dispatchEvent(new Event('change'));
 
+            setTimeout(()=>{
+                document.querySelector('#mainbg_video_pre').play();
+            }, 500)
+
             document.querySelector('html.has-aside-left.has-aside-mobile-transition.has-navbar-fixed-top.has-aside-expanded body div#app div#main-content.content div.simplebar-wrapper div.simplebar-mask div.simplebar-offset div.simplebar-content-wrapper div.simplebar-content')
                 .style["overflow-y"] = "auto";
             // document.querySelector('.uiblocker').style.display = 'none';
@@ -527,5 +559,37 @@ document.addEventListener('DOMContentLoaded', function() {
     let play_sel_outer_div = generateElements('<div class="buttons" style="border-top:2px solid #333333;padding-top: 10px; margin-right: 20px;"></div>');
     play_sel_outer_div.append(play_sel_button);
     document.querySelector('#sel_pre').append(play_sel_outer_div);
+
+
+    let play_bg_button = generateElements('<button class="button is-primary" type="button" id="play_bg"><button>');
+    play_bg_button.append("BG SHOW");
+    play_bg_button.addEventListener('click', function() {
+        if(!disable_bg){
+            let video = document.querySelector('#mainbg_video_pre');
+            video.play();
+
+            let card = document.querySelector('.card');
+            card.style["opacity"] = "0";
+            card.style["transition"] = "opacity 0.5s";
+
+            let bg_ui_blocker = generateElements('<div id="bguiblocker" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000000; opacity: 0; z-index: 9999;"></div>');
+            document.querySelector('body').append(bg_ui_blocker);
+            document.querySelector('#bguiblocker').addEventListener('click', ()=>{
+                let card = document.querySelector('.card');
+                card.style["opacity"] = "1";
+                document.querySelector('#bguiblocker').remove();
+            });
+        }
+    });
+
+    let play_bg_outer_div = generateElements('<div class="buttons" style="border-top:2px solid #333333;padding-top: 10px; margin-right: 20px;"></div>');
+    play_bg_outer_div.append(play_bg_button);
+    document.querySelector('#mainbg_pre').append(play_bg_outer_div);
+    
 })
+
+document.querySelector('#mainbg_video_pre').addEventListener('click', ()=>{
+    let card = document.querySelector('.card');
+    card.style["opacity"] = "1";
+});
 
