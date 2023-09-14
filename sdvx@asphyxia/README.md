@@ -4,6 +4,8 @@ Plugin Version: **v6.1.2**
 
 ## Provide out of box usable exprience, everything is unlocked and good to go.  
 
+Prerequisite CORE version: v1.50c or above
+
 Supported Versions:
 
 - EXCEED GEAR
