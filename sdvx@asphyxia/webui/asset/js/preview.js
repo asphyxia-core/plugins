@@ -356,12 +356,13 @@ let disable_bg = false;
 $('[name="mainbg"]').change(function() {
     let filestr = ""
     disable_bg = false;
-    document.querySelector('.card').style["background-color"] = "#0a0a0a99";
+    let bg_color = document.querySelector('.card').style["background-color"]
+    document.querySelector('.card').style["background-color"] = bg_color.length == 9 ? bg_color.substring(0, bg_color.length - 2) + "99" : bg_color;
     switch($('[name="mainbg"]').val()){
         case "0":
             filestr = ""
             disable_bg = true;
-            document.querySelector('.card').style["background-color"] = "#0a0a0a";
+            document.querySelector('.card').style["background-color"] = bg_color.length == 9 ? bg_color.substring(0, bg_color.length - 2) : bg_color;
             break;
         case "1":
             filestr = "booth"
@@ -406,9 +407,18 @@ let first = true;
 
 let bg_opacity = false;
 
+const getPreferredScheme = () => window?.matchMedia?.('(prefers-color-scheme:dark)')?.matches ? 'dark' : 'light';
+
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+    const newColorScheme = event.matches ? "true" : "false";
+    document.querySelector('.card').style["background-color"] = newColorScheme ? "#0a0a0a99" : "#ffffff99";
+});
+
+
 document.addEventListener('DOMContentLoaded', function() {
     profile_data = JSON.parse(document.getElementById("data-pass").innerText);
-    document.querySelector('.card').style["background-color"] = "#0a0a0a99";
+    let colorScheme = getPreferredScheme() === 'dark';
+    document.querySelector('.card').style["background-color"] = colorScheme ? "#0a0a0a99" : "#ffffff99";
     fetch("static/asset/json/data.json")
         .then(res => {return res.json()})
         .then(json => {
