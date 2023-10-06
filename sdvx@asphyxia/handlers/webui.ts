@@ -235,16 +235,16 @@ export const import_assets = async (data: { path: string }, send: WebUISend) => 
   }
 
 
-  await fs.promises.cp(path + "/data/graphics/ap_card", './webui/asset/ap_card', {recursive: true}).catch((err: any) => {
+  await fs.promises.cp(path + "/data/graphics/ap_card", './plugins/sdvx@asphyxia/webui/asset/ap_card', {recursive: true}).catch((err: any) => {
     console.log(err)
   })
-  await fs.promises.cp(path + "/data/graphics/chat_stamp", './webui/asset/chat_stamp', {recursive: true}).catch((err: any) => {
+  await fs.promises.cp(path + "/data/graphics/chat_stamp", './plugins/sdvx@asphyxia/webui/asset/chat_stamp', {recursive: true}).catch((err: any) => {
     console.log(err)
   })
-  await fs.promises.cp(path + "/data/graphics/game_nemsys", './webui/asset/nemsys', {recursive: true}).catch((err: any) => {
+  await fs.promises.cp(path + "/data/graphics/game_nemsys", './plugins/sdvx@asphyxia/webui/asset/nemsys', {recursive: true}).catch((err: any) => {
     console.log(err)
   })
-  await fs.promises.cp(path + "/data/graphics/submonitor_bg", './webui/asset/submonitor_bg', {recursive: true}).catch((err: any) => {
+  await fs.promises.cp(path + "/data/graphics/submonitor_bg", './plugins/sdvx@asphyxia/webui/asset/submonitor_bg', {recursive: true}).catch((err: any) => {
     console.log(err)
   })
   console.log('Assets imported.')
