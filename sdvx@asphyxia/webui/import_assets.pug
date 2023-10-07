@@ -1,0 +1,27 @@
+//DATA//
+  
+
+-
+
+
+.card
+    .card-header
+      p.card-header-title
+        span.icon
+          i.mdi.mdi-comment-question-outline
+        | Import Assets
+    .card-content
+        .field
+          label.label SDVX Base Path(The folder that contains data folder)
+          .control
+            input.input(type="text" id="path", placeholder="C:/GamePath")
+        .field
+          button.button.is-primary(id="import_assets")
+            span.icon
+              i.mdi.mdi-check
+            span Submit
+        div This function is still in testing phase, be careful when using it. If the import is not successful, please check the console for error messages and manually copy the assets.
+        
+        
+        
+script(src="static/asset/js/import_assets.js")

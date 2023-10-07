@@ -1,10 +1,20 @@
 import {common,log} from './handlers/common';
 import {hiscore, rival, saveMix, loadMix, globalMatch} from './handlers/features';
+// import {} from './handlers/sv4/';
+// import {} from './handlers/sv5/';
+// import {} from './handlers/sv6/';
 import {
   updateProfile,
   updateMix,
   importMix,
   deleteMix,
+  make_hexa_easier,
+  import_assets
+  // sendImg,
+  // sendImgWithID,
+  // getScore,
+  // getScoreCount,
+  // test
 } from './handlers/webui';
 import {
   load,
@@ -17,9 +27,29 @@ import {
   print,
 } from './handlers/profiles';
 
+import { MusicRecord } from './models/music_record';
+
+enum Version{
+  Booth = 'game.',
+  II = 'game_2.',
+  GW = 'game_3.',
+  HH = 'game.sv4_',
+  VW = 'game.sv5_',
+  EG = 'game.sv6_',
+}
+
+export let music_db;
+
+function load_music_db(){
+  IO.ReadFile('./webui/asset/json/music_db.json',{encoding:'utf8'}).then(data => {
+    music_db = JSON.parse(data);
+    console.log('music_db loaded, total: '+music_db.mdb.music.length);
+  })
+}
+
 export function register() {
     
-  R.Contributor("LatoWolf#1170");
+  R.Contributor("LatoWolf");
   R.GameCode('KFC');
 
   R.Config('unlock_all_songs', { type: 'boolean', default: false, name:'Unlock All Songs'});
@@ -29,21 +59,19 @@ export function register() {
   R.Config('use_asphyxia_gameover',{ type: 'boolean', default: true, name:'Use Asphyxia Gameover', desc:'Enable the Asphyxia gameover message after ending the game.'})
   R.Config('use_blasterpass',{ type: 'boolean', default: true, name:'Use Blaster Pass', desc:'Enable Blaster Pass for VW and EG'});
   R.Config('new_year_special',{ type: 'boolean', default: true, name:'Use New Year Special', desc:'Enable New Year Special BGM for login'});
-  
+  R.Config('music_count',{ type: 'integer', default: 2200, name:'Music Count', desc:'The total number of music in the game.'});
+    
   R.WebUIEvent('updateProfile', updateProfile);
   R.WebUIEvent('updateMix', updateMix);
   R.WebUIEvent('importMix', importMix);
   R.WebUIEvent('deleteMix', deleteMix);
+  R.WebUIEvent('easyHexa', make_hexa_easier);
+  R.WebUIEvent('import_assets', import_assets);
 
   const MultiRoute = (method: string, handler: EPR | boolean) => {
-    // Helper for register multiple versions.
-    R.Route(`game.${method}`, handler);
-    R.Route(`game_2.${method}`, handler);
-    //R.Route(`game_3.${method}`, handler);
-    R.Route(`game.sv4_${method}`, handler);
-    R.Route(`game.sv5_${method}`, handler);
     R.Route(`game.sv6_${method}`, handler);
   };
+  
 
   // Common
   MultiRoute('common', common);
@@ -72,7 +100,8 @@ export function register() {
   MultiRoute('shop', (_, __, send) => send.object({
     nxt_time: K.ITEM('u32', 1000 * 5 * 60)
   }));
-  MultiRoute('save_e', true);
+
+  MultiRoute('save_e', true); 
   MultiRoute('save_mega',true);
   MultiRoute('play_e', true);
   MultiRoute('play_s', true);

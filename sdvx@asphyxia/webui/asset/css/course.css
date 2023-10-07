@@ -8,6 +8,11 @@
     src: url("font/0002.ttf");
 }
 
+@font-face {
+    font-family: course;
+    src: url("font/0004.woff");
+}
+
 table.is-borderless td {
     border: 0px solid #00000000
 }
@@ -17,15 +22,21 @@ table.is-center td {
     justify-content: center;
 }
 
+.pp{
+    display: flex;
+}
 
+hr{
+    width: 70%;
+}
 /* .course-content {
     padding: 0 30%;
 } */
 
-@media screen and (min-width: 1000px) {
+/* @media screen and (min-width: 1000px) {
     .card.is-inlineblocked {
         display: inline-block;
         width: 45%;
         margin: 1em 2%
     }
-}
+} */

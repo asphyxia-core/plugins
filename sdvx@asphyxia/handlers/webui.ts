@@ -1,7 +1,11 @@
 import { Profile } from '../models/profile';
 import { MusicRecord } from '../models/music_record';
+import { Item } from '../models/item';
 import { getVersion, IDToCode, GetCounter } from '../utils';
 import { Mix } from '../models/mix';
+import { fstat } from 'fs';
+import { error } from 'console';
+import { setMaxIdleHTTPParsers } from 'http';
 
 export const updateProfile = async (data: {
   refid: string;
@@ -15,6 +19,13 @@ export const updateProfile = async (data: {
   stampB?: string;
   stampC?: string;
   stampD?: string;
+  stampA_R?: string;
+  stampB_R?: string;
+  stampC_R?: string;
+  stampD_R?: string;
+  mainbg?: string;
+  appeal_frame?: string;
+  support_team?: string;
 }) => {
   if (data.refid == null) return;
 
@@ -36,6 +47,16 @@ export const updateProfile = async (data: {
   if (data.akaname && data.akaname.length > 0) {
     const validAka = parseInt(data.akaname);
     if (!_.isNaN(validAka)) update.akaname = validAka;
+  }
+
+  if (data.appeal_frame && data.appeal_frame.length > 0) {
+    const validAppealFrame = parseInt(data.appeal_frame);
+    if (!_.isNaN(validAppealFrame)) update.appeal_frame = validAppealFrame;
+  }
+
+  if (data.support_team && data.support_team.length > 0) {
+    const validSupportTeam = parseInt(data.support_team);
+    if (!_.isNaN(validSupportTeam)) update.support_team = validSupportTeam;
   }
 
   if (data.nemsys && data.nemsys.length > 0) {
@@ -71,6 +92,31 @@ export const updateProfile = async (data: {
   if (data.stampD && data.stampD.length > 0) {
     const validStampD = parseInt(data.stampD);
     if (!_.isNaN(validStampD)) update.stampD = validStampD;
+  }
+
+  if (data.stampA_R && data.stampA_R.length > 0) {
+    const validStampA_R = parseInt(data.stampA_R);
+    if (!_.isNaN(validStampA_R)) update.stampA_R = validStampA_R;
+  }
+
+  if (data.stampB_R && data.stampB_R.length > 0) {
+    const validStampB_R = parseInt(data.stampB_R);
+    if (!_.isNaN(validStampB_R)) update.stampB_R = validStampB_R;
+  }
+
+  if (data.stampC_R && data.stampC_R.length > 0) {
+    const validStampC_R = parseInt(data.stampC_R);
+    if (!_.isNaN(validStampC_R)) update.stampC_R = validStampC_R;
+  }
+
+  if (data.stampD_R && data.stampD_R.length > 0) {
+    const validStampD_R = parseInt(data.stampD_R);
+    if (!_.isNaN(validStampD_R)) update.stampD_R = validStampD_R;
+  }
+
+  if (data.mainbg && data.mainbg.length > 0) {
+    const validMainbg = parseInt(data.mainbg);
+    if (!_.isNaN(validMainbg)) update.mainbg = validMainbg;
   }
 
   await DB.Update<Profile>(
@@ -155,4 +201,52 @@ export const deleteMix = async (data: { code: string }) => {
   await DB.Remove<Mix>({ collection: 'mix', code: data.code });
 };
 
+export const make_hexa_easier = async(data:{
+  refid:string;
+}) => {
+  let all_hexa = await DB.Find<Item>(data.refid,  { collection: 'item' ,type:16 })
+  let playedNum = [] // Prevent previous unlocked hexa from being locked again
+  all_hexa.forEach((item:Item)=>{
+    console.log(item.id)
+    if(item.param == 10000){
+      playedNum.push(item.id)
+    }
+  });
 
+  for(let i = 1; i <= 50; i++){ // Hexa Diver 7, up to id = 50
+    if(!playedNum.includes(i)){
+      await DB.Upsert<Item>(
+        data.refid,
+        {collection:'item', id:i, type:16},
+        {collection:'item', id:i, type:16, param:9000}
+        )
+    }
+  }
+}
+
+export const import_assets = async (data: { path: string }, send: WebUISend) => {
+  let path = data.path
+  console.log(path)
+  let fs = require('fs')
+  if (!fs.existsSync(path + '/data/graphics/')) {
+    console.log('Path does not exist.')
+    send.error(400,'Path does not exist.')
+    return 
+  }
+
+
+  await fs.promises.cp(path + "/data/graphics/ap_card", './plugins/sdvx@asphyxia/webui/asset/ap_card', {recursive: true}).catch((err: any) => {
+    console.log(err)
+  })
+  await fs.promises.cp(path + "/data/graphics/chat_stamp", './plugins/sdvx@asphyxia/webui/asset/chat_stamp', {recursive: true}).catch((err: any) => {
+    console.log(err)
+  })
+  await fs.promises.cp(path + "/data/graphics/game_nemsys", './plugins/sdvx@asphyxia/webui/asset/nemsys', {recursive: true}).catch((err: any) => {
+    console.log(err)
+  })
+  await fs.promises.cp(path + "/data/graphics/submonitor_bg", './plugins/sdvx@asphyxia/webui/asset/submonitor_bg', {recursive: true}).catch((err: any) => {
+    console.log(err)
+  })
+  console.log('Assets imported.')
+  send.json({status:"ok"})
+};

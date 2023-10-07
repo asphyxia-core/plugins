@@ -6,6 +6,10 @@
   //const sdvxid = `${padded.slice(0, 4)}-${padded.slice(4)}`;
 
 link(rel="stylesheet" href="static/asset/css/course.css")
+//- <link rel="preload" href="/assets/Pacifico-Bold.woff2" as="font" type="font/woff2" crossorigin>
+link(rel="preload" href="static/asset/css/font/0001.ttf" as="font" type="font/ttf" crossorigin)
+link(rel="preload" href="static/asset/css/font/0002.ttf" as="font" type="font/ttf" crossorigin)
+link(rel="preload" href="static/asset/css/font/0004.woff" as="font" type="font/woff" crossorigin)
 div
   .card
     .card-header
@@ -14,48 +18,48 @@ div
           i.mdi.mdi-account-edit
         | Course
     .card-content
-      .field
-          label.label Version Select
-          .control
-            .select
-              select(name="version_select" id="version_select")
-                option(value="2") INFINITE INFECTION
-                option(value="3") GRAVITY WARS
-                option(value="4") HEAVENLY HAVEN
-                option(value="5") VIVIDWAVE
-                option(value="6") EXCEED GEAR
-      div.is-centered(id="course_content" style="text-align: center;")
-        .card
-          .card-header
-            p.card-header-title
-              span.icon
-                i.mdi.mdi-account-edit
-              | season 
-          .card-content
-            .course-content(id="single_course")
-              table
-                tr 
-                  td(colspan = 3) name
-                tr 
-                  td level
-                  td clearmark 
-                  td clearrate 
-              table 
-                tr 
-                  td 
-                    div(style="vertical-align: top;")
-                      div(style="width:80%;display:inline-block;vertical-align: center;") f
-                      div(style="width:20%;display:inline-block;vertical-align: center;") 12
-                tr 
-                  td
-                    div(style="vertical-align: top;")
-                      div(style="width:80%;display:inline-block;vertical-align: center;") f
-                      div(style="width:20%;display:inline-block;vertical-align: center;") 12
-                tr
-                  td 
-                    div(style="vertical-align: top;")
-                      div(style="width:80%;display:inline-block;vertical-align: center;") f
-                      div(style="width:20%;display:inline-block;vertical-align: center;") 12
+      .block 
+        .field
+            label.label Version Select
+            .control
+              .select
+                select(name="version_select" id="version_select")
+                  option(value="2") INFINITE INFECTION
+                  option(value="3") GRAVITY WARS
+                  option(value="4") HEAVENLY HAVEN
+                  option(value="5") VIVIDWAVE
+                  option(value="6") EXCEED GEAR
+      .block 
+        .columns.is-multiline(style="text-align: center;" id="course_content")
+          //- .tile.is-parent.is-6
+          //-   .tile.is-child 
+          //-     .card
+          //-       .card-header
+          //-         p.card-header-title
+          //-           span.icon
+          //-             i.mdi.mdi-account-edit
+          //-           | season 
+          //-       .card-content
+          //-         .course-content(id="single_course")
+          //-           .tile.is-ancestor(id="single_course")
+          //-             .tile.is-vertical
+          //-               .tile.is-parent
+          //-                 .tile.is-child name
+          //-               .tile.is-parent
+          //-                 .tile.is-child level 
+          //-                 .tile.is-child mark
+          //-                 .tile.is-child rate
+          //-               .tile.is-parent 
+          //-                 .tile.is-child.is-8 ?
+          //-                 .tile.is-child.is-4 ?????
+          //-               .tile.is-parent 
+          //-                 .tile.is-child.is-8 ?
+          //-                 .tile.is-child.is-4 ?????
+          //-               .tile.is-parent 
+          //-                 .tile.is-child.is-8 ?
+          //-                 .tile.is-child.is-4 ?????
+
+
 
 div(hidden id='data-pass') !{JSON.stringify(profile)}
 script(src="static/asset/js/course.js") 

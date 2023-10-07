@@ -1,16 +1,16 @@
-var music_db, course_db, score_db, data_db, appeal_db;
-var volforceArray = [];
-var profile_data, skill_data;
-var baseTBodyCMpD, baseTBodyCMpL, baseTBodyGpD, baseTBodyGpL, baseTBodyASpL;
-var notFirst = false;
-var versionText = ['', 'BOOTH', 'INFINTE INFECTION', 'GRAVITY WARS', 'HEAVENLY HAVEN', 'VIVIDWAVE', 'EXCEED GEAR']
+let music_db, course_db, score_db, data_db, appeal_db;
+let volforceArray = [];
+let profile_data, skill_data;
+let baseTBodyCMpD, baseTBodyCMpL, baseTBodyGpD, baseTBodyGpL, baseTBodyASpL;
+let notFirst = false;
+let versionText = ['', 'BOOTH', 'INFINTE INFECTION', 'GRAVITY WARS', 'HEAVENLY HAVEN', 'VIVIDWAVE', 'EXCEED GEAR']
 
 function createArray(length) {
-    var arr = new Array(length || 0),
+    let arr = new Array(length || 0),
         i = length;
     arr.fill(0);
     if (arguments.length > 1) {
-        var args = Array.prototype.slice.call(arguments, 1);
+        let args = Array.prototype.slice.call(arguments, 1);
         while (i--) arr[length - 1 - i] = createArray.apply(this, args);
     }
 
@@ -18,7 +18,7 @@ function createArray(length) {
 }
 
 function zeroPad(num, places) {
-    var zero = places - num.toString().length + 1;
+    let zero = places - num.toString().length + 1;
     return Array(+(zero > 0 && zero)).join("0") + num;
 }
 
@@ -72,46 +72,45 @@ function getMedal(clear) {
 }
 
 function getAppealCard(appeal) {
-
-    var result = appeal_db["appeal_card_data"]["card"].filter(object => object["@id"] == appeal);
-    return "static/asset/ap_card/" + result[0]["info"]["texture"] + ".jpg"
+    let result = appeal_db["appeal_card_data"]["card"].filter(object => object["@id"] == appeal);
+    return "static/asset/ap_card/" + result[0]["info"]["texture"] + ".png"
 }
 
 function getSongLevel(musicid, type) {
     //console.log(music_db["mdb"]["music"])
     // console.log(musicid + " " + type);
     // console.log(musicid)
-    var result = music_db["mdb"]["music"].filter(object => object["@id"] == musicid);
+    let result = music_db["mdb"]["music"].filter(object => object["@id"] == musicid);
     // console.log(result[0]["difficulty"]["novice"]["difnum"]["#text"])
     if (result.length == 0) {
         return "1"
     }
 
-    var diffnum = 0;
+    let diffnum = 0;
 
     switch (type) {
         case 0:
-            if (!(result[0]["difficulty"]["novice"] === undefined))
+            if (result[0]["difficulty"]["novice"] !== undefined)
                 diffnum = result[0]["difficulty"]["novice"]["difnum"]["#text"]
                 // return result[0]["difficulty"]["novice"]["difnum"]["#text"]
             break;
         case 1:
-            if (!(result[0]["difficulty"]["advanced"] === undefined))
+            if (result[0]["difficulty"]["advanced"] !== undefined)
                 diffnum = result[0]["difficulty"]["advanced"]["difnum"]["#text"]
                 // return result[0]["difficulty"]["advanced"]["difnum"]["#text"]
             break;
         case 2:
-            if (!(result[0]["difficulty"]["exhaust"] === undefined))
+            if (result[0]["difficulty"]["exhaust"] !== undefined)
                 diffnum = result[0]["difficulty"]["exhaust"]["difnum"]["#text"]
                 // return result[0]["difficulty"]["exhaust"]["difnum"]["#text"]
             break;
         case 3:
-            if (!(result[0]["difficulty"]["infinite"] === undefined))
+            if (result[0]["difficulty"]["infinite"] !== undefined)
                 diffnum = result[0]["difficulty"]["infinite"]["difnum"]["#text"]
                 // return result[0]["difficulty"]["infinite"]["difnum"]["#text"]
             break;
         case 4:
-            if (!(result[0]["difficulty"]["maximum"] === undefined))
+            if (result[0]["difficulty"]["maximum"] !== undefined)
                 diffnum = result[0]["difficulty"]["maximum"]["difnum"]["#text"]
                 // return result[0]["difficulty"]["maximum"]["difnum"]["#text"]
             break;
@@ -153,47 +152,47 @@ function getVFLevel(VF) {
 }
 
 function getAkaname(akaname) {
-    //var result = music_db["mdb"]["music"].filter(object => object["@id"] == musicid);
-    var result = data_db["akaname"].filter(obj => obj["value"] == akaname)[0];
+    //let result = music_db["mdb"]["music"].filter(object => object["@id"] == musicid);
+    let result = data_db["akaname"].filter(obj => obj["value"] == akaname)[0];
     // console.log(result);
     return result["name"];
 }
 
 function getVFAsset(vf) {
-    var floatVF = parseFloat(vf);
+    let floatVF = parseFloat(vf);
     return "static/asset/force/em6_" + getVFLevel(floatVF) + "_i_eab.png"
 }
 
 function singleScoreVolforce(score) {
     // lv * (score / 10000000) * gradeattr * clearmedalattr * 2
-    var level = getSongLevel(score.mid, score.type);
+    let level = getSongLevel(score.mid, score.type);
     // console.log(level);
-    var tempVF = parseInt(level) * (parseInt(score.score) / 10000000) * getGrade(score.grade) * getMedal(score.clear) * 2;
+    let tempVF = parseInt(level) * (parseInt(score.score) / 10000000) * getGrade(score.grade) * getMedal(score.clear) * 2;
     // console.log(tempVF);
     return tempVF;
 }
 
 function toFixed(num, fixed) {
-    var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (fixed || -1) + '})?');
+    let re = new RegExp('^-?\\d+(?:\.\\d{0,' + (fixed || -1) + '})?');
     return num.toString().match(re)[0];
 }
 
 function calculateVolforce() {
-    for (var i in score_db) {
-        var temp = singleScoreVolforce(score_db[i]);
+    for (let i in score_db) {
+        let temp = singleScoreVolforce(score_db[i]);
         temp = parseFloat(toFixed(temp, 1));
         volforceArray.push(temp);
     }
     volforceArray.sort(function(a, b) { return b - a });
     // console.log(volforceArray);
-    var VF = 0;
+    let VF = 0;
     if (volforceArray.length > 50) {
-        for (var i = 0; i < 50; i++) {
+        for (let i = 0; i < 50; i++) {
             VF += volforceArray[i];
         }
     } else {
-        for (var i = 0; i < volforceArray.length; i++) {
-            VF += volforceArray[i];
+        for (const element of volforceArray) {
+            VF += element;
         }
     }
     VF /= 100;
@@ -201,7 +200,7 @@ function calculateVolforce() {
     return toFixed(VF, 3);
 }
 
-var diffName = ["NOV", "ADV", "EXH", "INF\nGRV\nHVN\nVVD", "MXM"];
+let diffName = ["NOV", "ADV", "EXH", "INF\nGRV\nHVN\nVVD\nXCD", "MXM"];
 
 function preSetTableMark(type) {
     $('#statistic-table').empty();
@@ -336,7 +335,7 @@ function setCMpL() {
 
     $('#statistic-table').fadeOut(200, function() {
         preSetTableMark("Level");
-        //var tableBody = $('#tbodyin');
+        //let tableBody = $('#tbodyin');
         $('#statistic-table').append(baseTBodyCMpL)
             .removeClass("is-narrow")
             .css('width', '45%');
@@ -419,11 +418,11 @@ function setUpStatistics() {
     baseTBodyGpD = $('<tbody>');
     baseTBodyASpL = $('<tbody>');
 
-    var CMpDArray = createArray(5, 5);
-    var CMpLArray = createArray(20, 5);
-    var GpDArray = createArray(5, 10);
-    var GpLArray = createArray(20, 10);
-    var ASpLArray = createArray(20, 2);
+    let CMpDArray = createArray(5, 5);
+    let CMpLArray = createArray(20, 5);
+    let GpDArray = createArray(5, 10);
+    let GpLArray = createArray(20, 10);
+    let ASpLArray = createArray(20, 2);
 
     score_db.forEach(function(currentValue, index, array) {
         //console.log(currentValue);
@@ -440,7 +439,7 @@ function setUpStatistics() {
     // console.log(GpDArray);
     // console.log(GpLArray);
     // console.log(ASpLArray);
-    for (var diff = 0; diff < 5; diff++) {
+    for (let diff = 0; diff < 5; diff++) {
         baseTBodyCMpD.append(
             $('<tr>').append(
                 $('<th>').append(
@@ -469,7 +468,7 @@ function setUpStatistics() {
             )
         )
     }
-    for (var lv = 1; lv <= 20; lv++) {
+    for (let lv = 1; lv <= 20; lv++) {
         baseTBodyCMpL.append(
             $('<tr>').append(
                 $('<th>').append(
@@ -498,7 +497,7 @@ function setUpStatistics() {
             )
         )
     }
-    for (var diff = 0; diff < 5; diff++) {
+    for (let diff = 0; diff < 5; diff++) {
         baseTBodyGpD.append(
             $('<tr>').append(
                 $('<th>').append(
@@ -548,7 +547,7 @@ function setUpStatistics() {
         )
     }
 
-    for (var lv = 1; lv <= 20; lv++) {
+    for (let lv = 1; lv <= 20; lv++) {
         baseTBodyGpL.append(
             $('<tr>').append(
                 $('<th>').append(
@@ -597,7 +596,7 @@ function setUpStatistics() {
             )
         )
     }
-    for (var lv = 1; lv <= 20; lv++) {
+    for (let lv = 1; lv <= 20; lv++) {
         baseTBodyASpL.append(
             $('<tr>').append(
                 $('<th>').append(
@@ -643,15 +642,15 @@ $('#version_select').change(function() {
 function getPlayerSkill(version) {
     // console.log(getPlayerMaxVersion())
     if (skill_data.length == 0) return 0;
-    var k = skill_data.filter(e => e.version == version)
+    let k = skill_data.filter(e => e.version == version)
     return parseInt(k[0].level);
 }
 
 function getVersionSelect() {
     if (skill_data.length == 0) return [];
-    var versionDATA = [];
-    for (var i = 0; i < skill_data.length; i++) {
-        versionDATA.push(parseInt(skill_data[i].version));
+    let versionDATA = [];
+    for (const element of skill_data) {
+        versionDATA.push(parseInt(element.version));
     }
     return versionDATA;
 }
@@ -689,17 +688,22 @@ $(document).ready(function() {
             //console.log(appeal_db);
         })
     ).then(function() {
-        var currentVF = calculateVolforce();
-        var maxVer = parseInt(skill_data[0]["version"])
+        let currentVF = parseFloat(calculateVolforce()).toFixed(3);
+        let maxVer;
+        if(skill_data[0] != undefined){
+            maxVer = parseInt(skill_data[0]["version"])
+        }else{
+            maxVer = 6;
+        }
 
-        var versionInfo = getVersionSelect();
+        let versionInfo = getVersionSelect();
         console.log(versionInfo);
-        for (var i = 0; i < versionInfo.length; i++) {
-            console.log(versionInfo[i])
+        for (const element of versionInfo) {
+            console.log(element)
             $('#version_select').append(
                 $('<option>', {
-                    value: versionInfo[i],
-                    text: versionText[versionInfo[i]],
+                    value: element,
+                    text: versionText[element],
                 })
             )
         }
@@ -758,11 +762,11 @@ $(document).ready(function() {
                     )
                 ).append(
                     $('<div>').append(
-                        
+
                     ).append(
-                        
+
                     ).append(
-                        
+
                     ).css("display", "table")
                     .css('width', '100%')
                     .css('text-align', 'left')
@@ -787,7 +791,7 @@ $(document).ready(function() {
                                     "Skill Level"
                                 ).append(
                                     $('<div class="content">').append(
-                                            $('<img id="skillLV">').attr('src', getSkillAsset(getPlayerSkill(maxVer)))
+                                        $('<img id="skillLV">').attr('src', getSkillAsset(getPlayerSkill(maxVer)))
                                     )
                                 ).css('font-family', "testfont")
                             )
@@ -801,7 +805,7 @@ $(document).ready(function() {
                                     $('<div class="content">').append(
                                         profile_data.blocks
                                     )
-                                ).css('font-family', "testfont") 
+                                ).css('font-family', "testfont")
                             )
                         )
                     ).css('vertical-align', 'middle')
@@ -858,16 +862,16 @@ $(document).ready(function() {
                         $('<div class="tile is-parent">').append(
                             $('<article class="tile is-child">').append(
                                 // $('<div class="table-container">').append(
-                                    $('<table class="table mx-auto is-fullwidth is-hoverable" id="statistic-table">')
-                                    .css('margin-left', 'auto')
-                                    .css('margin-right', 'auto')
-                                    // .css('width', '100%')
+                                $('<table class="table mx-auto is-fullwidth is-hoverable" id="statistic-table">')
+                                .css('margin-left', 'auto')
+                                .css('margin-right', 'auto')
+                                // .css('width', '100%')
                                 // )
-                            )//.css('text-align', 'center')
-                             .css('overflow-x', 'auto')
+                            ) //.css('text-align', 'center')
+                            .css('overflow-x', 'auto')
                         )
                     )
-                    
+
                 )
             )
         )
@@ -875,9 +879,7 @@ $(document).ready(function() {
         setUpStatistics();
         setCMpD();
 
-        $('.dots').fadeOut(400, function() {
-
-        })
+        document.querySelector('.uiblocker').classList.toggle('fade');
         $('#test').fadeIn(1000);
     })
 

@@ -6,6 +6,17 @@
   const sdvxid = `${padded.slice(0, 4)}-${padded.slice(4)}`;
 
 link(rel="stylesheet" href="static/asset/css/profile.css")
+.uiblocker
+  .lds-roller
+    div 
+    div 
+    div 
+    div 
+    div 
+    div 
+    div 
+    div 
+    p#loading_text Loading...
 div
   .card
     .card-header
@@ -15,14 +26,22 @@ div
         | Settings
     .card-content
       form(method="post" action="/emit/updateProfile")
-        .field
+        //- .field
           label.label ID
           .control
             input.input(type="text" name="refid", value=refid readonly)
-        .field
+        //- .field
           label.label SDVX ID
           .control
             input.input(type="text" name="sdvxid", value=sdvxid readonly)
+        input.input(type="hidden" name="refid", value=refid readonly)
+        input.input(type="hidden" name="sdvxid", value=sdvxid readonly)
+        label.label ID 
+          .box #{refid} 
+        label.label SDVX ID 
+          .box #{sdvxid}
+
+
         .field
           label.label Name
           .control
@@ -41,12 +60,39 @@ div
             span.icon.has-tooltip-right(data-tooltip="Custom is set as ID 50000, if you want to use custom, please make sure you add the entry to the xml file.")
               i.mdi.mdi-help-circle
           .control.is-expanded 
-                  .select.is-fullwidth
-                    select(name="akaname" id="akaname_select")
-          //.control
-            input.input(type="number" step=1 name="akaname", placeholder=profile.akaname)//
+            .select.is-fullwidth
+              select(name="akaname" id="akaname_select")
+        .field
+          label.label Appeal Frame
+          .control.is-expanded 
+            .select.is-fullwidth
+              select(name="appeal_frame" id="appeal_frame")
+                option(value="0") Default
+                option(value="2") TRACK CREATOR
+                option(value="3") JACKET ARTIST
+                option(value="4") APPEAL CARD ARTIST
+                option(value="5") BEMANI ARTISE
+                option(value="6") SDVX STAFF
+                option(value="7") FEATURED ARTIST
+                option(value="8") GENESIS CARD ARTIST
+                option(value="9") KAC FINALIST(RED)
+                option(value="10") KAC FINALIST(BLUE)
+        .field
+          label.label Support Team
+          .control.is-expanded 
+            .select.is-fullwidth
+              select(name="support_team" id="support_team")
+                option(value="0") No Team 
+                option(value="1") APINA VRAMeS
+                option(value="2") GiGO
+                option(value="3") GAME PANIC
+                option(value="4") SILK HAT
+                option(value="5") SUPER NOVA Tohoku
+                option(value="6") TAITO STATION Tradz
+                option(value="7") ROUND1
+                option(value="8") LEISURELAND
         br
-        div(style="font-size:26px;font-weight:bold;vertical-align:top; overflow-wrap: break-word;word-break: break-all;") EXCEED GEAR VALKYRIE GENERATOR CUSTOMIZATION
+        div(style="font-size:26px;font-weight:bold;vertical-align:top;") EXCEED GEAR VALKYRIE GENERATOR CUSTOMIZATION
           .tile.is-ancestor
             .tile.is-parent.is-6
               .tile.is-child(style="vertical-align: top;")
@@ -108,6 +154,44 @@ div
                       select(name="stampD")
                     //input.input(type="number" step=1 name="stampD", placeholder=profile.stampD)
                 .field
+                  label.label AStamp_R
+                    //span.icon.has-tooltip-right(data-tooltip="Check \"data/graphics/chat_stamp\" 000X_0Y => 4*(X-1)+Y=StampID stamp_0000_01~04 is not usable!!!")
+                      i.mdi.mdi-help-circle
+                  .control
+                    .select.is-fullwidth
+                      select(name="stampA_R")
+                    //input.input(type="number" step=1 name="stampA", placeholder=profile.stampA)
+                .field
+                  label.label BStamp_R
+                    //span.icon.has-tooltip-right(data-tooltip="Check \"data/graphics/chat_stamp\" 000X_0Y => 4*(X-1)+Y=StampID stamp_0000_01~04 is not usable!!!")
+                      i.mdi.mdi-help-circle
+                  .control
+                    .select.is-fullwidth
+                      select(name="stampB_R")
+                    //input.input(type="number" step=1 name="stampB", placeholder=profile.stampB)
+                .field
+                  label.label CStamp_R
+                    //span.icon.has-tooltip-right(data-tooltip="Check \"data/graphics/chat_stamp\" 000X_0Y => 4*(X-1)+Y=StampID stamp_0000_01~04 is not usable!!!")
+                      i.mdi.mdi-help-circle
+                  .control
+                    .select.is-fullwidth
+                      select(name="stampC_R")
+                    //input.input(type="number" step=1 name="stampC", placeholder=profile.stampC)
+                .field
+                  label.label DStamp_R
+                    //span.icon.has-tooltip-right(data-tooltip="Check \"data/graphics/chat_stamp\" 000X_0Y => 4*(X-1)+Y=StampID stamp_0000_01~04 is not usable!!!")
+                      i.mdi.mdi-help-circle
+                  .control
+                    .select.is-fullwidth
+                      select(name="stampD_R")
+                    //input.input(type="number" step=1 name="stampD", placeholder=profile.stampD)
+                .field
+                  label.label Main BG
+                  .control
+                    .select.is-fullwidth
+                      select(name="mainbg")
+                    //input.input(type="number" step=1 name="stampD", placeholder=profile.stampD)
+                .field
                   button.button.is-primary(type="submit") 
                     span.icon
                       i.mdi.mdi-check
@@ -115,49 +199,73 @@ div
             .tile.is-vertical(style="vertical-aling:top;font-size:1rem;font-weight:700;") 
               .tile 
                 .tile.is-parent
-                  .tile.is-child
+                  .tile.is-child.with_relative 
                     p Nemsys Preview
-                    img(src='static/asset/nemsys/nemsys_0000_i_eeb.png' id="nemsys_pre")
+                    img(src='static/asset/nemsys/nemsys_0000.png' id="nemsys_pre")
+                    img(src='static/asset/nemsys/nemsys_0000.png' id="nemsys_pre_fade")
                 .tile.is-parent
-                  .tile.is-child
+                  .tile.is-child.with_relative
                     p Submonitor Preview
-                    img(src='static/asset/submonitor_bg/subbg_0001.jpg' id="sub_pre")
+                    img(src='static/asset/submonitor_bg/subbg_0000.png' id="sub_pre")
+                    img(src='static/asset/submonitor_bg/subbg_0000.png' id="sub_pre_fade")
+                    video(id='sub_video_pre' style='display:none;')
               .tile 
                 .tile.is-parent.btm
-                  .tile.is-child
+                  .tile.is-child.with_relative
                     p A
                     img(src='static/asset/nostamp.png' id="a_pre")
+                    img(src='static/asset/nostamp.png' id="a_pre_fade")
                 .tile.is-parent.btm
-                  .tile.is-child
+                  .tile.is-child.with_relative
                     p B
                     img(src='static/asset/nostamp.png' id="b_pre")
+                    img(src='static/asset/nostamp.png' id="b_pre_fade")
                 .tile.is-parent.btm
-                  .tile.is-child
+                  .tile.is-child.with_relative
                     p C
                     img(src='static/asset/nostamp.png' id="c_pre")
+                    img(src='static/asset/nostamp.png' id="c_pre_fade")
                 .tile.is-parent.btm
-                  .tile.is-child
+                  .tile.is-child.with_relative
                     p D
                     img(src='static/asset/nostamp.png' id="d_pre")
-              .tile.is-parent.is-vertical(id='bgm_pre')
-                p BGM preview
-                audio(controls style="width:100%;display:none;" src='static/asset/audio/custom_00/0.mp3' type='audio/mp3' id='custom_0')
-              .tile.is-parent.is-vertical(id='sel_pre')
-                p Song selection preview
-                audio(controls style="width:100%;display:none;" src='static/asset/audio/custom_00/1.mp3' type='audio/mp3' id='custom_1')
+                    img(src='static/asset/nostamp.png' id="d_pre_fade")
+              .tile 
+                .tile.is-parent.btm
+                  .tile.is-child.with_relative
+                    p A_R
+                    img(src='static/asset/nostamp.png' id="ar_pre")
+                    img(src='static/asset/nostamp.png' id="ar_pre_fade")
+                .tile.is-parent.btm
+                  .tile.is-child.with_relative
+                    p B_R
+                    img(src='static/asset/nostamp.png' id="br_pre")
+                    img(src='static/asset/nostamp.png' id="br_pre_fade")
+                .tile.is-parent.btm
+                  .tile.is-child.with_relative
+                    p C_R
+                    img(src='static/asset/nostamp.png' id="cr_pre")
+                    img(src='static/asset/nostamp.png' id="cr_pre_fade")
+                .tile.is-parent.btm
+                  .tile.is-child.with_relative
+                    p D_R
+                    img(src='static/asset/nostamp.png' id="dr_pre")
+                    img(src='static/asset/nostamp.png' id="dr_pre_fade")
+              .tile 
+                .tile.is-parent.btm
+                  .tile 
+                    .tile.is-child(id='bgm_pre')
+                      span BGM preview
+                      audio(controls style="display:none;" src='static/asset/audio/custom_00/0.mp3' type='audio/mp3' id='custom_0')
+                    .tile.is-child(id='sel_pre')
+                      span Song selection preview
+                      audio(controls style="display:none;" src='static/asset/audio/custom_00/1.mp3' type='audio/mp3' id='custom_1')
               .tile.is-parent.is-vertical
-                article.tile.is-child
-                  .content(style="color:#696969;overflow-wrap: break-word;word-break: break-all;") 
-                    | For Heavenly model original and AprilFool nemsys, you'll have to edit 
-                    br
-                    | /data/others/custom_nemsys.xml, and put the heavenly model texture in 
-                    br
-                    | /data_mods/omnimix/graphics/ver06/psd_nemsys_ifs/nemsys_0011_i_eeb.png
-                    br
-                    | (You can right-click preview to save the texture) 
-                    br
-                    | THIS IS SELF-PHOTOSHOP TEXTURE, NOT OFFICIAL
-                .tild.is-child
-                  a(href="static/asset/nemsys/custom_nemsys.xml" download="custom_nemsys.xml") custom_nemsys.xml download
+                .tile.is-child(id='mainbg_pre')
+                  p Main BG Preview
+                  
+video(id='mainbg_video_pre')
+
+                  
 div(hidden id='data-pass') !{JSON.stringify(profile)}
 script(src="static/asset/js/preview.js") 

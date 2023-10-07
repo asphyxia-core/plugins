@@ -2,6 +2,9 @@ import { Profile } from '../models/profile';
 import { MusicRecord } from '../models/music_record';
 import { getVersion, IDToCode, GetCounter } from '../utils';
 import { Mix } from '../models/mix';
+import { MatchingRoom } from '../models/matching';
+
+let Tracker:MatchingRoom[] = [];
 
 export const hiscore: EPR = async (info, data, send) => {
   const records = await DB.Find<MusicRecord>(null, { collection: 'music' });
@@ -12,33 +15,6 @@ export const hiscore: EPR = async (info, data, send) => {
     await DB.Find<Profile>(null, { collection: 'profile' }),
     '__refid'
   );
-
-  if (version === 1) {
-    return send.object({
-      hiscore: K.ATTR({ type: "1" }, {
-        music: _.map(
-          _.groupBy(records, r => {
-            return `${r.mid}:${r.type}`;
-          }),
-          r => _.maxBy(r, 'score')
-        ).map(r => (K.ATTR({ id: String(r.mid) }, {
-          note: (() => {
-            const notes = [];
-
-            for (let i = 1; i <= 3; i++) {
-              if (r.type !== i) continue;
-              notes.push(K.ATTR({ type: String(r.type) }, {
-                name: K.ITEM('str', profiles[r.__refid][0].name),
-                score: K.ITEM('u32', r.score)
-              }))
-            }
-
-            return notes;
-          })()
-        }))),
-      })
-    })
-  }
 
   return send.object({
     sc: {
@@ -56,6 +32,14 @@ export const hiscore: EPR = async (info, data, send) => {
         l_sq: K.ITEM('str', IDToCode(profiles[r.__refid][0].id)),
         l_nm: K.ITEM('str', profiles[r.__refid][0].name),
         l_sc: K.ITEM('u32', r.score),
+        ax_sq: K.ITEM('str', IDToCode(profiles[r.__refid][0].id)),
+        ax_nm: K.ITEM('str', profiles[r.__refid][0].name),
+        ax_sc: K.ITEM('u32', r.exscore ?? 0),
+        lx_sq: K.ITEM('str', IDToCode(profiles[r.__refid][0].id)),
+        lx_nm: K.ITEM('str', profiles[r.__refid][0].name),
+        lx_sc: K.ITEM('u32', r.exscore ?? 0),
+        avg_sc: K.ITEM('u32', r.score),
+        cr: K.ITEM('s32', 8763)
       })),
     },
   });
@@ -79,7 +63,7 @@ export const rival: EPR = async (info, data, send) => {
           music: (
             await DB.Find<MusicRecord>(p.__refid, { collection: 'music' })
           ).map(r => ({
-            param: K.ARRAY('u32', [r.mid, r.type, r.score, r.clear, r.grade]),
+            param: K.ARRAY('u32', [r.mid, r.type, r.score, r.exscore, r.clear, r.grade]),
           })),
         };
       })
@@ -153,28 +137,60 @@ export const loadMix: EPR = async (info, data, send) => {
   });
 };
 
-export const globalMatch: EPR = async (info, data, send) => {
-  // console.log("Current MID: "+$(data).number('mid'));
-  // console.log("Port: "+$(data).number('port'));
-  // console.log("Global IP: "+$(data).numbers('gip'));
-  // console.log("Private IP: "+$(data).numbers('lip'));
 
-  // var mid = $(data).number('mid');
-  // var port = $(data).number('port');
-  // var gip = $(data).str('gip');
-  // var lip = $(data).str('lip');
-  // var testArray = [{
-  //   port: port,
-  //   gip:gip,
-  //   lip:lip,
-  // }];
-  // return send.object({
-  //   entry_id: K.ITEM('str', '123456789'),
-  //   entry: testArray.map(a=>{
-  //     port: K.ITEM('u16',a.port);
-  //     gip: K.ITEM('ip4',a.gip);
-  //     lip: K.ITEM('ip4',a.lip);
-  //   })
-  // });
-  send.success();
+export const globalMatch: EPR = async (info, data, send) => {
+  const gipArr = $(data).numbers('gip');
+  const lipArr = $(data).numbers('lip');
+  const gip = gipArr.join('.');
+  const lip = lipArr.join('.');
+  const gameID = $(data).number('mid');
+
+  const filter = $(data).number('filter');
+
+  Tracker = Tracker.filter(e => Math.trunc(new Date().getTime()/1000) - e.sec <= 90)
+  
+  let curr_game_arr = Tracker.filter(e => e.filter == filter);
+  curr_game_arr = curr_game_arr.filter(e => e.gameID == gameID);
+
+  console.log(JSON.stringify(curr_game_arr,null,2))
+
+
+  let in_tracker = false;
+
+  for(const element of curr_game_arr) {
+    if(element.gip == gip){
+      in_tracker = true;
+      break;
+    }
+  }
+
+  if(!in_tracker){
+    let curr_game:MatchingRoom;
+    curr_game = <MatchingRoom> {
+      gameID:gameID,
+      gip:gip,
+      lip:lip,
+      sec: Math.trunc(new Date().getTime()/1000),
+      port:$(data).number('port'),
+      filter:filter
+    };
+    Tracker.push(curr_game);
+  }
+  
+  
+  console.log(JSON.stringify(Tracker,null,2))
+
+  let temp = {
+    entry_id: K.ITEM('u32',0),
+    entry: curr_game_arr.map(e => ({
+        gip: K.ITEM('4u8',e.gip.split('.').map(e => parseInt(e))),
+        lip: K.ITEM('4u8',e.lip.split('.').map(e => parseInt(e))),
+        port: K.ITEM('u16',e.port),
+    }))
+  }
+  console.log(JSON.stringify(temp, null, 2));
+
+  send.object(temp);
+  
+
 }
