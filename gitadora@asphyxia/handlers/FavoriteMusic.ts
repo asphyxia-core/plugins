@@ -1,6 +1,6 @@
 import { Extra } from "../models/extra";
 import { FavoriteMusic } from "../models/favoritemusic";
-import { isSharedFavoriteMusicEnabled } from "../utils";
+import { isSharedFavoriteMusicEnabled } from "../utils/index";
 import Logger from "../utils/logger";
 
 const logger = new Logger("FavoriteMusic");
