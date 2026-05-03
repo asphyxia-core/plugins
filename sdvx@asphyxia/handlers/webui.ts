@@ -8,9 +8,9 @@ import { error } from 'console';
 import { unpackS3P } from '../s3p';
 import { music_db } from '..';
 import { zipFolderToFile } from '../utils/zip';
-import path from 'path';
 
 const joinUnder = (basePath: string, childPath: string) => {
+  const path = require('path');
   const sanitizedChild = (childPath ?? '').replace(/^[/\\]+/, '');
   return path.join(basePath, sanitizedChild);
 };
@@ -253,6 +253,7 @@ export const import_assets = async (data: { path: string }, send: WebUISend) => 
   const sdvxInstallPath = data.path;
   console.log(sdvxInstallPath)
   let fs = require('fs')
+  const path = require('path')
 
   const graphicsDir = path.join(sdvxInstallPath, 'data', 'graphics');
   if (!fs.existsSync(graphicsDir)) {
