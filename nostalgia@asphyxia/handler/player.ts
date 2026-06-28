@@ -153,6 +153,205 @@ const getPlayerData = async (refid: string, info: EamuseInfo, name?: string) => 
     music_list2.pop();
   }
 
+  return buildLegacyPlayerPayload(p, version, {
+    param,
+    brooch,
+    stairs,
+    kentei_record,
+    island_progress,
+    correct_permitted_list,
+    music_list,
+    music_list2,
+  });
+};
+
+const buildMusicFlags = (p: Profile) => ({
+  flag: [
+    K.ARRAY('s32', p.musicList.type_0, { sheet_type: '0' }),
+    K.ARRAY('s32', p.musicList.type_1, { sheet_type: '1' }),
+    K.ARRAY('s32', p.musicList.type_2, { sheet_type: '2' }),
+    K.ARRAY('s32', p.musicList.type_3, { sheet_type: '3' }),
+  ],
+});
+
+const buildFreeMusicFlags = (p: Profile) => ({
+  flag: [
+    K.ARRAY('s32', p.musicList2.type_0, { sheet_type: '0' }),
+    K.ARRAY('s32', p.musicList2.type_1, { sheet_type: '1' }),
+    K.ARRAY('s32', p.musicList2.type_2, { sheet_type: '2' }),
+    K.ARRAY('s32', p.musicList2.type_3, { sheet_type: '3' }),
+  ],
+});
+
+const op3Num = (value: number | undefined, fallback = 0) =>
+  typeof value === 'number' && !Number.isNaN(value) ? value : fallback;
+
+const padS32 = (arr: number[] | undefined, len: number, fill: number) => {
+  const out = Array(len).fill(fill);
+  if (!arr) return out;
+  for (let i = 0; i < Math.min(len, arr.length); i++) {
+    const v = arr[i];
+    out[i] = typeof v === 'number' && !Number.isNaN(v) ? v : fill;
+  }
+  return out;
+};
+
+const padOp3MusicLists = (profile: Profile): Profile => ({
+  ...profile,
+  musicList: {
+    type_0: padS32(profile.musicList?.type_0, 32, -1),
+    type_1: padS32(profile.musicList?.type_1, 32, -1),
+    type_2: padS32(profile.musicList?.type_2, 32, -1),
+    type_3: padS32(profile.musicList?.type_3, 32, -1),
+  },
+  musicList2: {
+    type_0: padS32(profile.musicList2?.type_0, 32, -1),
+    type_1: padS32(profile.musicList2?.type_1, 32, -1),
+    type_2: padS32(profile.musicList2?.type_2, 32, -1),
+    type_3: padS32(profile.musicList2?.type_3, 32, -1),
+  },
+  params: {
+    '1': padS32(profile.params?.['1'], 11, 0),
+    '2': padS32(profile.params?.['2'], 8, 0),
+  },
+});
+
+const op3FreshMusicFlags = () => ({
+  flag: [
+    K.ARRAY('s32', Array(32).fill(-1), { sheet_type: '0' }),
+    K.ARRAY('s32', Array(32).fill(-1), { sheet_type: '1' }),
+    K.ARRAY('s32', Array(32).fill(-1), { sheet_type: '2' }),
+    K.ARRAY('s32', Array(32).fill(-1), { sheet_type: '3' }),
+  ],
+});
+
+const buildOp3Last = (p: Profile, isRegist = false) => {
+  const last: Record<string, unknown> = {
+    music_group: K.ITEM('s32', op3Num(p.group)),
+    music_index: K.ITEM('s32', op3Num(p.music)),
+    sheet_type: K.ITEM('s8', op3Num(p.sheet)),
+    perform_type: K.ITEM('s32', op3Num(p.performType)),
+    filter_flag: K.ITEM('u64', BigInt(op3Num(p.filterFlag))),
+    brooch_index: K.ITEM('s32', op3Num(p.brooch)),
+    hi_speed_level: K.ITEM('s32', op3Num(p.hispeed)),
+    beat_guide: K.ITEM('s8', op3Num(p.beatGuide)),
+    headphone_volume: K.ITEM('s8', op3Num(p.headphone)),
+    judge_bar_pos: K.ITEM('s32', isRegist ? 0 : op3Num(p.judgeBar, 250)),
+    hands_mode: K.ITEM('s8', op3Num(p.mode)),
+    near_setting: K.ITEM('s8', op3Num(p.near)),
+    judge_delay_offset: K.ITEM('s8', op3Num(p.offset)),
+    key_beam_level: K.ITEM('s8', op3Num(p.keyBeam)),
+    orbit_type: K.ITEM('s8', op3Num(p.orbit)),
+    note_height: K.ITEM('s8', op3Num(p.noteHeight, 10)),
+    note_width: K.ITEM('s8', op3Num(p.noteWidth, 10)),
+    judge_width_type: K.ITEM('s8', op3Num(p.judgeWidth, 10)),
+    beat_guide_volume: K.ITEM('s8', op3Num(p.beatVolume)),
+    beat_guide_type: K.ITEM('s8', op3Num(p.beatType)),
+    key_volume_offset: K.ITEM('s8', op3Num(p.keyVolume)),
+    bgm_volume_offset: K.ITEM('s8', op3Num(p.bgmVolume)),
+    note_disp_type: K.ITEM('s8', op3Num(p.note)),
+    slow_fast: K.ITEM('s8', op3Num(p.sf)),
+    option_setting: K.ITEM('s32', op3Num(p.optionSetting)),
+    judge_effect_adjust: K.ITEM('s8', op3Num(p.judgeFX)),
+    simple_bg: K.ITEM('s8', op3Num(p.simple)),
+    bingo_index: K.ITEM('s32', op3Num(p.bingo)),
+  };
+
+  if (!isRegist) {
+    last.class_basic = K.ITEM('s32', op3Num(p.classBasic));
+    last.class_recital = K.ITEM('s32', op3Num(p.classRecital));
+    last.grade_basic = K.ITEM('s32', op3Num(p.gradeBasic));
+    last.grade_recital = K.ITEM('s32', op3Num(p.gradeRecital));
+  }
+
+  return last;
+};
+
+const buildOp3Travel = (p: Profile) => ({
+  money: K.ITEM('s32', op3Num(p.money)),
+  pianist_power: K.ITEM('s32', op3Num(p.pianistPower)),
+  fame_index: K.ITEM('s32', op3Num(p.fameId)),
+  kingdom_id: K.ITEM('s32', op3Num(p.kingdomId)),
+  quest_index: K.ITEM('s32', op3Num(p.questIndex)),
+});
+
+const buildOp3ExtraParam = () => ({
+  param: [
+    K.ATTR({ type: '1' }, {
+      count: K.ITEM('s32', 11),
+      params_array: K.ARRAY('s32', [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+    }),
+    K.ATTR({ type: '2' }, {
+      count: K.ITEM('s32', 8),
+      params_array: K.ARRAY('s32', [64, 0, 0, 0, 0, 0, 0, 0]),
+    }),
+  ],
+});
+
+const op3RegistExtras = () => ({
+  valid_quest_list: {
+    quest: K.ATTR({ index: '1' }, {}),
+  },
+  valid_course_list: {
+    course: K.ATTR({ index: '1' }, {}),
+  },
+});
+
+const getPlayerDataOp3 = async (
+  refid: string,
+  _info: EamuseInfo,
+  options?: { name?: string; isRegist?: boolean },
+) => {
+  const p = await readProfile(refid);
+
+  if (options?.name && options.name.length > 0) {
+    p.name = options.name;
+    await writeProfile(refid, p);
+  }
+
+  const identity = {
+    name: K.ITEM('str', p.name || 'GUEST'),
+    play_count: K.ITEM('s32', 0),
+    today_play_count: K.ITEM('s32', 0),
+    old_play_count: K.ITEM('s32', 0),
+    old_recital_count: K.ITEM('s32', 0),
+  };
+
+  if (options?.isRegist) {
+    return {
+      permitted_list,
+      ...op3RegistExtras(),
+      ...identity,
+      music_list: op3FreshMusicFlags(),
+      free_for_play_music_list: op3FreshMusicFlags(),
+      last: buildOp3Last(p, true),
+      travel: buildOp3Travel(p),
+    };
+  }
+
+  return {
+    permitted_list,
+    ...identity,
+    music_list: op3FreshMusicFlags(),
+    free_for_play_music_list: op3FreshMusicFlags(),
+    last: buildOp3Last(p, false),
+    travel: buildOp3Travel(p),
+    extra_param: buildOp3ExtraParam(),
+  };
+};
+
+function buildLegacyPlayerPayload(p: Profile, version: NosVersionHelper, parts: any) {
+  const {
+    param,
+    brooch,
+    stairs,
+    kentei_record,
+    island_progress,
+    correct_permitted_list,
+    music_list,
+    music_list2,
+  } = parts;
+
   return {
     name: K.ITEM('str', p.name),
     play_count: K.ITEM('s32', p.playCount),
@@ -227,7 +426,15 @@ export const regist_playdata: EPR = async (info, data, send) => {
   if (!refid) return send.deny();
 
   const name = $(data).str('name');
-  console.debug(`nos op2 regist: ${name}`);
+  const version = new NosVersionHelper(info);
+  console.debug(`nos ${version.version} regist: ${name}`);
+
+  if (version.isOp3()) {
+    const payload = await getPlayerDataOp3(refid, info, { name, isRegist: true });
+    console.log(`[nostalgia@asphyxia] op3 regist_playdata refid=${refid} name=${name}`);
+    send.object(payload);
+    return;
+  }
 
   send.object(await getPlayerData(refid, info, name));
 };
@@ -236,18 +443,142 @@ export const get_playdata: EPR = async (info, data, send) => {
   const refid = $(data).str('refid');
   if (!refid) return send.deny();
 
+  const version = new NosVersionHelper(info);
+  if (version.isOp3()) {
+    send.object(await getPlayerDataOp3(refid, info));
+    return;
+  }
+
   send.object(await getPlayerData(refid, info));
 };
 
-// export const set_stage_result: EPR = async (info, data, send) => {
-//   return send.object();
-// };
+export const set_stage_result: EPR = async (info, data, send) => {
+  const version = new NosVersionHelper(info);
+  if (!version.isOp3()) {
+    send.success();
+    return;
+  }
+
+  const refid = $(data).str('refid');
+  if (!refid) return send.deny();
+
+  const scoreData = await readScores(refid);
+  const stages = $(data).elements('stageinfo.stage');
+  const stage = stages.length > 0 ? stages[stages.length - 1] : null;
+  if (!stage) {
+    send.success();
+    return;
+  }
+
+  const mid = stage.attr().music_index;
+  const type = stage.attr().sheet_type;
+  const common = stage.element('common');
+  const key = `${mid}:${type}`;
+  const o = _.get(scoreData, `scores.${key}`, {});
+  const isHigh = common.number('score', 0) >= _.get(o, 'score', 0);
+
+  scoreData.scores[key] = {
+    score: Math.max(common.number('score', 0), _.get(o, 'score', 0)),
+    grade: isHigh ? common.number('grade', 0) : _.get(o, 'grade', 0),
+    recital: _.get(o, 'recital', 0),
+    mode: isHigh ? common.number('hands_mode', 0) : _.get(o, 'mode', 0),
+    count: Math.max(common.number('play_count', 0), _.get(o, 'count', 1)),
+    clear: common.number('clear_count', _.get(o, 'clear', 0)),
+    multi: common.number('multi_count', _.get(o, 'multi', 0)),
+    flag: Math.max(common.number('clear_flag', 0), _.get(o, 'flag', 0)),
+  };
+
+  await writeScores(refid, scoreData);
+  send.object({ player: {} });
+};
 
 export const set_total_result: EPR = async (info, data, send) => {
   const refid = $(data).str('refid');
   if (!refid) return send.deny();
 
-  const isForte = new NosVersionHelper(info).isFirstOrForte()
+  const version = new NosVersionHelper(info);
+  if (version.isOp3()) {
+    const p = await readProfile(refid);
+
+    p.playCount = $(data).number('play_count', p.playCount);
+    p.todayPlayCount = $(data).number('today_play_count', p.todayPlayCount);
+    p.oldPlayCount = $(data).number('old_play_count', p.oldPlayCount);
+    p.oldRecitalCount = $(data).number('old_recital_count', p.oldRecitalCount);
+
+    const last = $(data).element('last');
+    p.group = last.number('music_group', p.group);
+    p.music = last.number('music_index', p.music);
+    p.sheet = last.number('sheet_type', p.sheet);
+    p.performType = last.number('perform_type', p.performType);
+    p.filterFlag = Number(last.bigint('filter_flag') ?? BigInt(p.filterFlag));
+    p.brooch = last.number('brooch_index', p.brooch);
+    p.hispeed = last.number('hi_speed_level', p.hispeed);
+    p.beatGuide = last.number('beat_guide', p.beatGuide);
+    p.headphone = last.number('headphone_volume', p.headphone);
+    p.judgeBar = last.number('judge_bar_pos', p.judgeBar);
+    p.mode = last.number('hands_mode', p.mode);
+    p.near = last.number('near_setting', p.near);
+    p.offset = last.number('judge_delay_offset', p.offset);
+    p.keyBeam = last.number('key_beam_level', p.keyBeam);
+    p.orbit = last.number('orbit_type', p.orbit);
+    p.noteHeight = last.number('note_height', p.noteHeight);
+    p.noteWidth = last.number('note_width', p.noteWidth);
+    p.judgeWidth = last.number('judge_width_type', p.judgeWidth);
+    p.beatVolume = last.number('beat_guide_volume', p.beatVolume);
+    p.beatType = last.number('beat_guide_type', p.beatType);
+    p.keyVolume = last.number('key_volume_offset', p.keyVolume);
+    p.bgmVolume = last.number('bgm_volume_offset', p.bgmVolume);
+    p.note = last.number('note_disp_type', p.note);
+    p.sf = last.number('slow_fast', p.sf);
+    p.optionSetting = last.number('option_setting', p.optionSetting);
+    p.judgeFX = last.number('judge_effect_adjust', p.judgeFX);
+    p.simple = last.number('simple_bg', p.simple);
+    p.bingo = last.number('bingo_index', p.bingo);
+    p.classBasic = last.number('class_basic', p.classBasic);
+    p.classRecital = last.number('class_recital', p.classRecital);
+    p.gradeBasic = last.number('grade_basic', p.gradeBasic);
+    p.gradeRecital = last.number('grade_recital', p.gradeRecital);
+
+    p.money = $(data).number('travel.money', p.money);
+    p.pianistPower = $(data).number('travel.pianist_power', p.pianistPower);
+    p.fameId = $(data).number('travel.fame_index', p.fameId);
+    p.kingdomId = $(data).number('travel.kingdom_id', p.kingdomId);
+    p.questIndex = $(data).number('travel.quest_index', p.questIndex);
+
+    let flags = _.get($(data).obj, 'music_list.flag', []);
+    if (!_.isArray(flags)) flags = [flags];
+    for (const flag of flags) {
+      const sheet = _.get(flag, '@attr.sheet_type', -1);
+      if (sheet == '0') p.musicList.type_0 = _.get(flag, '@content', p.musicList.type_0);
+      else if (sheet == '1') p.musicList.type_1 = _.get(flag, '@content', p.musicList.type_1);
+      else if (sheet == '2') p.musicList.type_2 = _.get(flag, '@content', p.musicList.type_2);
+      else if (sheet == '3') p.musicList.type_3 = _.get(flag, '@content', p.musicList.type_3);
+    }
+
+    let freeFlags = _.get($(data).obj, 'free_for_play_music_list.flag', []);
+    if (!_.isArray(freeFlags)) freeFlags = [freeFlags];
+    for (const flag of freeFlags) {
+      const sheet = _.get(flag, '@attr.sheet_type', -1);
+      if (sheet == '0') p.musicList2.type_0 = _.get(flag, '@content', p.musicList2.type_0);
+      else if (sheet == '1') p.musicList2.type_1 = _.get(flag, '@content', p.musicList2.type_1);
+      else if (sheet == '2') p.musicList2.type_2 = _.get(flag, '@content', p.musicList2.type_2);
+      else if (sheet == '3') p.musicList2.type_3 = _.get(flag, '@content', p.musicList2.type_3);
+    }
+
+    let params = $(data).elements('extra_param.param');
+    for (const param of params) {
+      const type = param.attr().type;
+      const parray = param.numbers('params_array');
+      if (type == null || parray == null) continue;
+      p.params[type] = parray;
+    }
+
+    await writeProfile(refid, p);
+    send.success();
+    return;
+  }
+
+  const isForte = version.isFirstOrForte()
   const p = await readProfile(refid);
 
   p.playCount = $(data).number('play_count', p.playCount);
@@ -471,6 +802,38 @@ export const get_musicdata: EPR = async (info, data, send) => {
   const version = new NosVersionHelper(info)
   const scoreData = await readScores(refid);
 
+  if (version.isOp3()) {
+    const music: any[] = [];
+    for (const m in scoreData.scores) {
+      const mdata = m.split(':');
+      const musi = scoreData.scores[m];
+      if (parseInt(mdata[0], 10) > version.getMusicMaxIndex()) continue;
+
+      const chart = {
+        score: K.ITEM('s32', musi.score),
+        play_count: K.ITEM('s32', musi.count),
+        clear_count: K.ITEM('s32', musi.clear),
+        multi_count: K.ITEM('s32', musi.multi),
+        clear_flag: K.ITEM('s32', musi.flag),
+        hands_mode: K.ITEM('s8', musi.mode),
+        evaluation: K.ITEM('u32', 5),
+        grade: K.ITEM('u32', musi.grade),
+      };
+
+      music.push(K.ATTR({
+        music_index: mdata[0],
+        sheet_type: mdata[1],
+      }, {
+        recital: chart,
+        ...chart,
+      }));
+    }
+
+    console.log(`[nostalgia@asphyxia] op3 get_musicdata refid=${refid} music=${music.length}`);
+    send.object({ music });
+    return;
+  }
+
   const recital_record: any[] = [];
   const music: any[] = [];
 
@@ -520,9 +883,42 @@ export const get_musicdata: EPR = async (info, data, send) => {
   });
 };
 
+function normalizeProfile(profile?: Profile | null): Profile {
+  if (!profile) {
+    return { ...defaultProfile };
+  }
+
+  return padOp3MusicLists({
+    ...defaultProfile,
+    ...profile,
+    params: {
+      ...defaultProfile.params,
+      ...(profile.params || {}),
+    },
+    musicList: {
+      ...defaultProfile.musicList,
+      ...(profile.musicList || {}),
+    },
+    musicList2: {
+      ...defaultProfile.musicList2,
+      ...(profile.musicList2 || {}),
+    },
+    brooches: {
+      ...defaultProfile.brooches,
+      ...(profile.brooches || {}),
+    },
+    islands: profile.islands || {},
+    kentei: profile.kentei || {},
+    cat_stairs: {
+      ...defaultProfile.cat_stairs,
+      ...(profile.cat_stairs || {}),
+    },
+  });
+}
+
 async function readProfile(refid: string): Promise<Profile> {
-  const profile = await DB.FindOne<Profile>(refid, { collection: 'profile' })
-  return profile || defaultProfile
+  const profile = await DB.FindOne<Profile>(refid, { collection: 'profile' });
+  return normalizeProfile(profile);
 }
 
 async function writeProfile(refid: string, profile: Profile) {
@@ -546,7 +942,7 @@ const defaultProfile: Profile = {
   sheet: 0,
   brooch: 0,
   hispeed: 0,
-  beatGuide: 1,
+  beatGuide: 0,
   headphone: 0,
   judgeBar: 250,
   group: 0,
@@ -560,8 +956,8 @@ const defaultProfile: Profile = {
   keyBeam: 0,
   orbit: 0,
   noteHeight: 10,
-  noteWidth: 0,
-  judgeWidth: 0,
+  noteWidth: 10,
+  judgeWidth: 10,
   beatVolume: 0,
   beatType: 0,
   keyVolume: 0,
@@ -574,6 +970,18 @@ const defaultProfile: Profile = {
   fame: 0,
   fameId: 0,
   island: 0,
+  performType: 0,
+  filterFlag: 0,
+  optionSetting: 0,
+  classBasic: 0,
+  classRecital: 0,
+  gradeBasic: 0,
+  gradeRecital: 0,
+  pianistPower: 0,
+  kingdomId: 0,
+  questIndex: 0,
+  oldPlayCount: 0,
+  oldRecitalCount: 0,
   brooches: {
     '1': {
       level: 1,
@@ -593,7 +1001,8 @@ const defaultProfile: Profile = {
     }
   },
   params: {
-    '1': [0],
+    '1': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    '2': [64, 0, 0, 0, 0, 0, 0, 0],
   },
   musicList: {
     type_0: Array(32).fill(-1),

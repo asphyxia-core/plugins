@@ -1,12 +1,13 @@
 # Nostalgia
 
-Plugin Version: **v1.2.0**
+Plugin Version: **v1.3.0**
 
 Supported Versions
 -------------------
 - ノスタルジア/ First Version (Experiment-Old)
 - Forte (Experiment-Old)
 - Op.2
+- Op.3 + omnimix(up to 08/07/2024)
 
 About Experiment-Old Support
 ----------------------------
@@ -17,7 +18,11 @@ If you have a problem that move from old version to new version, There's webui f
 
 Changelog
 =========
-1.2.0 (Current)
+1.3.0
+---------------
+ - Op.3 + omnimix(up to 08/07/2024) support
+
+1.2.0
 ---------------
  - Nostalgia First version support.
 

@@ -1,5 +1,5 @@
 import { get_common_info, get_music_info } from "./handler/common";
-import { get_musicdata, get_playdata, regist_playdata, set_total_result } from "./handler/player"
+import { get_musicdata, get_playdata, regist_playdata, set_stage_result, set_total_result } from "./handler/player"
 import { fixIndexBug } from "./handler/webui";
 
 export function register() {
@@ -11,6 +11,7 @@ export function register() {
         // Helper for register multiple versions.
         R.Route(method, handler); // First version and Forte.
         R.Route(`op2_${method}`, handler);
+        R.Route(`op3_${method}`, handler);
     };
 
     const CommonRoute = (method: string, handler: EPR | boolean) =>
@@ -18,6 +19,9 @@ export function register() {
 
     const PlayerRoute = (method: string, handler: EPR | boolean) =>
         MultiRoute(`player.${method}`, handler)
+
+    const PcbRoute = (method: string, handler: EPR | boolean) =>
+        MultiRoute(`pcb.${method}`, handler)
 
     // Common
     CommonRoute('get_common_info', get_common_info);
@@ -29,8 +33,10 @@ export function register() {
     PlayerRoute('regist_playdata', regist_playdata)
     PlayerRoute('set_total_result', set_total_result)
 
-    //TODO:  Fix this things with actual working handler.
-    PlayerRoute('set_stage_result', true)
+    PlayerRoute('set_stage_result', set_stage_result)
+
+    // Test Menu
+    PcbRoute('report_testmode_settings', true)
 
     R.Unhandled(async (info, data, send) => {
         if (["eventlog"].includes(info.module)) return;

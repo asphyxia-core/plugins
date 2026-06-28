@@ -44,4 +44,8 @@ export class NosVersionHelper {
     isFirstOrForte() {
         return this.version === 'First' || this.version === 'Forte'
     }
+
+    isOp3() {
+        return this.version === 'Op3'
+    }
 }

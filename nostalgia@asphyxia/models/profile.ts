@@ -34,6 +34,18 @@ export interface Profile {
   fame: number;
   fameId: number;
   island: number;
+  performType: number;
+  filterFlag: number;
+  optionSetting: number;
+  classBasic: number;
+  classRecital: number;
+  gradeBasic: number;
+  gradeRecital: number;
+  pianistPower: number;
+  kingdomId: number;
+  questIndex: number;
+  oldPlayCount: number;
+  oldRecitalCount: number;
   params: {
     [key: string]: number[];
   };

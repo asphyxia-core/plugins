@@ -1,6 +1,7 @@
 
 import { processData as firstData } from "../data/FirstMusic";
 import { processData as forteData } from "../data/ForteMusic";
+import { processOp3MusicData } from "../data/Op3Music";
 import { readB64JSON } from "../data/helper";
 import { NosVersionHelper } from "../utils";
 
@@ -81,8 +82,73 @@ export const get_common_info = async (info, data, send) => {
   });
 };
 
+let op3MusicInfoByteCache: { data: any; xCompress: any; xCorePlugin: any } | null = null;
+
 export const get_music_info: EPR = async (info, data, send) => {
   const version = new NosVersionHelper(info)
+
+  if (version.isOp3()) {
+    const t0 = Date.now();
+    const op3 = await processOp3MusicData();
+    console.log(
+      `[nostalgia@asphyxia] op3_common.get_music_info ${Date.now() - t0}ms (songs=${op3.max_index}, cache=${op3.fromCache ? 'hit' : 'miss'})`
+    );
+
+    try {
+      const inst: any = send as any;
+      const res: any = inst?.res;
+      if (!inst?.body?.encrypted && res && typeof res.send === 'function' && typeof res.setHeader === 'function') {
+        if (op3MusicInfoByteCache) {
+          res.setHeader('X-Compress', op3MusicInfoByteCache.xCompress ?? 'none');
+          if (op3MusicInfoByteCache.xCorePlugin != null) {
+            res.setHeader('X-CORE-Plugin', op3MusicInfoByteCache.xCorePlugin);
+          }
+          res.send(op3MusicInfoByteCache.data);
+          inst.sent = true;
+          console.log(`[nostalgia@asphyxia] op3_common.get_music_info byte-cache HIT (songs=${op3.max_index})`);
+          return;
+        }
+        const realSend = res.send.bind(res);
+        res.send = (d: any) => {
+          res.send = realSend;
+          try {
+            if (Buffer.isBuffer(d) || typeof d === 'string') {
+              op3MusicInfoByteCache = {
+                data: d,
+                xCompress: res.getHeader('X-Compress'),
+                xCorePlugin: res.getHeader('X-CORE-Plugin'),
+              };
+            }
+          } catch (_e) { /* ignore capture failure */ }
+          return realSend(d);
+        };
+      }
+    } catch (_e) { /* fall back to normal send.object */ }
+
+    send.object({
+      permitted_list,
+      music_list: K.ATTR({
+        revision: op3.revision,
+        release_code: op3.release_code,
+      }, {
+        music_spec: op3.music_spec,
+      }),
+      overwrite_music_list: K.ATTR({
+        revision: op3.revision,
+        release_code: op3.release_code,
+      }, {
+        music_spec: op3.overwrite_spec,
+      }),
+      gamedata_flag_list: {},
+      trend_music_list: {
+        trend_music: K.ATTR({ music_index: '1', rank: '1' }, {}),
+      },
+      olupdate: {
+        delete_flag: K.ITEM('bool', 0),
+      },
+    });
+    return;
+  }
 
   const music_spec: any = [];
   for (let i = 1; i < 400; ++i) {
