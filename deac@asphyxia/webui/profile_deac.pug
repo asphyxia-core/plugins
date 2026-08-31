@@ -1,0 +1,139 @@
+//DATA//
+  profile: DB.FindOne(refid, { collection: 'profile' })
+  playHistory: DB.Find(refid, { collection: 'play_history' })
+  scores: DB.Find(refid, { collection: 'score' })
+
+-
+  const chartPages = ['LIGHT', 'STANDARD', 'EXTREME', 'MASTER', 'STEALTH']
+  const scoreView = query && query.view === 'scores'
+  const requestedChart = query && query.chart ? String(query.chart).toUpperCase() : 'LIGHT'
+  const activeChart = chartPages.indexOf(requestedChart) >= 0 ? requestedChart : 'LIGHT'
+  const displayedHistory = (playHistory || [])
+    .sort((a, b) => (b.playedAt || 0) - (a.playedAt || 0))
+    .slice(0, 100)
+  const displayedScores = (scores || [])
+    .filter(item => item.chart === activeChart)
+    .sort((a, b) => a.songId - b.songId)
+  const profileUrl = `/plugin/deac@asphyxia/profile?refid=${encodeURIComponent(refid)}`
+  const scoresUrl = chart => `${profileUrl}&view=scores&chart=${chart}`
+  function formatTime(value) {
+    if (!value) return '-'
+    try { return new Date(value).toLocaleString('zh-CN', { hour12: false }) }
+    catch (err) { return String(value) }
+  }
+
+if !scoreView
+  .card
+    .card-header
+      p.card-header-title
+        span.icon
+          i.mdi.mdi-account-edit
+        | DanceEvolution Player Profile
+    .card-content
+      form(method='post' action='/emit/updateDeacName')
+        input(type='hidden' name='refid' value=refid)
+        .field
+          label.label Player Name
+          .control
+            input.input(type='text' name='name' maxlength='10' required value=(profile && profile.name ? profile.name : ''))
+          p.help Up to 10 characters. The new Shift-JIS name takes effect on the next card login.
+        .field
+          button.button.is-primary(type='submit')
+            span.icon
+              i.mdi.mdi-check
+            span Save Name
+
+      form(method='post' action='/emit/updateDeacEpassDisplay')
+        input(type='hidden' name='refid' value=refid)
+        .field
+          label.label Show EPASS Card Number at Login
+          .control
+            .select
+              select(name='showEpassNumber')
+                option(value='true' selected=(!profile || profile.showEpassNumber !== false)) Show
+                option(value='false' selected=(profile && profile.showEpassNumber === false)) Hide
+          p.help The default is Show. Set this to Hide to suppress the card number when this profile logs in.
+        .field
+          button.button.is-primary(type='submit')
+            span.icon
+              i.mdi.mdi-check
+            span Save Card Display
+
+  .card
+    .card-header
+      p.card-header-title
+        span.icon
+          i.mdi.mdi-history
+        | Recent Play History
+    .card-content
+      .buttons.is-right
+        a.button.is-link(href=scoresUrl('LIGHT'))
+          span.icon
+            i.mdi.mdi-trophy
+          span View All Scores
+      if displayedHistory.length
+        .table-container
+          table.table.is-striped.is-fullwidth.is-hoverable
+            thead
+              tr
+                th Time
+                th Song
+                th Chart
+                th Score
+                th Grade
+                th Combo
+                th FC
+            tbody
+              each item in displayedHistory
+                tr
+                  td #{formatTime(item.playedAt)}
+                  td #{item.song || ('Song #' + item.songId)}
+                  td #{item.chart}
+                  td #{item.score}
+                  td #{item.grade}
+                  td #{item.combo}
+                  td #{item.fullCombo ? 'Yes' : 'No'}
+      else
+        p No play history yet. Records will appear after completing a credit with this card.
+else
+  .card
+    .card-header
+      p.card-header-title
+        span.icon
+          i.mdi.mdi-trophy
+        | Song Best Scores
+    .card-content
+      .buttons
+        a.button(href=profileUrl)
+          span.icon
+            i.mdi.mdi-arrow-left
+          span Back to Play History
+
+      .tabs.is-boxed.is-fullwidth
+        ul
+          each chart in chartPages
+            li(class=(chart === activeChart ? 'is-active' : ''))
+              a(href=scoresUrl(chart)) #{chart}
+
+      if displayedScores.length
+        .table-container
+          table.table.is-striped.is-fullwidth.is-hoverable
+            thead
+              tr
+                th ID
+                th Song
+                th Best Score
+                th Grade
+                th Combo
+                th FC
+            tbody
+              each item in displayedScores
+                tr
+                  td #{item.songId}
+                  td #{item.song || ('Song #' + item.songId)}
+                  td #{item.score}
+                  td #{item.grade}
+                  td #{item.combo}
+                  td #{item.fullCombo ? 'Yes' : 'No'}
+      else
+        .notification.is-light No #{activeChart} scores have been saved yet.
