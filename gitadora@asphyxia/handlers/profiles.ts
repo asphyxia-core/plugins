@@ -13,7 +13,7 @@ import Logger from "../utils/logger"
 import { isAsphyxiaDebugMode, isRivalEnabled, isSharedSongScoresEnabled } from "../utils/index";
 import { SecretMusicEntry } from "../models/secretmusicentry";
 import { CheckPlayerResponse, getCheckPlayerResponse } from "../models/Responses/checkplayerresponse";
-import { getPlayerStickerResponse, PlayerStickerResponse } from "../models/Responses/playerstickerresponse";
+import { getPlayerBoardResponse } from "../models/Responses/playerstickerresponse";
 import { getSecretMusicResponse, SecretMusicResponse } from "../models/Responses/secretmusicresponse";
 import { getSaveProfileResponse } from "../models/Responses/saveprofileresponse";
 import { getDefaultBattleDataResponse } from "../models/Responses/battledataresponse";
@@ -292,14 +292,12 @@ export const getPlayer: EPR = async (info, data, send) => {
     }));
   }
 
-  const sticker: PlayerStickerResponse[] = getPlayerStickerResponse(name.card);
+  const playerboard = getPlayerBoardResponse(name);
   const playinfo: PlayerPlayInfoResponse = getPlayerPlayInfoResponse(profile);
 
   const playerData: any = {
     playerboard: {
-      index: K.ITEM('s32', 1),
-      is_active: K.ITEM('bool', _.isArray(name.card) ? 1 : 0),
-      sticker,
+      ...playerboard,
     },
     player_info: {
       // The initial profile is player type 0. Each follow-up rival profile is
