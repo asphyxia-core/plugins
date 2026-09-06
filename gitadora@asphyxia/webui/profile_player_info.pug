@@ -1,4 +1,5 @@
 //DATA//
+  trbitems: JSON.parse(require("fs").readFileSync(process.cwd() + "/plugins/gitadora@asphyxia/data/trbitems.json", "utf8"))
   info: DB.Find(refid, { collection: 'playerinfo' })
   profile: DB.Find(refid, { collection: 'profile' })
   rivals: DB.Find(refid, { collection: 'rival' })
@@ -16,7 +17,6 @@
         return "Unknown"
     }
   }
-  
   function getFullGameVersion(shortVer) {
     switch (shortVer) {
       case "re" :
@@ -39,7 +39,45 @@
         return "Unknown"
     }
   }
+
+  function getItemName(id) {
+    const item = (trbitems || []).find(entry => entry.id === Number(id));
+    return item ? item.name : `#${id}`;
+  }
+
+  function getPlayerboardValue(info) {
+    const configured = (info && info.playerboard) || {};
+    const legacy = Array.isArray(info && info.card) ? info.card : [];
+    const source = Array.isArray(configured.sticker) ? configured.sticker : legacy;
+    const board = source.length ? source[0] : {};
+    const stickerSource = source.length ? source.slice(1) : [];
+    const numberOr = (value, fallback) => {
+      const number = Number(value);
+      return Number.isFinite(number) ? number : fallback;
+    };
+    return {
+      index: 1,
+      board_id: Math.trunc(numberOr(board.id, 0)),
+      is_active: configured.is_active === undefined
+        ? legacy.length > 0
+        : Boolean(configured.is_active === true || configured.is_active === 1 || configured.is_active === '1' || configured.is_active === 'true'),
+      sticker: stickerSource.map(item => {
+        item = item || {};
+        const position = Array.isArray(item.position) ? item.position : [];
+        const scale = Array.isArray(item.scale) ? item.scale : [];
+        return {
+          id: Math.trunc(numberOr(item.id, 0)),
+          pos_x: numberOr(item.pos_x === undefined ? position[0] : item.pos_x, 0),
+          pos_y: numberOr(item.pos_y === undefined ? position[1] : item.pos_y, 0),
+          scale_x: numberOr(item.scale_x === undefined ? scale[0] : item.scale_x, 1),
+          scale_y: numberOr(item.scale_y === undefined ? scale[1] : item.scale_y, 1),
+          rotate: numberOr(item.rotate === undefined ? item.rotation : item.rotate, 0)
+        };
+      })
+    };
+  }
 -
+
 
 div
   each i in info
@@ -49,13 +87,17 @@ div
           span.icon
             i.mdi.mdi-account-edit
           | User Detail (#{getFullGameVersion(i.version)})
+          a.button.is-link.playerboard-link(href=('/plugin/gitadora@asphyxia/profile?refid=' + refid + '&view=playerboard') style="margin-left:auto")
+            span.icon
+              i.mdi.mdi-view-dashboard
+            span PlayerBoard
       .card-content
         form(method="post" action="/emit/updatePlayerInfo")
-          .field
+          .field.playerboard-meta-field
             label.label ID
             .control
               input.input(type="text" name="refid", value=refid readonly)
-          .field
+          .field.playerboard-meta-field
             label.label Version
             .control
               input.input(type="text" name="version", value=i.version readonly)
@@ -67,6 +109,33 @@ div
             label.label Title
             .control
               input.input(type="text" name="title", value=i.title)
+          - const boardValue = getPlayerboardValue(i)
+          .field
+          .field.is-hidden(data-playerboard-section)#playerboard
+            label.label Playerboard
+            .box.playerboard-editor(data-playerboard-editor)
+              .columns.is-variable.is-4
+                .column.is-half
+                  p.help Preview (drag a sticker to change its position)
+                  .playerboard-preview(data-board-preview)
+                    .playerboard-preview-grid
+                .column.is-half
+                  .field
+                    label.label Board
+                    .control
+                      select.input(data-board-id)
+                        each item in trbitems.filter(entry => entry.stk_category === 0)
+                          option(value=item.id selected=item.id === boardValue.board_id)= `[${item.id}]: ${item.name}`
+                      input.input(type="hidden" data-board-index value="1")
+                  .field
+                    label.label Stickers
+                    .playerboard-sticker-list(data-sticker-list)
+                  .buttons
+                    button.button.is-link.is-light(type="button" data-add-sticker)
+                      span.icon
+                        i.mdi.mdi-plus
+                      span Add sticker
+              textarea.is-hidden(data-board-json name="playerboard")= JSON.stringify(boardValue)
           .field
             button.button.is-primary(type="submit")
               span.icon
@@ -153,3 +222,312 @@ div
               span.icon
                 i.mdi.mdi-check
               span Save rivals
+
+style.
+  .playerboard-fullscreen .playerboard-meta-field { display: none; }
+  .playerboard-fullscreen .card-content > form > .field:not([data-playerboard-section]):not(:has(button[type="submit"])) { display: none; }
+  .playerboard-fullscreen .card:not(:has([data-playerboard-section])) { display: none; }
+  .playerboard-fullscreen .card-content > * { display: none; }
+  .playerboard-fullscreen .card-content > form { display: block !important; }
+  .playerboard-fullscreen .card-content > form > [data-playerboard-section] { display: block !important; }
+  .playerboard-fullscreen [data-playerboard-section] { display: block !important; }
+  .playerboard-editor { background: #000; color: #fff; }
+  .playerboard-preview {
+    position: relative;
+    width: 320px;
+    height: 554px;
+
+    margin: 0 auto;
+    flex: 0 0 320px;
+
+    overflow: hidden;
+    border: 1px solid #dbdbdb;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #20243a, #384d69);
+  }
+  .playerboard-preview-grid {
+    position: absolute;
+    inset: 0;
+    opacity: .25;
+    background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px);
+    background-size: 10% 10%;
+  }
+  .playerboard-sticker {
+    position: absolute;
+    z-index: 2;
+    min-width: 38px;
+    min-height: 30px;
+    padding: 4px 7px;
+    border: 1px solid #666;
+    border-radius: 5px;
+    color: #fff;
+    background: #000;
+    box-shadow: 0 2px 5px rgba(0,0,0,.35);
+    cursor: grab;
+    transform-origin: center;
+  }
+  .playerboard-sticker:active { cursor: grabbing; }
+  .playerboard-sticker-row { margin-bottom: .35rem; padding: .35rem; background: #000; color: #fff; border: 1px solid #555; border-radius: 5px; }
+  .playerboard-sticker-row .field { margin-bottom: .15rem; }
+  .playerboard-sticker-row .label { font-size: .75rem; color: #fff; }
+  .playerboard-editor .label, .playerboard-editor .help { color: #fff; }
+  .playerboard-empty { color: #777; font-size: .9rem; padding: .5rem 0; }
+
+script.
+  (() => {
+    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+    const numberOr = (value, fallback) => {
+      const number = Number(value);
+      return Number.isFinite(number) ? number : fallback;
+    };
+    const stickerOptions = !{JSON.stringify(trbitems.filter(item => item.stk_category !== 0).map(item => `<option value="${item.id}">[${item.id}]: ${item.name}</option>`).join(''))};
+    const stickerTemplate = () => `
+      <div class="playerboard-sticker-row" data-sticker-row>
+        <div class="columns is-mobile is-multiline">
+          <div class="column is-half"><label class="label">Sticker<select class="input" data-sticker-field="id">${stickerOptions}</select></label></div>
+          <div class="column is-half"><label class="label">Rotation<input class="input" type="number" step="0.01" data-sticker-field="rotate" value="1"></label></div>
+          <div class="column is-one-quarter"><label class="label">X<input class="input" type="number" step="0.01" data-sticker-field="pos_x" value="1"></label></div>
+          <div class="column is-one-quarter"><label class="label">Y<input class="input" type="number" step="0.01" data-sticker-field="pos_y" value="1"></label></div>
+          <div class="column is-one-quarter"><label class="label">Scale X<input class="input" type="number" step="0.01" data-sticker-field="scale_x" value="0.5"></label></div>
+          <div class="column is-one-quarter"><label class="label">Scale Y<input class="input" type="number" step="0.01" data-sticker-field="scale_y" value="0.5"></label></div>
+        </div>
+        <button class="button is-small is-danger is-light" type="button" data-remove-sticker>Remove sticker</button>
+      </div>`;
+
+    const getRows = editor => Array.from(editor.querySelectorAll('[data-sticker-row]'));
+    const readRows = editor => getRows(editor).map(row => {
+      const value = field => row.querySelector(`[data-sticker-field="${field}"]`).value;
+      return {
+        id: Math.trunc(numberOr(value('id'), 0)),
+        pos_x: numberOr(value('pos_x'), 0),
+        pos_y: numberOr(value('pos_y'), 0),
+        scale_x: numberOr(value('scale_x'), 1),
+        scale_y: numberOr(value('scale_y'), 1),
+        rotate: numberOr(value('rotate'), 0)
+      };
+    });
+    const BOARD_WIDTH = 320;
+    const BOARD_HEIGHT = 554;
+    const toXPercent = value => clamp(value / BOARD_WIDTH * 100, 0, 100);
+    const toYPercent = value => clamp(value / BOARD_HEIGHT * 100, 0, 100);
+    const fromXPercent = value => value / 100 * BOARD_WIDTH;
+    const fromYPercent = value => value / 100 * BOARD_HEIGHT;
+
+    const renderPreview = editor => {
+      const preview = editor.querySelector('[data-board-preview]');
+      const stickers = readRows(editor);
+
+      preview.querySelectorAll('.playerboard-sticker').forEach(item => item.remove());
+      stickers.forEach((sticker, index) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'playerboard-sticker';
+        button.dataset.stickerIndex = index;
+        button.textContent = `#${sticker.id}`;
+        button.title = 'Click to select; drag to reposition';
+        button.style.left = `${toXPercent(sticker.pos_x)}%`;
+        button.style.top = `${toYPercent(sticker.pos_y)}%`;
+        const sizeX = clamp(Math.abs(sticker.scale_x) * 28, 24, 100);
+        const sizeY = clamp(Math.abs(sticker.scale_y) * 22, 20, 80);
+        button.style.minWidth = `${sizeX}px`;
+        button.style.minHeight = `${sizeY}px`;
+        button.style.transform = `translate(-50%, 50%) rotate(${sticker.rotate}deg)`;
+        button.addEventListener('click', () => {
+          const row = getRows(editor)[index];
+          row && row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+        let drag;
+        button.addEventListener('pointerdown', event => {
+          event.preventDefault();
+          button.setPointerCapture(event.pointerId);
+          const bounds = preview.getBoundingClientRect();
+          drag = { bounds };
+        });
+        button.addEventListener('pointermove', event => {
+          if (!drag) return;
+          const x = clamp((event.clientX - drag.bounds.left) / drag.bounds.width * 100, 0, 100);
+          const y = clamp((event.clientY - drag.bounds.top) / drag.bounds.height * 100, 0, 100);
+          const row = getRows(editor)[index];
+          if (!row) return;
+          row.querySelector('[data-sticker-field="pos_x"]').value = fromXPercent(x).toFixed(2);
+          row.querySelector('[data-sticker-field="pos_y"]').value = fromYPercent(y).toFixed(2);
+          sync(editor);
+        });
+          button.style.left = `${x}%`;
+          button.style.top = `${y}%`;
+        button.addEventListener('pointerup', event => { if (drag) { try { button.releasePointerCapture(event.pointerId); } catch (_) {} } drag = null; });
+        button.addEventListener('pointercancel', () => { drag = null; });
+        preview.appendChild(button);
+      });
+    };
+    const sync = editor => {
+      const json = {
+        index: 1,
+        is_active: true,
+        sticker: [{ id: Math.trunc(numberOr(editor.querySelector('[data-board-id]').value, 0)), pos_x: 160, pos_y: 235, scale_x: 1, scale_y: 1, rotate: 0 }].concat(readRows(editor))
+      };
+      editor.querySelector('[data-board-json]').value = JSON.stringify(json);
+    };
+    const addSticker = (editor, sticker = {}) => {
+      const list = editor.querySelector('[data-sticker-list]');
+      if (list.querySelectorAll('[data-sticker-row]').length >= 10) return;
+      list.insertAdjacentHTML('beforeend', stickerTemplate());
+      const row = list.lastElementChild;
+      Object.entries({ id: 0, pos_x: 160, pos_y: 235, scale_x: 0.5, scale_y: 0.5, rotate: 0, ...sticker }).forEach(([field, value]) => {
+        row.querySelector(`[data-sticker-field="${field}"]`).value = value;
+      });
+    };
+    const initialize = editor => {
+      let initial = {};
+      try { initial = JSON.parse(editor.querySelector('[data-board-json]').value || '{}'); } catch (_) { initial = {}; }
+      const stickers = Array.isArray(initial.sticker) ? initial.sticker : [];
+      stickers.forEach(sticker => addSticker(editor, sticker));
+      editor.querySelector('[data-board-index]').value = 1;
+      editor.addEventListener('input', event => {
+        if (event.target.matches('[data-board-index], [data-sticker-field]')) {
+          sync(editor);
+          renderPreview(editor);
+        }
+      });
+      editor.addEventListener('change', event => {
+        if (event.target.matches('[data-board-index], [data-sticker-field]')) { sync(editor); renderPreview(editor); }
+      });
+      editor.querySelector('[data-add-sticker]').addEventListener('click', () => { addSticker(editor); sync(editor); renderPreview(editor); });
+      editor.closest('form').addEventListener('submit', () => sync(editor));
+      editor.addEventListener('click', event => {
+        if (false) {
+          addSticker(editor);
+          sync(editor);
+          renderPreview(editor);
+        }
+        const remove = event.target.closest('[data-remove-sticker]');
+        if (remove) {
+          remove.closest('[data-sticker-row]').remove();
+          sync(editor);
+          renderPreview(editor);
+        }
+      });
+      sync(editor);
+      renderPreview(editor);
+    };
+    document.querySelectorAll('[data-playerboard-editor]').forEach(initialize);
+    document.querySelectorAll('[data-toggle-playerboard]').forEach(button => {
+      button.addEventListener('click', () => {
+        const section = button.closest('.card').querySelector('[data-playerboard-section]');
+        if (section) section.classList.toggle('is-hidden');
+      });
+    });
+  })();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+script.
+  document.addEventListener('click', function (event) {
+    const button = event.target.closest('[data-toggle-playerboard]');
+    if (!button) return;
+    const card = button.closest('.card');
+    const section = card && card.querySelector('[data-playerboard-section]');
+    if (section) section.classList.toggle('is-hidden');
+  });
+
+
+
+
+
+
+
+script.
+  (() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('view') !== 'playerboard') return;
+    const section = document.querySelector('[data-playerboard-section]');
+    if (!section) return;
+    section.classList.remove('is-hidden');
+    document.body.classList.add('playerboard-fullscreen');
+  })();
+
+
+script.
+  (() => {
+    const isBoardView = new URLSearchParams(location.search).get('view') === 'playerboard';
+    const toggle = document.querySelector('.playerboard-link');
+    if (toggle && isBoardView) {
+      toggle.textContent = 'Back to Profile';
+      toggle.href = location.pathname + '?refid=' + encodeURIComponent(new URLSearchParams(location.search).get('refid') || '');
+    }
+    const editor = document.querySelector('[data-playerboard-editor]');
+    const preview = document.querySelector('[data-board-preview]');
+    if (!editor || !preview) return;
+    const rows = () => [...editor.querySelectorAll('[data-sticker-row]')];
+    const draw = () => {
+      preview.querySelectorAll('.playerboard-sticker').forEach(x => x.remove());
+      rows().forEach((row, index) => {
+        const x = Number(row.querySelector('[data-sticker-field="pos_x"]').value) || 0;
+        const y = Number(row.querySelector('[data-sticker-field="pos_y"]').value) || 0;
+        const b = document.createElement('button'); b.type='button'; b.className='playerboard-sticker'; b.textContent='#'+(row.querySelector('[data-sticker-field="id"]').value||0);
+        b.style.left=(x/320*100)+'%'; b.style.top=(y/554*100)+'%'; b.style.transform='translate(-50%,-50%)';
+        let moving=false; b.addEventListener('pointerdown',e=>{moving=true;b.setPointerCapture(e.pointerId)}); b.addEventListener('pointermove',e=>{if(!moving)return;const r=preview.getBoundingClientRect();const nx=Math.max(0,Math.min(320,(e.clientX-r.left)/r.width*320));const ny=Math.max(0,Math.min(554,(e.clientY-r.top)/r.height*554));row.querySelector('[data-sticker-field="pos_x"]').value=nx.toFixed(2);row.querySelector('[data-sticker-field="pos_y"]').value=ny.toFixed(2);b.style.left=(nx/320*100)+'%';b.style.top=(ny/554*100)+'%'}); b.addEventListener('pointerup',()=>moving=false); preview.appendChild(b);
+      });
+    };
+    window.playerboardRedraw = draw;
+    draw();
+    setInterval(() => { if (editor.querySelectorAll('[data-sticker-row]').length !== preview.querySelectorAll('.playerboard-sticker').length) draw(); }, 100);
+  })();
+
+
+
+
+
+script.
+  (() => {
+    const editor = document.querySelector('[data-playerboard-editor]');
+    if (!editor) return;
+    const refresh = () => window.playerboardRedraw && window.playerboardRedraw();
+    editor.addEventListener('change', () => setTimeout(() => window.playerboardRedraw && window.playerboardRedraw(), 0));
+    editor.addEventListener('click', e => { if (e.target.closest('[data-add-sticker],[data-remove-sticker]')) setTimeout(() => window.playerboardRedraw && window.playerboardRedraw(), 20); });
+    new MutationObserver(() => refresh()).observe(editor.querySelector('[data-sticker-list]'), { childList: true });
+  })();
+
+
+
