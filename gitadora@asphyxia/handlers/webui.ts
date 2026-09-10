@@ -60,7 +60,7 @@ function parsePlayerBoard(input: string | PlayerInfo['playerboard']): PlayerInfo
   };
 
   const stickers = Array.isArray(value.sticker) ? value.sticker : [];
-  const normalizedStickers = stickers.slice(0, 10).reduce((result: any[], sticker: any) => {
+  const normalizedStickers = stickers.slice(0, 11).reduce((result: any[], sticker: any) => {
     if (!sticker || typeof sticker !== 'object') return result;
     const position = Array.isArray(sticker.position) ? sticker.position : [];
     const scale = Array.isArray(sticker.scale) ? sticker.scale : [];
