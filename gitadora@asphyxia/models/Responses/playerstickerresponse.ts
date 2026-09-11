@@ -25,7 +25,7 @@ export function getPlayerStickerResponse(playerCard : any[]) : PlayerStickerResp
         return stickers
     }
 
-    for (const item of playerCard.slice(0, 10)) {
+    for (const item of playerCard.slice(0, 11)) {
     const id = _.get(item, 'id');
     // Accept both the historical card shape and the wire-shaped playerboard
     // shape used by the editor.

@@ -23,8 +23,8 @@
         return "Tri-Boost Re:EVOLVE"
       case "matixx":
         return "Matixx"
-      case "EXCHAIN":
-        return "exchain"
+      case "exchain":
+        return "EXCHAIN"
       case "nextage":
         return "NEX+AGE"
       case "highvoltage":
@@ -87,7 +87,7 @@ div
           span.icon
             i.mdi.mdi-account-edit
           | User Detail (#{getFullGameVersion(i.version)})
-          a.button.is-link.playerboard-link(href=('/plugin/gitadora@asphyxia/profile?refid=' + refid + '&view=playerboard') style="margin-left:auto")
+          a.button.is-link.playerboard-link(href=('/plugin/gitadora@asphyxia/profile?refid=' + refid + '&version=' + i.version + '&view=playerboard') style="margin-left:auto")
             span.icon
               i.mdi.mdi-view-dashboard
             span PlayerBoard
@@ -110,7 +110,6 @@ div
             .control
               input.input(type="text" name="title", value=i.title)
           - const boardValue = getPlayerboardValue(i)
-          .field
           .field.is-hidden(data-playerboard-section)#playerboard
             label.label Playerboard
             .box.playerboard-editor(data-playerboard-editor)
@@ -352,9 +351,9 @@ script.
           row.querySelector('[data-sticker-field="pos_x"]').value = fromXPercent(x).toFixed(2);
           row.querySelector('[data-sticker-field="pos_y"]').value = fromYPercent(y).toFixed(2);
           sync(editor);
-        });
           button.style.left = `${x}%`;
           button.style.top = `${y}%`;
+        });
         button.addEventListener('pointerup', event => { if (drag) { try { button.releasePointerCapture(event.pointerId); } catch (_) {} } drag = null; });
         button.addEventListener('pointercancel', () => { drag = null; });
         preview.appendChild(button);
@@ -491,11 +490,15 @@ script.
 script.
   (() => {
     const isBoardView = new URLSearchParams(location.search).get('view') === 'playerboard';
-    const toggle = document.querySelector('.playerboard-link');
-    if (toggle && isBoardView) {
-      toggle.textContent = 'Back to Profile';
-      toggle.href = location.pathname + '?refid=' + encodeURIComponent(new URLSearchParams(location.search).get('refid') || '');
-    }
+    const selectedVersion = new URLSearchParams(location.search).get('version');
+    document.querySelectorAll('.playerboard-link').forEach(toggle => {
+      const card = toggle.closest('.card');
+      const version = card && card.querySelector('input[name="version"]');
+      if (isBoardView && (!selectedVersion || !version || version.value === selectedVersion)) {
+        toggle.textContent = 'Back to Profile';
+        toggle.href = location.pathname + '?refid=' + encodeURIComponent(new URLSearchParams(location.search).get('refid') || '') + '&version=' + encodeURIComponent(version ? version.value : '');
+      }
+    });
     const editor = document.querySelector('[data-playerboard-editor]');
     const preview = document.querySelector('[data-board-preview]');
     if (!editor || !preview) return;
@@ -530,4 +533,19 @@ script.
   })();
 
 
+
+
+
+
+script.
+  (() => {
+    const params = new URLSearchParams(location.search);
+    const selectedVersion = params.get('version');
+    if (!selectedVersion || params.get('view') !== 'playerboard') return;
+    document.querySelectorAll('[data-playerboard-editor]').forEach(editor => {
+      const form = editor.closest('form');
+      const version = form && form.querySelector('input[name="version"]');
+      if (version && version.value !== selectedVersion) editor.closest('.card').style.display = 'none';
+    });
+  })();
 
