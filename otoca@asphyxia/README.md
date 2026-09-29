@@ -50,7 +50,8 @@ Server-side rules (from the arcade as documented by the fan wiki and the officia
   - One stamp per play; a full card of 10 gives one star powder. New players start with one powder
     and the first rival card ticket. The first key card comes with the Pink March Ribbon.
   - "New doll" unlocks once any doll reaches level 5.
-  - All 8 letters from Nyandora give a wallpaper (which one is inferred from the data).
+  - Nyandora's 8 letters are missions 2-9 (mission 1 is the first play). The 8th letter completes the
+    wallpaper (card_bg 0018, the one the game's letter data shows), and then the missions end.
   - No questionnaires, and old campaign gift cards answer "expired". The game's own offline card
     (printed when setCardInfo fails) gives its apology gift and a stamp once.
 

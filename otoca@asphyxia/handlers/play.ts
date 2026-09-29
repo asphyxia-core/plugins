@@ -1,5 +1,5 @@
 // What a play reports: battle results, gold and friend points, stamps, letters and questionnaires.
-import { LETTER_WALLPAPER, MAX_BALANCE } from '../data';
+import { LAST_MISSION, LETTER_WALLPAPER, MAX_BALANCE } from '../data';
 import { getDoll, getUser, saveDoll, saveUser } from '../db';
 import { updateRelease } from '../player';
 import { now, u32 } from '../utils';
@@ -63,13 +63,16 @@ export const addStamp: EPR = async (info, data, send) => {
   });
 };
 
+// Missions: 1 is the first play (always done, no letter); 2-9 are Nyandora's 8 letters, each checked against the
+// flag the previous number records (game.dll FUN_100219c0); finishing 9 completes the wallpaper. The game only
+// reports and never advances mission_no itself, and anything above 9 means no mission.
 export const reportMission: EPR = async (info, data, send) => {
   const u = await getUser($(data).number('user_seq'));
   const n = $(data).number('mission_no', 0);
-  if (u && u.mission_no === n) {
-    u.mission_no = Math.min(n + 1, 9); // the game treats every mission below mission_no as done
-    // all 8 letters: the original wallpaper (closet/cardbg adds to the wallpapers the game offers)
-    if (u.mission_no === 9 && !u.cardbg.includes(LETTER_WALLPAPER) && u.cardbg.length < 4) u.cardbg.push(LETTER_WALLPAPER);
+  if (u && n >= 1 && n <= LAST_MISSION && u.mission_no === n) {
+    u.mission_no = n + 1;
+    // the 8th letter: the original wallpaper (closet/cardbg adds to the wallpapers the game offers)
+    if (n === LAST_MISSION && !u.cardbg.includes(LETTER_WALLPAPER) && u.cardbg.length < 4) u.cardbg.push(LETTER_WALLPAPER);
     await saveUser(u);
   }
   send.success();

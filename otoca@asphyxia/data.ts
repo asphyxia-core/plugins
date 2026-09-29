@@ -30,6 +30,9 @@ export const ACCESSORY_OFFSET = [
   [[80, 100], [100, 100], [100, 100], [80, 100]],
 ];
 export const FIRST_KEY_ACCESSORY = 144; // ピンクマーチリボン, made in the tailor tutorial when the first key is made
-export const LETTER_WALLPAPER = 29; // guess: card_bg_0018 (nyandora night sky), the reward for all 8 letters
+// cardbg.csv 29 = card_bg 0018 (Nyandora's night sky), the wallpaper afp_letter.ifs completes; no release table
+// unlocks it, so it only comes through closet/cardbg.
+export const LETTER_WALLPAPER = 29;
+export const LAST_MISSION = 9; // the 8th letter
 export const TEMP_ASEQ = 1000000000; // the game's own placeholder seqs for this play's drops (sell scene)
 export const MAX_BALANCE = 9999999;
