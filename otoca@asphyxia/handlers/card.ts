@@ -1,9 +1,10 @@
 // New players and dolls, and scanning a printed card.
 import { accessoryNode, equipWithAccessories, gradeList } from '../closet';
-import { EPISODE, PHASE } from '../data';
+import { EPISODE } from '../data';
 import { getCard, getDoll, getUser, nextSeq, saveUser } from '../db';
 import { greeting, newDoll, newUser } from '../player';
 import { bool, log, now, u8, u32 } from '../utils';
+import { phase } from './version';
 
 export const addUser: EPR = async (info, data, send) => {
   const u = newUser(await nextSeq('user'), $(data).str('user_name', ''));
@@ -70,7 +71,7 @@ export const getCardInfo: EPR = async (info, data, send) => {
     // the bonus printed on this card; the game applies it to one battle
     offset: { kira_hp: u8(card.kira[0]), kira_atk: u8(card.kira[1]), kira_mat: u8(card.kira[2]), kira_spd: u8(card.kira[3]) },
     active_key: bool(!!u.keycard_id),
-    version: { episode: u8(EPISODE), phase: u8(PHASE) },
+    version: { episode: u8(EPISODE), phase: u8(phase()) },
     makeup: { hair_color: u8(d.makeup[0]), eye_color: u8(d.makeup[1]) },
     closet: {
       powder_num: u32(u.powder_num),

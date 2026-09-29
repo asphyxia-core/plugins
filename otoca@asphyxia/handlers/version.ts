@@ -1,5 +1,13 @@
-import { EPISODE, PHASE } from '../data';
-import { bool, u8, u32 } from '../utils';
+import { EPISODE, RIVAL_PACKS } from '../data';
+import { bool, rand, u8, u32 } from '../utils';
+
+// The phase of the configured rival card pack ("Random" draws one on every call). The game picks the pack
+// from the version it holds when the card choice opens: getCardInfo's sets it for that play, getVersion's
+// for plays without a card scan (new players) and for the pack icon on the title screen.
+export function phase() {
+  const pack = RIVAL_PACKS.find(p => p.name === U.GetConfig('rival_pack'));
+  return (pack || RIVAL_PACKS[rand(RIVAL_PACKS.length)]).phase;
+}
 
 // Sent by ealocal every `expire` seconds from the attract loop; the game waits for the first one at boot.
 export const getVersion: EPR = async (info, data, send) => {
@@ -7,7 +15,7 @@ export const getVersion: EPR = async (info, data, send) => {
   send.object({
     expire: u32(600),
     episode: u8(EPISODE),
-    phase: u8(PHASE),
+    phase: u8(phase()),
     marker: u8(U.GetConfig('marker')),
     campaign: {
       trial_play: bool(false),

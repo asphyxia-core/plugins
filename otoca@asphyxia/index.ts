@@ -1,6 +1,7 @@
 // otoca d'or (NCG). The XRPC module "game" (service "local") is implemented by the game's ealocal.dll;
 // field names, types and limits follow its psmap tables, and every value follows how game.dll uses it
 // (see README). Values marked "guess" are server policy the game code does not decide.
+import { RIVAL_PACKS } from './data';
 import { addDoll, addUser, getCardInfo } from './handlers/card';
 import { receiveGift, receiveItem } from './handlers/gift';
 import { addItem, composition, delItem, sellItem, setMakeup } from './handlers/item';
@@ -37,6 +38,13 @@ export function register() {
     desc: 'One free hair/eye colour change in the salon for each player (as in the arcade).',
     type: 'boolean',
     default: true,
+  });
+  R.Config('rival_pack', {
+    name: 'Rival card pack',
+    desc: 'The pack the rival cards offered after a play come from. Random draws one for each play.',
+    type: 'string',
+    options: ['Random', ...RIVAL_PACKS.map(p => p.name)],
+    default: 'Random',
   });
   R.Config('starkira_free', {
     name: 'Free star kira',

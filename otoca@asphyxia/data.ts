@@ -1,8 +1,16 @@
 // Values taken from the game's data (data_ncg/paramdb) and the arcade's rules.
 
-// versiondata.csv: base 5-2, newest 5-11. getCardInfo's version is applied the same way, so both send this.
+// versiondata.csv: base 5-2, newest 5-11. 5-6 to 5-11 unlock the same content; only the rival card pack
+// (rivalcard_packdata.csv: the last row at or below the version) and its title-screen icon differ,
+// so the phase picks the pack.
 export const EPISODE = 5;
-export const PHASE = 11;
+export const RIVAL_PACKS = [
+  { name: 'ジュエル・ソング', phase: 7 },
+  { name: 'ミッドサマーナイト・ドリーム', phase: 8 },
+  { name: 'スターズ・シャイニング', phase: 9 },
+  { name: 'ファイアリー・エンジェル', phase: 10 },
+  { name: 'レ・フェニーチ', phase: 11 },
+];
 // Alphabet of the ids the game packs into its QR codes (5 bits per char).
 export const ID_CHARS = '0123456789ABCDEFGHJKLMNPRSTUWXYZ';
 // equipdata.csv rows with kind 4 (accessories): they carry an accessory_seq.

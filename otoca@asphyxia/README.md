@@ -23,7 +23,8 @@ How it works
       status 1, and the game then plays offline.
     - The key card (`game.bindKeyUser`) is a second printed card tied to the player. Once a key is bound,
       scanning a card asks for the key card (`game.checkKeyUser`) and the closet holds 999 items instead of 50.
-  - `game.getVersion` and getCardInfo both send episode 5 / phase 11, the newest the game knows.
+  - `game.getVersion` and getCardInfo both send episode 5 and a phase from 7 to 11. Those phases unlock the
+    same content and differ only in the rival card pack (and its icon on the title screen).
   - Without a camera, printed card images can be scanned with a hook that feeds an image to the game's
     camera library (libcamera.dll) in place of the camera frame.
 
@@ -39,6 +40,9 @@ Settings
   - Limited-time enemy: shows the one limited-time enemy the data has (episode 3).
   - Double stamps: two stamps per play.
   - Free star kira: star kira cards need no star powder.
+  - Rival card pack: the pack the rival cards offered after a play come from, one of the five packs or
+    Random (a new draw for each play). The game takes the pack from the version it got when the card
+    was scanned; plays without a scan (new players) use the one from the attract loop.
 
 Server-side rules (from the arcade as documented by the fan wiki and the official site)
   - Kira cards give +1 to 1-3 random stats.
