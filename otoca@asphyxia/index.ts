@@ -18,6 +18,7 @@ interface User {
   powder_num: number;
   stamp_num: number;
   stamp_conv_num: number;
+  stamp_bonus: number; // stamps from gifts, pressed with the next addStamp
   balance: number;
   ticket_half_price: boolean;
   ticket_rc_first: boolean;
@@ -63,6 +64,10 @@ interface Card {
   doll_seq: number;
   kira_type: number;
   kira: number[]; // hp, atk, mat, spd bonus printed on this card
+  // the coord printed on this card: scanning an old card plays the latest doll in that card's coord,
+  // even with items sold since then
+  equip: number[][];
+  accessory: Accessory[];
   decoseal_id: number;
   from_otocard_id: string;
   created: number;
@@ -89,8 +94,14 @@ const DOLL_INIT: { [doll_id: number]: number[] } = {
   1: [9, 18, 29, 40], 2: [9, 20, 31, 40], 3: [9, 17, 28, 40],
   4: [9, 19, 30, 40], 5: [9, 21, 32, 40], 6: [9, 409, 438, 40],
 };
-// guess: the game only multiplies by these; this matches normal equips of the same grade.
-const ACCESSORY_OFFSET = [[80, 100, 100, 0], [90, 100, 100, 50], [100, 100, 100, 100]];
+// Accessory stat / skill 1-3 percent ranges per grade N, R, SR (wiki item list: accessories vary per piece).
+const ACCESSORY_OFFSET = [
+  [[60, 80], [80, 100], [50, 100], [0, 0]],
+  [[70, 90], [100, 100], [80, 100], [40, 50]],
+  [[80, 100], [100, 100], [100, 100], [80, 100]],
+];
+const FIRST_KEY_ACCESSORY = 144; // ピンクマーチリボン, made in the tailor tutorial when the first key is made
+const LETTER_WALLPAPER = 29; // guess: card_bg_0018 (nyandora night sky), the reward for all 8 letters
 const TEMP_ASEQ = 1000000000; // the game's own placeholder seqs for this play's drops (sell scene)
 const MAX_BALANCE = 9999999;
 
@@ -147,7 +158,7 @@ function addCount(bag: { [id: string]: number[] }, id: number, grade: number, n:
 
 function makeAccessory(u: User, id: number, grade: number): Accessory {
   const gr = Math.min(grade, 2);
-  const a = { aseq: u.next_aseq++, id, gr, offset: ACCESSORY_OFFSET[gr].slice() };
+  const a = { aseq: u.next_aseq++, id, gr, offset: ACCESSORY_OFFSET[gr].map(([lo, hi]) => lo + rand(hi - lo + 1)) };
   u.accessory.push(a);
   return a;
 }
@@ -203,9 +214,11 @@ function equipWithAccessories(u: User) {
 function newUser(user_seq: number, user_name: string): User {
   return {
     collection: 'user', user_seq, user_name, keycard_id: '', key_inquire_id: '',
-    powder_num: 1, // guess: non-zero shows the first-play powder message
-    stamp_num: 0, stamp_conv_num: 0, balance: 0, ticket_half_price: false,
-    ticket_rc_first: true, // guess: first rival card ticket for new players
+    // shows the first-play powder message; with the first stamp card this makes the 2 kira cards
+    // the wiki gives players without a key
+    powder_num: 1,
+    stamp_num: 0, stamp_conv_num: 0, stamp_bonus: 0, balance: 0, ticket_half_price: false,
+    ticket_rc_first: true, // the first rival card print guarantees a higher rarity (wiki)
     equip: {}, material: {}, decoseal: {}, accessory: [], next_aseq: 1, cardbg: [],
     release_state: 0, user_flags: [0, 0, 0, 0], last_time: 0, user_marker: 0,
     mission_no: 1, // 0 would never start the missions
@@ -250,7 +263,7 @@ const getVersion: EPR = async (info, data, send) => {
     marker: u8(U.GetConfig('marker')),
     campaign: {
       trial_play: bool(false),
-      trial_shop: bool(false),
+      trial_shop: bool(U.GetConfig('trial_shop')), // one free salon try per player; the game keeps the flag
       starkira_free: bool(U.GetConfig('starkira_free')),
       stamp_double: bool(U.GetConfig('stamp_double')),
       limited_enemy: K.ARRAY('bool', [0, 0, limited, 0, 0, 0, 0, 0]), // only slot 2 has an enemy (team 63)
@@ -293,7 +306,7 @@ const getCardInfo: EPR = async (info, data, send) => {
     log(`getCardInfo: unknown card ${otocard_id}`, {});
     return send.deny();
   }
-  const worn = d.accessory.map(s => u.accessory.find(a => a.aseq === s) || EMPTY_ACCESSORY);
+  const worn = card.accessory;
   send.object({
     user_seq: u32(u.user_seq),
     user_name: K.ITEM('str', u.user_name),
@@ -304,7 +317,7 @@ const getCardInfo: EPR = async (info, data, send) => {
     doll_seed: u32(d.doll_seed),
     locked: bool(!!u.keycard_id), // tied to a key card: reads the key next, closet limit 999
     luck_offset: u32(d.luck_offset),
-    equip: [...d.equip, ...worn.map(a => [a.id, a.gr])].map(e => ({ equip_id: u32(e[0]), equip_grade: u8(e[1]) })),
+    equip: [...card.equip, ...worn.map(a => [a.id, a.gr])].map(e => ({ equip_id: u32(e[0]), equip_grade: u8(e[1]) })),
     accessory: worn.map(accessoryNode),
     score: {
       release_state: u32(u.release_state),
@@ -361,11 +374,13 @@ const bindKeyUser: EPR = async (info, data, send) => {
   if (!u) return send.deny();
   u.keycard_id = await newId();
   u.key_inquire_id = await newId();
+  // the first key comes with the tailor tutorial's result; the game adds it only when is_first is set
+  const bonus = $(data).bool('is_first') ? makeAccessory(u, FIRST_KEY_ACCESSORY, 0) : EMPTY_ACCESSORY;
   await saveUser(u);
   send.object({
     keycard_id: K.ITEM('str', u.keycard_id),
     key_inquire_id: K.ITEM('str', u.key_inquire_id),
-    accessory: accessoryNode(EMPTY_ACCESSORY), // guess: the first-key bonus item is unknown, so none
+    accessory: accessoryNode(bonus),
   });
 };
 
@@ -379,22 +394,25 @@ const setCardInfo: EPR = async (info, data, send) => {
   d.accessory = ($(data).numbers('accessory_seq') || []).concat([0, 0]).slice(0, 2);
   await saveDoll(d);
 
-  // kira_type 0 normal, 1 star, 2 gold, 3 star while starkira_free is on
+  // kira_type 0 normal, 1 star, 2 gold, 3 star while starkira_free is on.
+  // A kira card gives +1 to 1-3 random stats (wiki); the card shows each as one digit.
   const kira_type = $(data).number('kira_type', 0);
   const kira = [0, 0, 0, 0];
-  // guess: the real distribution is unknown; values must stay 0-9 (one digit on the card)
-  const star = kira_type === 1 || kira_type === 3;
-  const slots = kira_type === 2 ? [0, 1, 2, 3] : star ? [0, 1, 2, 3].sort(() => Math.random() - 0.5).slice(0, 2) : [];
-  for (const k of slots) kira[k] = kira_type === 2 ? 1 + rand(5) : 1 + rand(3);
+  if (kira_type) for (const k of [0, 1, 2, 3].sort(() => Math.random() - 0.5).slice(0, 1 + rand(3))) kira[k] = 1;
   if (kira_type === 1) u.powder_num = Math.max(0, u.powder_num - 1); // the game spends one star powder locally
   const decoseal_id = $(data).number('decoseal_id', 0);
   if (decoseal_id && u.decoseal[decoseal_id]) u.decoseal[decoseal_id]--; // guess: nothing else reports it
   await updateRelease(u);
   await saveUser(u);
 
+  // Snapshot the worn accessories. One sold since comes from the card this play started with.
+  const from_otocard_id = $(data).str('otocard_id', '');
+  const from = from_otocard_id ? await DB.FindOne<Card>({ collection: 'card', otocard_id: from_otocard_id }) : null;
+  const accessory = d.accessory.map(s => (s && (u.accessory.find(a => a.aseq === s) ||
+    (from && from.accessory.find(a => a.aseq === s)))) || EMPTY_ACCESSORY);
   const card: Card = {
     collection: 'card', otocard_id: await newId(), inquire_id: await newId(), user_seq: u.user_seq,
-    doll_seq: d.doll_seq, kira_type, kira, decoseal_id, from_otocard_id: $(data).str('otocard_id', ''), created: now(),
+    doll_seq: d.doll_seq, kira_type, kira, equip: d.equip, accessory, decoseal_id, from_otocard_id, created: now(),
   };
   await DB.Insert(card);
   log('setCardInfo', { otocard_id: card.otocard_id, kira_type, kira });
@@ -451,7 +469,11 @@ const addItem: EPR = async (info, data, send) => {
   const made = $(data).elements('item').map(i =>
     giveItem(u, i.number('item_type', 0), i.number('item_id', 0), i.number('item_grade', 0)) || EMPTY_ACCESSORY);
   const gift = $(data).str('gift_code', '');
-  if ($(data).number('gift_type', 0) === 4 && gift && !u.gifts_used.includes(gift)) u.gifts_used.push(gift);
+  // gift_type 4: the present for an offline card, which also gives one stamp (official notice)
+  if ($(data).number('gift_type', 0) === 4 && gift && !u.gifts_used.includes(gift)) {
+    u.gifts_used.push(gift);
+    u.stamp_bonus++;
+  }
   await saveUser(u);
   send.object({ accessory: made.map(accessoryNode) });
 };
@@ -522,7 +544,9 @@ const setMakeup: EPR = async (info, data, send) => {
 const addStamp: EPR = async (info, data, send) => {
   const u = await getUser($(data).number('user_seq'));
   if (!u) return send.deny();
-  const after = u.stamp_num + (U.GetConfig('stamp_double') ? 2 : 1); // guess: one stamp per play
+  // one stamp per play (official), plus stamps from gifts; the game animates old -> after one by one
+  const after = u.stamp_num + (U.GetConfig('stamp_double') ? 2 : 1) + u.stamp_bonus;
+  u.stamp_bonus = 0;
   const full = Math.floor(after / 10);
   u.stamp_num = after % 10;
   u.powder_num += full; // guess: one powder per full card
@@ -541,6 +565,8 @@ const reportMission: EPR = async (info, data, send) => {
   const n = $(data).number('mission_no', 0);
   if (u && u.mission_no === n) {
     u.mission_no = Math.min(n + 1, 9); // the game treats every mission below mission_no as done
+    // all 8 letters: the original wallpaper (closet/cardbg adds to the wallpapers the game offers)
+    if (u.mission_no === 9 && !u.cardbg.includes(LETTER_WALLPAPER) && u.cardbg.length < 4) u.cardbg.push(LETTER_WALLPAPER);
     await saveUser(u);
   }
   send.success();
@@ -607,6 +633,12 @@ export function register() {
     desc: 'Two stamps per play, with the campaign icon on the title screen.',
     type: 'boolean',
     default: false,
+  });
+  R.Config('trial_shop', {
+    name: 'Salon trial ticket',
+    desc: 'One free hair/eye colour change in the salon for each player (as in the arcade).',
+    type: 'boolean',
+    default: true,
   });
   R.Config('starkira_free', {
     name: 'Free star kira',
