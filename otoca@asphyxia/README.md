@@ -27,6 +27,12 @@ How it works
   - Without a camera, printed card images can be scanned with a hook that feeds an image to the game's
     camera library (libcamera.dll) in place of the camera frame.
 
+Code layout
+  - `index.ts`: settings and routes. `handlers/`: one file per part of the game (version, card, key,
+    print, play, item, gift). `models/`: the stored documents (user, doll, card, counter).
+  - `closet.ts`: adding and removing items, and the closet's response nodes. `player.ts`: new players
+    and dolls. `db.ts`: ids and reads/writes. `data.ts`: values from the game's data. `utils.ts`: helpers.
+
 Settings
   - Version marker: unlocks hair/eye colours in the salon and the mode-select tips (the game checks 1 to 8).
   - Salon trial ticket: one free hair/eye colour change for each player (on by default, as in the arcade).
