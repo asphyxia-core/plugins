@@ -29,7 +29,7 @@ Not done yet
   - Checked only with recorded-style requests, not on a cabinet yet.
   - Gift codes (`receiveGift` / `receiveItem`) always answer "nothing".
   - Random bonuses (kira offsets, accessory offsets) are all 0.
-  - `battle_result` 1 is taken as a win; stamps, rival cards and item types other than equip/material
+  - Stamps, rival cards and item types other than equip/material
     are only logged.
   - No WebUI.
 

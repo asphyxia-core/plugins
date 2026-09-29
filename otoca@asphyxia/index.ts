@@ -24,7 +24,7 @@ interface User {
   accessory: Accessory[];
   next_aseq: number;
   cardbg: number[];
-  enemy: { [team: string]: number }; // enemy_team_id -> highest level beaten
+  enemy: number[][]; // [enemy_team_id, enemy_team_level] of every team/level beaten
   last_enemy: { [episode: string]: number[] }; // [enemy_team_id, enemy_team_level]
   friendly: { [team: string]: number }; // enemy_team_id -> friend point
   release_state: number;
@@ -105,7 +105,7 @@ function newUser(user_seq: number, user_name: string): User {
     collection: 'user', user_seq, user_name, keycard_id: '', key_inquire_id: '',
     powder_num: 0, stamp_num: 0, balance: 0, ticket_half_price: false, ticket_rc_first: false,
     equip: {}, material: {}, accessory: [], next_aseq: 1, cardbg: [],
-    enemy: {}, last_enemy: {}, friendly: {}, release_state: 0, stamp_conv_num: 0, user_flags: [0, 0, 0, 0],
+    enemy: [], last_enemy: {}, friendly: {}, release_state: 0, stamp_conv_num: 0, user_flags: [0, 0, 0, 0],
     last_time: 0, greeting_level: 0, user_marker: 0, mission_no: 0, question_id: 0, sort_type: 0, disp_skill: 0,
   };
 }
@@ -243,7 +243,7 @@ const getCardInfo: EPR = async (info, data, send) => {
       mission_no: u8(user.mission_no),
       setting: { sort_type: u8(user.sort_type), disp_skill: u8(user.disp_skill) },
       question_id: u8(user.question_id),
-      enemy: Object.keys(user.enemy).map(t => ({ enemy_team_id: u32(+t), enemy_team_level: u32(user.enemy[t]) })),
+      enemy: user.enemy.map(e => ({ enemy_team_id: u32(e[0]), enemy_team_level: u32(e[1]) })),
       last_enemy: Object.keys(user.last_enemy).map(ep => ({
         episode: u8(+ep), enemy_team_id: u32(user.last_enemy[ep][0]), enemy_team_level: u32(user.last_enemy[ep][1]),
       })),
@@ -301,8 +301,9 @@ const report: EPR = async (info, data, send) => {
   if (b) {
     const team = b.number('enemy_team_id', 0);
     const level = b.number('enemy_team_level', 0);
-    // ponytail: battle_result 1 taken as a win until real traffic says otherwise.
-    if (team && b.number('battle_result') === 1) u.enemy[team] = Math.max(u.enemy[team] || 0, level);
+    // battle_result 0 = win: the game itself appends the pair to score/enemy only then (game.dll FUN_100bb1d0)
+    const beaten = u.enemy.some(e => e[0] === team && e[1] === level);
+    if (team && b.number('battle_result') === 0 && !beaten && u.enemy.length < 200) u.enemy.push([team, level]);
     if (team) u.last_enemy[b.number('episode', 0)] = [team, level];
   }
   u.user_flags = $(data).numbers('user_flags', u.user_flags);
