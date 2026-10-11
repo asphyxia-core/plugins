@@ -2212,7 +2212,7 @@ export const pcsave: EPR = async (info, data, send) => {
   const hasTowerData = !(_.isNil($(data).element("tower_data")));
   const hasSkinData = !(_.isNil($(data).element("skin_equip"))) || !(_.isNil($(data).element("pskin_equip")));
   const hasTDJSkinData = !(_.isNil($(data).element("tdjskin_equip"))) || !(_.isNil($(data).element("vskin_equip")));
-  const hasVisualSkinData = !(_.isNil($(data).element("vskin_customize_setting")));
+  const hasVisualSkinData = !(_.isNil($(data).element("vskin_setting")));
   const hasMusicFilter = !(_.isNil($(data).element("music_filter")));
   const hasBadgeData = !(_.isNil($(data).element("badge")));
   const hasActivityData = !(_.isNil($(data).element("activity_data")));
@@ -5037,7 +5037,7 @@ export const pcsave: EPR = async (info, data, send) => {
           },
           {
             $set: {
-              play_num: Number(vocaloEvt.attr().play_num),
+              play_num: Number(vocaloEvt.attr().event_play_num),
               last_select_music: Number(vocaloEvt.attr().last_select_music),
               point_get: Number(vocaloEvt.attr().point_get),
               point_use_0: Number(vocaloEvt.attr().point_use_0),

@@ -9,7 +9,7 @@ export const userdataread: EPR = async (info, data, send) => {
 
   return send.object({
     b: K.ITEM("str", user.userdata),
-  }, { format: false, header: false });
+  }, { status: "SOK", format: false, header: false });
 }
 
 export const userdatawrite: EPR = async (info, data, send) => {

@@ -1,6 +1,6 @@
 # beatmaniaIIDX
 
-Plugin Version: **v0.1.18**
+Plugin Version: **v0.1.18a**
 
 ---
 
@@ -201,3 +201,9 @@ Changelogs
   - Fixed where unable to login after playing a while on old versions
   - Improved WebUI customization settings with descriptive dropdown menus (@COLV9)
   - Improved WebUI score viewer with song title mapping, detailed difficulty breakdown and sorting (@COLV9)
+
+**v0.1.18a**
+  - Fixed where unable to login (9th Style)
+  - Fixed where CYBER LOADER event data get saved incorrectly (Sparkle Shower)
+  - Fixed where Entry background brightness option doesn't get saved (Sparkle Shower)
+  - Fixed where classic\_hispeed option doesn't get saved on WebUI

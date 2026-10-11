@@ -53,7 +53,7 @@ $("#version").on("change", function () {
       $("#rival_info").prop("checked", data["custom"].rival_info);
       $("#hide_playcount").prop("checked", data["custom"].hide_playcount);
       $("#disable_graph_cutin").prop("checked", data["custom"].disable_graph_cutin);
-      $("#class_hispeed").prop("checked", data["custom"].class_hispeed);
+      $("#classic_hispeed").prop("checked", data["custom"].classic_hispeed);
       $("#rival_played_folder").prop("checked", data["custom"].rival_played_folder);
       $("#hide_iidxid").prop("checked", data["custom"].hide_iidxid);
 
