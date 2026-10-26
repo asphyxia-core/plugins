@@ -201,3 +201,19 @@ Changelogs
   - Fixed where unable to login after playing a while on old versions
   - Improved WebUI customization settings with descriptive dropdown menus (@COLV9)
   - Improved WebUI score viewer with song title mapping, detailed difficulty breakdown and sorting (@COLV9)
+  - Fixed where the Recently Played sort in the WebUI score viewer used the score record update time instead of the last played time for each difficulty
+    - Added last played time saving for each difficulty
+    - Existing score data without play time will be treated as not recently played until the chart is played again
+  - Added pagination to the WebUI score viewer
+    - Added options to display 10, 30, or 50 records per page
+  - Added Sparkle Shower music title mappings to the WebUI score viewer
+  - Added Sparkle Shower customization options
+    - NOTE BURST
+    - NOTE SKIN
+    - NOTE BEAM
+    - FULL COMBO SPLASH
+    - JUDGE FONT
+    - LANE COVER
+    - LIFT COVER
+    - PACEMAKER COVER
+    - TURNTABLE
