@@ -31,7 +31,7 @@ $("#version").on("change", function () {
       $("#effect").val(data["custom"].effect);
       $("#bomb_size").val(data["custom"].bomb_size);
       $("#disable_hcn_color").prop("checked", data["custom"].disable_hcn_color);
-      $("#first_note_preview").prop("checked", Number(data["custom"].first_note_preview) === 1);
+      $("#first_note_preview").val(data["custom"].first_note_preview);
 
       if (data["custom"].note_size == undefined) $("#note_size").val(0);
       else $("#note_size").val(data["custom"].note_size);
@@ -53,7 +53,7 @@ $("#version").on("change", function () {
       $("#rival_info").prop("checked", data["custom"].rival_info);
       $("#hide_playcount").prop("checked", data["custom"].hide_playcount);
       $("#disable_graph_cutin").prop("checked", data["custom"].disable_graph_cutin);
-      $("#class_hispeed").prop("checked", data["custom"].class_hispeed);
+      $("#classic_hispeed").prop("checked", data["custom"].classic_hispeed);
       $("#rival_played_folder").prop("checked", data["custom"].rival_played_folder);
       $("#hide_iidxid").prop("checked", data["custom"].hide_iidxid);
 

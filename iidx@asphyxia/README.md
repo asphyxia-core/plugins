@@ -1,6 +1,6 @@
 # beatmaniaIIDX
 
-Plugin Version: **v0.1.18**
+Plugin Version: **v0.1.18a**
 
 ---
 
@@ -38,7 +38,7 @@ Features
   - SKILL ANALYZER
   - EVENT (Partial)
   - ARENA (LOCAL only)
-  - RANDOME LANE TICKET
+  - RANDOM LANE TICKET
   - FAVORITE/SONG SELECTION NOTES
   - ORIGINAL FILTER
 
@@ -193,7 +193,7 @@ Changelogs
     - Migration from (previous version) menu will not work
       - Existing card with no current version user data will treat as new card on registration but it will use existing profile data
     - New card cannot be registered (~ HAPPY SKY)
-      - Need to invoke new card registration to core.
+      - Need to invoke new card registration to core
     - 9th Style will use seperate user data database as its using raw blob
   - Added ALL/STORE/RIVAL TOP pacemaker support
   - Added basic save support of STORY mode (Resort Anthem)
@@ -201,19 +201,18 @@ Changelogs
   - Fixed where unable to login after playing a while on old versions
   - Improved WebUI customization settings with descriptive dropdown menus (@COLV9)
   - Improved WebUI score viewer with song title mapping, detailed difficulty breakdown and sorting (@COLV9)
-  - Fixed where the Recently Played sort in the WebUI score viewer used the score record update time instead of the last played time for each difficulty
+
+**v0.1.18a**
+  - Fixed where unable to login (9th Style)
+  - Fixed where CYBER LOADER event data get saved incorrectly (Sparkle Shower)
+  - Fixed where Entry background brightness option doesn't get saved (Sparkle Shower)
+  - Fixed where classic\_hispeed option doesn't get saved on WebUI
+  - Fixed where CLEAR RATE, FULL COMBO RATE only displays 0% or 100%
+  - Fixed where Note Size, Note Beam Size, First Note Preview may display wrong data on WebUI
+  - Fixed where Recently Played sorted by song rather than each difficulty (@COLV9)
     - Added last played time saving for each difficulty
     - Existing score data without play time will be treated as not recently played until the chart is played again
-  - Added pagination to the WebUI score viewer
+  - Added pagination to the WebUI score viewer (@COLV9)
     - Added options to display 10, 30, or 50 records per page
-  - Added Sparkle Shower music title mappings to the WebUI score viewer
-  - Added Sparkle Shower customization options
-    - NOTE BURST
-    - NOTE SKIN
-    - NOTE BEAM
-    - FULL COMBO SPLASH
-    - JUDGE FONT
-    - LANE COVER
-    - LIFT COVER
-    - PACEMAKER COVER
-    - TURNTABLE
+  - Updated music title and customization lists (@COLV9) 
+  - Random Lane Ticket now stores ticket on database rather than give 100 temporarily batches on login
