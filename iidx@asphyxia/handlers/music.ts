@@ -813,6 +813,7 @@ export const musicreg: EPR = async (info, data, send) => {
   let esArray = Array<number>(10).fill(0); // EXSCORE //
   let optArray = Array<number>(10).fill(0); // USED OPTION (CastHour) //
   let opt2Array = Array<number>(10).fill(0); // USED OPTION (CastHour) //
+  let playTimeArray = Array<number>(10).fill(0); // LAST PLAYED TIME BY DIFFICULTY //
   let update = 0;
 
   if (version == 12 || version == 13) {
@@ -854,6 +855,10 @@ export const musicreg: EPR = async (info, data, send) => {
     }
     if (!_.isNil(music_data.rArray)) {
       rArray = music_data.rArray;
+    }
+
+    if (!_.isNil(music_data.playTimeArray)) {
+      playTimeArray = music_data.playTimeArray;
     }
 
     // migration for invalid miss count //
@@ -933,6 +938,8 @@ export const musicreg: EPR = async (info, data, send) => {
     );
   }
 
+  playTimeArray[clid] = Date.now();
+
   await DB.Upsert<score>(
     refid,
     {
@@ -949,6 +956,7 @@ export const musicreg: EPR = async (info, data, send) => {
         esArray,
         optArray,
         opt2Array,
+        playTimeArray,
 
         [clid]: ghost,
         [clid + 10]: ghost_gauge,
@@ -1236,6 +1244,7 @@ export const musicbreg: EPR = async (info, data, send) => {
   let esArray = Array<number>(10).fill(0); // EXSCORE //
   let optArray = Array<number>(10).fill(0); // USED OPTION (CastHour) //
   let opt2Array = Array<number>(10).fill(0); // USED OPTION (CastHour) //
+  let playTimeArray = Array<number>(10).fill(0); // LAST PLAYED TIME BY DIFFICULTY //
 
   if (_.isNil(music_data)) {
     pgArray[clid] = pgnum;
@@ -1260,6 +1269,10 @@ export const musicbreg: EPR = async (info, data, send) => {
       rArray = music_data.rArray;
     }
 
+    if (!_.isNil(music_data.playTimeArray)) {
+      playTimeArray = music_data.playTimeArray;
+    }
+
     const pExscore = esArray[clid];
     if (exscore > pExscore) {
       pgArray[clid] = Math.max(pgArray[clid], pgnum);
@@ -1270,6 +1283,8 @@ export const musicbreg: EPR = async (info, data, send) => {
     cArray[clid] = Math.max(cArray[clid], cflg);
   }
 
+  playTimeArray[clid] = Date.now();
+  
   await DB.Upsert<score>(
     refid,
     {
@@ -1286,6 +1301,7 @@ export const musicbreg: EPR = async (info, data, send) => {
         esArray,
         optArray,
         opt2Array,
+        playTimeArray,
 
         [clid]: null,
         [clid + 10]: null,

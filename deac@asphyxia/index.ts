@@ -66,6 +66,33 @@ const EVENT_DIFFICULTY_FIELD = 27;
 const EVENT_DIFFICULTY_SONG_COUNT = 47; // Song IDs 79 through 125.
 const ALL_SONGS_OPEN_MASK = '7fffffffffffffff'; // KDM uses 63 bits per bank.
 
+const CHALLENGE_SONGS: number[] = [79, 81, 83, 84, 85, 86, 87, 92, 93, 94, 95, 96, 97, 98, 99];
+
+// Internal 4-character song codes, used by the EVTMSG3 unlock records.
+const EVENT_OPEN_CODES = [
+  'watc', // 79 Watch Out Pt.2
+  'todo', // 81 轟け！恋のビーンボール！！
+  'todm', // 82 轟け！(9回裏振付ver)
+  'sasu', // 83 Sakura Sunrise
+  'lits', // 84 Little Star
+  'tsum', // 85 罪と罰
+  'rfts', // 86 Reaching for the Stars
+  'luvc', // 87 LUV CAN SAVE U
+  'tada', // 89 TA・DA ☆ YO・SHI
+  'alst', // 91 アルストロメリア (walk with you remix)
+  'gimm', // 93 Gimme a Big Beat
+  'dind', // 94 Din Don Dan
+  'imso', // 95 I'm so Happy
+  'msou', // 96 無双
+  'sett', // 97 Settin' the Scene
+  'akat', // 98 朱と碧のランページ
+  'spec', // 99 Special One
+];
+
+function buildEventRecords(): string {
+  return `u:${EVENT_OPEN_CODES.join(':')}`;
+}
+
 // Extracted from this build's data/arc/resource_lists.arc. Array index = song ID.
 const SONG_TITLES = [
   "INTO YOUR HEART (Ruffage remix)", "A Geisha's Dream", 'La receta',
@@ -101,7 +128,8 @@ const SONG_TITLES = [
   'Little Star', '罪と罰', 'Reaching for the Stars', 'LUV CAN SAVE U',
   'チョコレートスマイル', 'TA・DA ☆ YO・SHI', 'ハッピーシンセサイザ',
   'アルストロメリア (walk with you remix)', 'Kind Lady', 'Gimme a Big Beat',
-  'YESTERDAY', 'Din Don Dan', "I'm so Happy", '無双',
+  'Din Don Dan', "I'm so Happy", '無双', "Settin' the Scene",
+  '朱と碧のランページ', 'Special One',
 ];
 
 function getRefId(data: any): string {
@@ -164,11 +192,16 @@ function unlockStoredRecord(record: StoredRecord, type: string): StoredRecord {
 
   if (type === 'DATA12') {
     // IDA: sub_100BE7D0 indexes this string by songId - 79.  A character
-    // from '0' through '4' is the highest selectable difficulty.
+    // from '0' through '4' is the highest selectable difficulty
+    // challenge songs are the exception and get '3' (EXTREME).
     const oldLevels = fields[EVENT_DIFFICULTY_FIELD] || Buffer.alloc(0);
     const levels = Buffer.alloc(Math.max(oldLevels.length, EVENT_DIFFICULTY_SONG_COUNT));
     oldLevels.copy(levels);
     levels.fill(0x34, 0, EVENT_DIFFICULTY_SONG_COUNT); // ASCII '4'
+    for (const songId of CHALLENGE_SONGS) {
+      const idx = songId - 79;
+      if (idx >= 0 && idx < EVENT_DIFFICULTY_SONG_COUNT) levels[idx] = 0x33; // '3'
+    }
     fields[EVENT_DIFFICULTY_FIELD] = levels;
   }
 
@@ -779,21 +812,29 @@ export function register() {
   R.Route('system.getmaster', async (info, data, send) => {
     const information = String(U.GetConfig('information_text') || '');
     const unlockAll = configBoolean('unlock_all_songs', true);
-    const masterData = unlockAll ? MASTER_DATA_UNLOCKED : MASTER_DATA_LOCKED;
-    // KDM stores strdata2 in the second half of its EVENTMSG record. The title
-    // parser reads the visible message after the second comma, so two header
-    // fields are required before the configured text.
+    const datakey = $(data).str('data.datakey', '');
+
+    // KDM queries one keyed master record per request: 
+    // INFO, ARK_ARR0, ARK_HAS0, SONGOPEN, IRDATA, EVTMSG3, WEEKLYSO. 
+    // strdata1/strdata2 are base64 text; updatedate must be non-zero 
+    // and in the past for the game to use the record.
+    let strdata1 = '0';
+    if (datakey === 'EVTMSG3') {
+      // Opens the event songs in the wheel; only comma field 0 is parsed,
+      // so the legacy flags string rides along as a trailing field.
+      const flags = unlockAll ? MASTER_DATA_UNLOCKED : MASTER_DATA_LOCKED;
+      strdata1 = unlockAll ? `${buildEventRecords()},${flags}` : `0,${flags}`;
+    }
+    // KDM stores strdata2 in the second half of the record. 
+    // The title parser reads the visible message after the second comma, 
+    // so two header fields are required before the configured text.
     const eventMessage = `0,0,${information}`;
     return send.object({
       result: K.ITEM('s32', 1),
-      strdata1: K.ITEM(
-        'str',
-        Buffer.from(masterData, 'utf-8').toString('base64')
-      ),
+      strdata1: K.ITEM('str', Buffer.from(strdata1, 'utf-8').toString('base64')),
       strdata2: K.ITEM('str', U.EncodeString(eventMessage, 'shift_jis').toString('base64')),
-      // Use the request time so WebUI changes are not hidden by KDM's cached
-      // master revision until CORE itself is restarted.
-      updatedate: K.ITEM('u64', BigInt(String(Math.floor(Date.now() / 1000)))),
+      // Always non-zero and in the past so the game accepts the record.
+      updatedate: K.ITEM('u64', BigInt(1)),
     });
   });
 

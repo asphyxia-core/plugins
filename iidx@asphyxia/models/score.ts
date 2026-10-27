@@ -12,6 +12,7 @@ export interface score {
 
   optArray: number[];
   opt2Array: number[];
+  playTimeArray?: number[];
 }
 
 export interface score_top {

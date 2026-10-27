@@ -209,4 +209,10 @@ Changelogs
   - Fixed where classic\_hispeed option doesn't get saved on WebUI
   - Fixed where CLEAR RATE, FULL COMBO RATE only displays 0% or 100%
   - Fixed where Note Size, Note Beam Size, First Note Preview may display wrong data on WebUI
+  - Fixed where Recently Played sorted by song rather than each difficulty (@COLV9)
+    - Added last played time saving for each difficulty
+    - Existing score data without play time will be treated as not recently played until the chart is played again
+  - Added pagination to the WebUI score viewer (@COLV9)
+    - Added options to display 10, 30, or 50 records per page
+  - Updated music title and customization lists (@COLV9) 
   - Random Lane Ticket now stores ticket on database rather than give 100 temporarily batches on login
