@@ -25,14 +25,14 @@ export interface custom {
 
   skin_customize_flg: number[];
 
-  note_size: number; // epolis //
+  note_size: number; // EPOLIS //
   lift_cover: number;
   note_beam_size: number;
 
-  cn_color: number; // sparkle shower//
+  cn_color: number; // Sparkle Shower //
   cn_size: number;
 
-  // appendsettings
+  // appendsettings //
   rank_folder: boolean;
   clear_folder: boolean;
   diff_folder: boolean;
@@ -53,15 +53,15 @@ export interface custom {
   qpro_face: number;
   qpro_hand: number;
   qpro_body: number;
-  qpro_back: number; // epolis //
+  qpro_back: number; // EPOLIS //
 
-  // qpro_secret (heroic verse) //
+  // qpro_secret (HEROIC VERSE) //
   qpro_secret_head: string[];
   qpro_secret_hair: string[];
   qpro_secret_face: string[];
   qpro_secret_hand: string[];
   qpro_secret_body: string[];
-  qpro_secret_back: string[]; // epolis //
+  qpro_secret_back: string[]; // EPOLIS //
 }
 
 export const default_custom = {
@@ -84,7 +84,8 @@ export const default_custom = {
   disable_hcn_color: false,
   first_note_preview: 0,
 
-  skin_customize_flg: Array<number>(3).fill(-1),
+  skin_customize_flg: Array<number>(16).fill(-1),
+  vskin_customize_flg: Array<number>(6).fill(-1),
 
   note_size: 0,
   lift_cover: 0,

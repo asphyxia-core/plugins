@@ -1,8 +1,9 @@
 //DATA//
   profile: DB.FindOne(refid, { collection: 'profile' })
-  pcdata: DB.FindOne(refid, { collection: 'pcdata' })
+  pcdatas: DB.Find(refid, { collection: 'pcdata' })
 
 -
+  const pcdata = (pcdatas || []).sort((a, b) => b.updatedAt - a.updatedAt)[0];
   const version = [
     10,
     11,

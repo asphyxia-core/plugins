@@ -1,4 +1,4 @@
-import { IDtoRef, GetVersion, OldMidToNewMid, NewMidToOldMid, ReftoProfile, ReftoPcdata, ClidToPlaySide, ReftoQPRO, NumArrayToString, OldMidToVerMid, GetModel, GetCommand, NumArrayToHex } from "../util";
+import { IDtoRef, GetVersion, OldMidToNewMid, NewMidToOldMid, ReftoProfile, ReftoPcdata, ClidToPlaySide, ReftoQPRO, NumArrayToString, OldMidToVerMid, GetModel, GetCommand, NumArrayToHex, LampOut, LampIn } from "../util";
 import { score, score_top } from "../models/score";
 import { profile } from "../models/profile";
 import { shop_data } from "../models/shop";
@@ -7,6 +7,7 @@ import { badge } from "../models/badge";
 import { activity_mybest } from "../models/activity";
 import { djtraining } from "../models/djtraining";
 import { rival } from "../models/rival";
+import { lamp } from "../models/clearlamp";
 
 export const musicmethod: EPR = async (info, data, send) => {
   const command = GetCommand(data);
@@ -88,7 +89,7 @@ export const musicgetrank: EPR = async (info, data, send) => {
         if (res.esArray[indices[a]] == 0) continue;
         let rank_id = _.isNil(res.rArray) ? -1 : res.rArray[indices[a]];
         if (version < 10) {
-          const data = NumArrayToHex([11, 3, 1, 1], [temp_mid, rank_id, res.cArray[indices[a]] > 1 ? 1 : 0, 0]);
+          const data = NumArrayToHex([11, 3, 1, 1], [temp_mid, rank_id, LampOut(version, res.cArray[indices[a]]) > 1 ? 1 : 0, 0]);
           if (mapValue(indices[a]) in musicData) {
             musicData[mapValue(indices[a])] += data;
           } else {
@@ -96,14 +97,14 @@ export const musicgetrank: EPR = async (info, data, send) => {
           }
         }
         else if (version < 12) {
-          const data = NumArrayToString(version < 11 ? [11, 3, 2, 14] : [11, 3, 3, 13], [temp_mid, res.cArray[indices[a]], rank_id, res.esArray[indices[a]]]);
+          const data = NumArrayToString(version < 11 ? [11, 3, 2, 14] : [11, 3, 3, 13], [temp_mid, LampOut(version, res.cArray[indices[a]]), rank_id, res.esArray[indices[a]]]);
           if (mapValue(indices[a]) in musicData) {
             musicData[mapValue(indices[a])] += data;
           } else {
             musicData[mapValue(indices[a])] = data;
           }
         } else {
-          const data = NumArrayToString([7, 4, 13, 3, 3], [verMid[1], a, res.esArray[indices[a]], rank_id, res.cArray[indices[a]]]);
+          const data = NumArrayToString([7, 4, 13, 3, 3], [verMid[1], a, res.esArray[indices[a]], rank_id, LampOut(version, res.cArray[indices[a]])]);
           if (verMid[0] in musicData) {
             musicData[verMid[0]] += data;
           } else {
@@ -129,7 +130,7 @@ export const musicgetrank: EPR = async (info, data, send) => {
         result.r.push(
           K.ITEM("str", NumArrayToString(
             [12, 6],
-            [temp_mid, res.cArray[0]]
+            [temp_mid, LampOut(version, res.cArray[0])]
           ), { v: String("-1") })
         );
       }
@@ -176,11 +177,11 @@ export const musicgetrank: EPR = async (info, data, send) => {
       let mVersion = Math.floor(temp_mid / 100);
       if (mVersion > version) return;
 
-      if (version == 16) score_data = [-1, temp_mid, ...indices.map(i => res.cArray[i]), ...indices.map(i => res.esArray[i])];
-      else score_data = [-1, temp_mid, ...indices.map(i => res.cArray[i]), ...indices.map(i => res.esArray[i]), ...indices.map(i => res.mArray[i])];
+      if (version == 16) score_data = [-1, temp_mid, ...indices.map(i => LampOut(version, res.cArray[i])), ...indices.map(i => res.esArray[i])];
+      else score_data = [-1, temp_mid, ...indices.map(i => LampOut(version, res.cArray[i])), ...indices.map(i => res.esArray[i]), ...indices.map(i => res.mArray[i])];
       m.push(K.ARRAY(arrayType, score_data));
 
-      if (res.cArray[0] != 0) b.push(K.ARRAY("u16", [temp_mid, res.cArray[0]]));
+      if (res.cArray[0] != 0) b.push(K.ARRAY("u16", [temp_mid, LampOut(version, res.cArray[0])]));
     });
 
     for (let i = 0; i < 5; i++) {
@@ -195,8 +196,8 @@ export const musicgetrank: EPR = async (info, data, send) => {
         let mVersion = Math.floor(temp_mid / 100);
         if (mVersion > version) return;
 
-        if (version == 16) score_data = [i, temp_mid, ...indices.map(i => res.cArray[i]), ...indices.map(i => res.esArray[i])];
-        else score_data = [i, temp_mid, ...indices.map(i => res.cArray[i]), ...indices.map(i => res.esArray[i]), ...indices.map(i => res.mArray[i])];
+        if (version == 16) score_data = [i, temp_mid, ...indices.map(i => LampOut(version, res.cArray[i])), ...indices.map(i => res.esArray[i])];
+        else score_data = [i, temp_mid, ...indices.map(i => LampOut(version, res.cArray[i])), ...indices.map(i => res.esArray[i]), ...indices.map(i => res.mArray[i])];
         m.push(K.ARRAY(arrayType, score_data));
       });
     }
@@ -223,10 +224,10 @@ export const musicgetrank: EPR = async (info, data, send) => {
       let mVersion = Math.floor(res.mid / 1000);
       if (mVersion > version) return;
 
-      score_data = [-1, res.mid, ...indices.map(i => res.cArray[i]), ...indices.map(i => res.esArray[i]), ...indices.map(i => res.mArray[i])];
+      score_data = [-1, res.mid, ...indices.map(i => LampOut(version, res.cArray[i])), ...indices.map(i => res.esArray[i]), ...indices.map(i => res.mArray[i])];
       m.push(K.ARRAY(arrayType, score_data));
 
-      if (res.cArray[0] != 0) b.push(K.ARRAY("u16", [res.mid, res.cArray[0]]));
+      if (res.cArray[0] != 0) b.push(K.ARRAY("u16", [res.mid, LampOut(version, res.cArray[0])]));
     });
 
     for (let i = 0; i < 5; i++) {
@@ -240,7 +241,7 @@ export const musicgetrank: EPR = async (info, data, send) => {
         let mVersion = Math.floor(res.mid / 1000);
         if (mVersion > version) return;
 
-        score_data = [i, res.mid, ...indices.map(i => res.cArray[i]), ...indices.map(i => res.esArray[i]), ...indices.map(i => res.mArray[i])];
+        score_data = [i, res.mid, ...indices.map(i => LampOut(version, res.cArray[i])), ...indices.map(i => res.esArray[i]), ...indices.map(i => res.mArray[i])];
         m.push(K.ARRAY(arrayType, score_data));
       });
     }
@@ -258,6 +259,10 @@ export const musicgetrank: EPR = async (info, data, send) => {
           let mVersion = Math.floor(res.mid / 1000);
           if (mVersion > version) return;
 
+          for (let a = 0; a < res.clflgs.length; a++) {
+            res.clflgs[a] = LampOut(version, res.clflgs[a]);
+          }
+
           top.push({
             "@attr": ({
               name0: res.names[0],
@@ -273,6 +278,10 @@ export const musicgetrank: EPR = async (info, data, send) => {
         score_top.forEach((res) => {
           let mVersion = Math.floor(res.mid / 1000);
           if (mVersion > version) return;
+
+          for (let a = 0; a < res.clflgs.length; a++) {
+            res.clflgs[a] = LampOut(version, res.clflgs[a]);
+          }
 
           top.push({
             "@attr": ({
@@ -305,6 +314,8 @@ export const musicgetrank: EPR = async (info, data, send) => {
 }
 
 export const musicgetranksub: EPR = async (info, data, send) => {
+  const version = GetVersion(info);
+
   const cltype = Number($(data).attr().cltype); // 0 -> SP, 1 -> DP //
   const rival_refids = [
     [Number($(data).attr().iidxid0), await IDtoRef(Number($(data).attr().iidxid0))],
@@ -333,7 +344,7 @@ export const musicgetranksub: EPR = async (info, data, send) => {
           if (res.rArray[indices[a]] == -1) continue;
 
           // [index?, rno?, ...] //
-          score_data = [i, i, res.mid, indices[a], res.cArray[indices[a]], res.esArray[indices[a]], res.mArray[indices[a]]];
+          score_data = [i, i, res.mid, indices[a], LampOut(version, res.cArray[indices[a]]), res.esArray[indices[a]], res.mArray[indices[a]]];
           m.push(K.ARRAY("s32", score_data));
         }
       });
@@ -385,6 +396,10 @@ export const musicgetralive: EPR = async (info, data, send) => {
       let verMid = OldMidToVerMid(mid);
       if (verMid[0] > version) return;
 
+      for (let a = 0; a < res.cArray.length; a++) {
+        res.cArray[a] = LampOut(version, res.cArray[a]);
+      }
+
       myRecord[NewMidToOldMid(res.mid)] = [...res.esArray, ...res.cArray];
     });
   }
@@ -401,6 +416,10 @@ export const musicgetralive: EPR = async (info, data, send) => {
       let mid = NewMidToOldMid(res.mid);
       let verMid = OldMidToVerMid(mid);
       if (verMid[0] > version) return;
+
+      for (let a = 0; a < res.cArray.length; a++) {
+        res.cArray[a] = LampOut(version, res.cArray[a]);
+      }
 
       let scoreArray = Array<number>(15).fill(0);
       let strResult = "";
@@ -424,8 +443,8 @@ export const musicgetralive: EPR = async (info, data, send) => {
           for (let a = 0; a < 3; a++) {
             let myExscore = myRecord[mid][indices[a]];
             let rvExscore = res.esArray[indices[a]];
-            let mycFlg = myRecord[mid][indices[a] + 10];
-            let rvcFlg = res.cArray[indices[a]];
+            let mycFlg = LampOut(version, myRecord[mid][indices[a] + 10]);
+            let rvcFlg = LampOut(version, res.cArray[indices[a]]);
 
             if (mycFlg == 0 || rvcFlg == 0) continue;
             scoreArray[i * 3 + (2 - a)] = myExscore > rvExscore ? 1 : 2;
@@ -753,7 +772,7 @@ export const musicreg: EPR = async (info, data, send) => {
   const pgnum = version < 13 ? Number(command[4]) : Number($(data).attr().pgnum);
   const gnum = version < 13 ? Number(command[5]) : Number($(data).attr().gnum);
   const mnum = version < 13 ? -1 : Number($(data).attr().mnum);
-  const cflg = version < 13 ? Number(command[7]) : Number($(data).attr().cflg);
+  const cflg = LampIn(version, (version < 13 ? Number(command[7]) : Number($(data).attr().cflg)));
   let exscore = (pgnum * 2 + gnum);
   let ghost = null, ghost_gauge = null; // Heroic Verse //
   let style = 0, option = 0, option_2 = 0, rid = -1;
@@ -1049,7 +1068,7 @@ export const musicreg: EPR = async (info, data, send) => {
       part: part,
       midx: midx,
     });
-    let cflag = _.isNil(djt_data) ? cflg : Math.max(cflg, djt_data.cflg);
+    const cflag = LampOut(version, (_.isNil(djt_data) ? cflg : Math.max(cflg, djt_data.cflg)));
 
     await DB.Upsert<djtraining>(
       refid,
@@ -1093,10 +1112,12 @@ export const musicreg: EPR = async (info, data, send) => {
     ])
   );
 
-  let crate = 0, frate = 0, cflgs = 0, fcflgs = 0;
+  let crate = 0, frate = 0;
+  let cflgs = 0, fcflgs = 0;
   scores.forEach((rankscore, index) => {
-    if (rankscore[1] != 1) cflgs += 1;
-    if (rankscore[1] == 7) fcflgs += 1;
+    rankscore[1] = LampOut(version, rankscore[1]);
+    if (rankscore[1] > lamp.FAILED) cflgs += 1;
+    if (rankscore[1] > lamp.EX_HARD_CLEAR) fcflgs += 1;
 
     if (index == shop_rank) {
       shop_rank_data.push(
@@ -1106,7 +1127,7 @@ export const musicreg: EPR = async (info, data, send) => {
           opname: shop_data.opname,
           rnum: String(index + 1),
           score: String(rankscore[0]),
-          clflg: String(rankscore[1]),
+          clflg: String(LampOut(version, rankscore[1])),
           pid: String(rankscore[2][1]),
           sgrade: String(rankscore[4][0]),
           dgrade: String(rankscore[4][1]),
@@ -1132,7 +1153,7 @@ export const musicreg: EPR = async (info, data, send) => {
           opname: shop_data.opname,
           rnum: String(index + 1),
           score: String(rankscore[0]),
-          clflg: String(rankscore[1]),
+          clflg: String(LampOut(version, rankscore[1])),
           pid: String(rankscore[2][1]),
           sgrade: String(rankscore[4][0]),
           dgrade: String(rankscore[4][1]),
@@ -1152,7 +1173,7 @@ export const musicreg: EPR = async (info, data, send) => {
     }
   });
 
-  let rate = version > 23 ? 1000 : 100;
+  const rate = version > 23 ? 1000 : 100;
   crate = Math.round((cflgs / shop_rank_data.length) * rate);
   frate = Math.round((fcflgs / shop_rank_data.length) * rate);
 
@@ -1193,7 +1214,7 @@ export const musicbreg: EPR = async (info, data, send) => {
   const refid = await IDtoRef(Number($(data).attr().iidxid));
   const pgnum = Number($(data).attr().pgnum);
   const gnum = Number($(data).attr().gnum);
-  const cflg = Number($(data).attr().cflg);
+  const cflg = LampIn(version, Number($(data).attr().cflg));
   let mid = Number($(data).attr().mid);
   let clid = 0; // SP BEGINNER //
   let exscore = (pgnum * 2 + gnum);
@@ -1293,50 +1314,46 @@ export const musiccrate: EPR = async (info, data, send) => {
   const scores = await DB.Find<score>(null, {
     collection: "score",
   });
-  const cltype = version < 13 ? Number(command[1]) : Number($(data).attr().cltype);
+  const cltype = version < 13 ? Number(command[1]) : (_.isNil($(data).attr().cltype) ? 0 : Number($(data).attr().cltype));
 
   let cFlgs: Record<number, number[]> = {},
     fcFlgs: Record<number, number[]> = {},
     totalFlgs: Record<number, number[]> = {};
 
   scores.forEach((res) => {
+    if (_.isNil(res.cArray)) throw new Error("[music.crate] There is unsupported entry in Database");
+
     let mVersion = Math.floor(res.mid / 1000);
     if (mVersion > version) return;
     if (res.mid < 0) return;
 
-    let totalArray = Array<number>(10).fill(0);
-    let cFlgArray = Array<number>(10).fill(0);
-    let fcFlgArray = Array<number>(10).fill(0);
-
-    if (_.isNil(res.cArray)) throw new Error("[music.crate] There is unsupported entry in Database");
-
-    for (let a = 0; a < 10; a++) {
-      if (res.cArray[a] != 0) totalArray[a] += 1;
-      if (res.cArray[a] != 1) cFlgArray[a] += 1;
-      if (res.cArray[a] == 7) fcFlgArray[a] += 1;
+    let temp_mid = version < 20 ? NewMidToOldMid(res.mid) : res.mid;
+    if (_.isNil(totalFlgs[temp_mid])) {
+      totalFlgs[temp_mid] = Array<number>(10).fill(0);
+      cFlgs[temp_mid] = Array<number>(10).fill(0);
+      fcFlgs[temp_mid] = Array<number>(10).fill(0);
     }
 
-    let temp_mid = version < 20 ? NewMidToOldMid(res.mid) : res.mid;
-    totalFlgs[temp_mid] = totalArray;
-    cFlgs[temp_mid] = cFlgArray;
-    fcFlgs[temp_mid] = fcFlgArray;
+    for (let a = 0; a < 10; a++) {
+      const cflg = LampOut(version, res.cArray[a]);
+      if (cflg > lamp.NO_PLAY) totalFlgs[temp_mid][a] += 1;
+
+      if (cflg > lamp.FAILED) cFlgs[temp_mid][a] += 1;
+      if (cflg > lamp.EX_HARD_CLEAR) fcFlgs[temp_mid][a] += 1;
+    }
   });
 
   let result = {}, c = [], cdata = [];
+  const rate = version > 23 ? 1000 : 100;
   for (const key in totalFlgs) {
-    let cRate = Array<number>(10).fill(0);
-    let fcRate = Array<number>(10).fill(0);
+    let cRate = version < 24 ? Array<number>(10).fill(0) : Array<number>(10).fill(-1);
+    let fcRate = version < 24 ? Array<number>(10).fill(0) : Array<number>(10).fill(-1);
 
     for (let a = 0; a < 10; a++) {
       if (totalFlgs[key][a] == 0) continue;
 
-      if (version > 23) {
-        cRate[a] = Math.round((cFlgs[key][a] / totalFlgs[key][a]) * 1000);
-        fcRate[a] = Math.round((fcFlgs[key][a] / totalFlgs[key][a]) * 1000);
-      } else {
-        cRate[a] = Math.round((cFlgs[key][a] / totalFlgs[key][a]) * 100);
-        fcRate[a] = Math.round((fcFlgs[key][a] / totalFlgs[key][a]) * 100);
-      }
+      cRate[a] = Math.round((cFlgs[key][a] / totalFlgs[key][a]) * rate);
+      fcRate[a] = Math.round((fcFlgs[key][a] / totalFlgs[key][a]) * rate);
     }
 
     let indices = [1, 2, 3, 6, 7, 8], mapValue = null;
@@ -1373,7 +1390,7 @@ export const musiccrate: EPR = async (info, data, send) => {
   let sendOption: EamuseSendOption = {};
   if (version < 14) {
     result = {
-      "@attr": { method: "musiccrate" },
+      "@attr": { method: "musiccrate", expire: "300" },
       ...result
     };
     sendOption = {

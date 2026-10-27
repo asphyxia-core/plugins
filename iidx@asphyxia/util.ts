@@ -1,3 +1,4 @@
+import { lamp } from "./models/clearlamp";
 import { custom } from "./models/custom";
 import { pcdata } from "./models/pcdata";
 import { profile } from "./models/profile";
@@ -245,4 +246,98 @@ export function GetCommand(data: any) {
   if (_.isNil(command)) return null;
 
   return command.split(' ');
+}
+
+export function LampIn(version: number, cflg: number) {
+  if (version == 9) {
+    return cflg == 1 ? lamp.CLEAR : lamp.FAILED;
+  }
+  else if (version == 10) {
+    switch (cflg) {
+      case 1: return lamp.EASY_CLEAR;
+      case 2: return lamp.CLEAR;
+      case 3: return lamp.FULL_COMBO;
+      default: return lamp.FAILED;
+    }
+  }
+  else if (version >= 11 && version < 14) {
+    switch (cflg) {
+      case 0: return lamp.NO_PLAY;
+      case 1: return lamp.FAILED;
+      case 2: return lamp.EASY_CLEAR;
+      case 3: return lamp.CLEAR;
+      case 4: return lamp.HARD_CLEAR;
+      case 5: return lamp.FULL_COMBO;
+      default: return lamp.FAILED;
+    }
+  }
+  else if (version >= 14 && version < 20) {
+    switch (cflg) {
+      case 0: return lamp.NO_PLAY;
+      case 1: return lamp.FAILED;
+      case 2: return lamp.ASSIST_CLEAR;
+      case 3: return lamp.EASY_CLEAR;
+      case 4: return lamp.CLEAR;
+      case 5: return lamp.HARD_CLEAR;
+      case 6: return lamp.FULL_COMBO;
+      default: return lamp.FAILED;
+    }
+  }
+
+  return cflg;
+}
+
+export function LampOut(version: number, cflg: number) {
+  if (version == 9) {
+    return cflg == lamp.NO_PLAY || cflg == lamp.FAILED ? 0 : 1;
+  }
+  else if (version == 10) {
+    switch (cflg) {
+      case lamp.NO_PLAY:
+      case lamp.FAILED:
+        return 0;
+      case lamp.ASSIST_CLEAR:
+      case lamp.EASY_CLEAR:
+        return 1;
+      case lamp.CLEAR:
+      case lamp.HARD_CLEAR:
+      case lamp.EX_HARD_CLEAR:
+        return 2;
+      case lamp.FULL_COMBO:
+        return 3;
+      default:
+        return 0;
+    }
+  }
+  else if (version >= 11 && version < 14) {
+    switch (cflg) {
+      case lamp.NO_PLAY: return 0;
+      case lamp.FAILED: return 1;
+      case lamp.ASSIST_CLEAR:
+      case lamp.EASY_CLEAR:
+        return 2;
+      case lamp.CLEAR: return 3;
+      case lamp.HARD_CLEAR:
+      case lamp.EX_HARD_CLEAR:
+        return 4;
+      case lamp.FULL_COMBO: return 5;
+      default: return 0;
+    }
+  }
+  else if (version >= 14 && version < 20) {
+    switch (cflg) {
+      case lamp.NO_PLAY: return 0;
+      case lamp.FAILED: return 1;
+      case lamp.ASSIST_CLEAR: return 2;
+      case lamp.EASY_CLEAR: return 3;
+      case lamp.CLEAR: return 4;
+      case lamp.HARD_CLEAR:
+      case lamp.EX_HARD_CLEAR:
+        return 5;
+      case lamp.FULL_COMBO: return 6;
+      default: return 0;
+    }
+  }
+
+  return cflg;
 }

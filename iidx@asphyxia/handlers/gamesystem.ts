@@ -215,7 +215,7 @@ export const gssysteminfo: EPR = async (info, data, send) => {
         VocaloidEvent: K.ATTR({ val: String(U.GetConfig("ss_cyber")) }),
         KrankAppendSeason: K.ATTR({ val: String(0) }),
         the4thEvent: K.ATTR({ val: String(1)} ),
-        beat: K.ATTR({ val: String(5293) }), // It wasn't. TODO:: Figure out what this value does //
+        beat: K.ATTR({ val: String(5293) }), // TODO:: Figure out what this value does //
         extraevent_2: {
           "@attr": {
             all_point_score: String(totalScorePoint),

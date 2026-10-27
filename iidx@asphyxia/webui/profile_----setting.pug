@@ -1,10 +1,12 @@
 //DATA//
-  profile: DB.FindOne(refid, { collection: "profile" })
-  pcdata: DB.FindOne(refid, { collection: "pcdata" })
-  custom: DB.FindOne(refid, { collection: "custom" })
-  lm_custom: DB.FindOne(refid, { collection: "lightning_custom" })
-
+  profile: DB.FindOne(refid, { collection: 'profile' })
+  pcdatas: DB.Find(refid, { collection: 'pcdata' })
+  customs:  DB.Find(refid, { collection: 'custom' })
+  lm_customs: DB.Find(refid, { collection: 'lightning_custom' })
 -
+  const pcdata = (pcdatas || []).sort((a, b) => b.updatedAt - a.updatedAt)[0];
+  const custom = (customs || []).filter((data) => data.version == pcdata.version)[0];
+  const lm_custom = (lm_customs || []).filter((data) => data.version == pcdata.version)[0];
   const version = [
     10,
     11,
@@ -189,7 +191,8 @@ div
                   const note_size_types = [
                     {val: 0, name: 'Default'},
                     {val: 1, name: 'Short'},
-                    {val: 2, name: 'Very Short'}
+                    {val: 2, name: 'Very Short'},
+                    {val: 3, name: 'Large'},
                   ]
                 each item in note_size_types
                   option(value=item.val, selected=(custom.note_size == item.val)) #{item.name}
@@ -225,6 +228,7 @@ div
                 - 
                   const beam_sizes = [
                     {val: 0, name: 'Default'},
+                    {val: 1, name: 'Short'},
                     {val: 2, name: 'Very Short'},
                     {val: 3, name: 'Long'}
                   ]
@@ -1346,17 +1350,11 @@ div
         .field
           label.label Charge Note Size
           .control
-            if custom.cn_size === undefined
-              input.input(type="number" name="cn_size", id="cn_size", value="0")
-            else
-              input.input(type="number" name="cn_size", id="cn_size", value=custom.cn_size)
+            input.input(type="number" name="cn_size", id="cn_size", value=(custom.cn_size || "0"))
         .field
           label.label Charge Note Color
           .control
-            if custom.cn_color === undefined
-              input.input(type="number" name="cn_color", id="cn_color", value="0")
-            else
-              input.input(type="number" name="cn_color", id="cn_color", value=custom.cn_color)
+            input.input(type="number" name="cn_color", id="cn_color", value=(custom.cn_color || "0"))
         .field
           label.label Disable Music Preview
           .control
@@ -1364,7 +1362,7 @@ div
         .field
           label.label Disable HCN Color
           .control
-            input(type="checkbox" name="disable_hcn_color", id="disable_hcn_color", checked=Boolean(custom.disable_hcn_color))                      
+            input(type="checkbox" name="disable_hcn_color", id="disable_hcn_color", checked=Boolean(custom.disable_hcn_color))
         //- APPEND SETTINGS
         .field
           label.label Rank Folder
@@ -1417,10 +1415,7 @@ div
         .field
           label.label Disable Beginner Option
           .control
-            if custom.disable_beginner_option === undefined
-              input(type="checkbox" name="disable_beginner_option", id="disable_beginner_option", checked=Boolean(false))
-            else
-              input(type="checkbox" name="disable_beginner_option", id="disable_beginner_option", checked=Boolean(custom.disable_beginner_option))
+            input(type="checkbox" name="disable_beginner_option", id="disable_beginner_option", checked=Boolean(custom.disable_beginner_option || false))
         //- QPRO
         .field
           label.label QPRO Head
@@ -1445,10 +1440,7 @@ div
         .field
           label.label QPRO Back
           .control
-            if custom.qpro_back === undefined
-              input.input(type="number" name="qpro_back", id="qpro_back", value="0")
-            else
-              input.input(type="number" name="qpro_back", id="qpro_back", value=custom.qpro_back)
+            input.input(type="number" name="qpro_back", id="qpro_back", value=(custom.qpro_back || "0"))
         //- LIGHTNING CUSTOM
         if lm_custom != null
           .field
@@ -1462,24 +1454,15 @@ div
           .field
             label.label Premium Area Background (Concentration Mode)
             .control
-              if lm_custom.premium_bg_concent === undefined
-                input.input(type="number" name="lm_bg_2", id="lm_bg_2", value="0")
-              else
-                input.input(type="number" name="lm_bg_2", id="lm_bg_2", value=lm_custom.premium_bg_concent)
+              input.input(type="number" name="lm_bg_2", id="lm_bg_2", value=(lm_custom.premium_bg_concent || "0"))
           .field
             label.label Entry BG
             .control
-              if lm_custom.entry_bg === undefined
-                input.input(type="number" name="lm_entry_bg", id="lm_entry_bg", value="0")
-              else
-                input.input(type="number" name="lm_entry_bg", id="lm_entry_bg", value=lm_custom.entry_bg)
+              input.input(type="number" name="lm_entry_bg", id="lm_entry_bg", value=(lm_custom.entry_bg || "0"))
           .field
             label.label Entry BG Brightness
             .control
-              if lm_custom.entry_bg_brightness === undefined
-                input.input(type="number" name="lm_entry_bg_bright", id="lm_entry_bg_bright", value="0")
-              else
-                input.input(type="number" name="lm_entry_bg_bright", id="lm_entry_bg_bright", value=lm_custom.entry_bg_brightness)
+              input.input(type="number" name="lm_entry_bg_bright", id="lm_entry_bg_bright", value=(lm_custom.entry_bg_brightness || "0"))
         .field
           button.button.is-primary(type="submit") 
             span.icon

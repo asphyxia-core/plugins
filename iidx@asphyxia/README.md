@@ -38,7 +38,7 @@ Features
   - SKILL ANALYZER
   - EVENT (Partial)
   - ARENA (LOCAL only)
-  - RANDOME LANE TICKET
+  - RANDOM LANE TICKET
   - FAVORITE/SONG SELECTION NOTES
   - ORIGINAL FILTER
 
@@ -193,7 +193,7 @@ Changelogs
     - Migration from (previous version) menu will not work
       - Existing card with no current version user data will treat as new card on registration but it will use existing profile data
     - New card cannot be registered (~ HAPPY SKY)
-      - Need to invoke new card registration to core.
+      - Need to invoke new card registration to core
     - 9th Style will use seperate user data database as its using raw blob
   - Added ALL/STORE/RIVAL TOP pacemaker support
   - Added basic save support of STORY mode (Resort Anthem)
@@ -207,3 +207,6 @@ Changelogs
   - Fixed where CYBER LOADER event data get saved incorrectly (Sparkle Shower)
   - Fixed where Entry background brightness option doesn't get saved (Sparkle Shower)
   - Fixed where classic\_hispeed option doesn't get saved on WebUI
+  - Fixed where CLEAR RATE, FULL COMBO RATE only displays 0% or 100%
+  - Fixed where Note Size, Note Beam Size, First Note Preview may display wrong data on WebUI
+  - Random Lane Ticket now stores ticket on database rather than give 100 temporarily batches on login
