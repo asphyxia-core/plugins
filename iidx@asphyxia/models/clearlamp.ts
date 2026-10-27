@@ -1,0 +1,10 @@
+export enum lamp {
+  NO_PLAY,
+  FAILED,
+  ASSIST_CLEAR,
+  EASY_CLEAR,
+  CLEAR,
+  HARD_CLEAR,
+  EX_HARD_CLEAR,
+  FULL_COMBO,
+}

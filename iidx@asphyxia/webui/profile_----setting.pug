@@ -1,10 +1,12 @@
 //DATA//
-  profile: DB.FindOne(refid, { collection: "profile" })
-  pcdata: DB.FindOne(refid, { collection: "pcdata" })
-  custom: DB.FindOne(refid, { collection: "custom" })
-  lm_custom: DB.FindOne(refid, { collection: "lightning_custom" })
-
+  profile: DB.FindOne(refid, { collection: 'profile' })
+  pcdatas: DB.Find(refid, { collection: 'pcdata' })
+  customs:  DB.Find(refid, { collection: 'custom' })
+  lm_customs: DB.Find(refid, { collection: 'lightning_custom' })
 -
+  const pcdata = (pcdatas || []).sort((a, b) => b.updatedAt - a.updatedAt)[0];
+  const custom = (customs || []).filter((data) => data.version == pcdata.version)[0];
+  const lm_custom = (lm_customs || []).filter((data) => data.version == pcdata.version)[0];
   const version = [
     10,
     11,
@@ -99,11 +101,30 @@ div
                     {val: 19, name: 'キャノンボーラーズ (CB)'},
                     {val: 20, name: 'Rootage'},
                     {val: 21, name: 'HEROIC VERSE'},
-                    {val: 22, name: 'CastHour'},
-                    {val: 23, name: 'RESIDENT'},
-                    {val: 24, name: 'いちご (strawberry)'},
-                    {val: 25, name: 'EPOLIS'},
-                    {val: 26, name: 'Pinky Crush'}
+                    {val: 22, name: 'Turntable 22'},
+                    {val: 23, name: 'Turntable 23'},
+                    {val: 24, name: 'Turntable 24'},
+                    {val: 25, name: 'Turntable 25'},
+                    {val: 26, name: 'Turntable 26'},
+                    {val: 27, name: 'Turntable 27'},
+                    {val: 28, name: 'Turntable 28'},
+                    {val: 29, name: 'いちご (strawberry)'},
+                    {val: 30, name: 'CastHour'},
+                    {val: 31, name: 'Turntable 31'},
+                    {val: 32, name: 'Turntable 32'},
+                    {val: 33, name: 'Turntable 33'},
+                    {val: 34, name: 'Turntable 34'},
+                    {val: 35, name: 'Turntable 35'},
+                    {val: 36, name: 'Turntable 36'},
+                    {val: 37, name: 'Turntable 37'},
+                    {val: 38, name: 'Turntable 38'},
+                    {val: 39, name: 'Turntable 39'},
+                    {val: 40, name: 'Turntable 40'},
+                    {val: 41, name: 'RESIDENT'},
+                    {val: 42, name: 'Turntable 42'},
+                    {val: 43, name: 'EPOLIS'},
+                    {val: 44, name: 'Pinky Crush'},
+                    {val: 45, name: 'Sparkle Shower'}
                   ]
                 each item in turntable_types
                   option(value=item.val, selected=(custom.turntable == item.val)) #{item.name}
@@ -139,7 +160,8 @@ div
                     {val: 22, name: 'いいねフラッシュ (Like👍 flash)'},
                     {val: 23, name: 'RESIDENT'},
                     {val: 24, name: 'EPOLIS'},
-                    {val: 25, name: 'Pinky Crush'}
+                    {val: 25, name: 'Pinky Crush'},
+                    {val: 26, name: 'Sparkle Shower'}
                   ]
                 each item in note_burst_types
                   option(value=item.val, selected=(custom.note_burst == item.val)) #{item.name}
@@ -176,7 +198,8 @@ div
                     {val: 6, name: 'Simple'},
                     {val: 7, name: 'Light'},
                     {val: 8, name: 'Tricoro'},
-                    {val: 9, name: 'Bubble'}
+                    {val: 9, name: 'Bubble'},
+                    {val: 10, name: 'Fruity'}
                     ]
                 each ns in note_skin_types
                   option(value=ns.val, selected=(custom.note_skin == ns.val)) #{ns.name}
@@ -189,7 +212,8 @@ div
                   const note_size_types = [
                     {val: 0, name: 'Default'},
                     {val: 1, name: 'Short'},
-                    {val: 2, name: 'Very Short'}
+                    {val: 2, name: 'Very Short'},
+                    {val: 3, name: 'Large'},
                   ]
                 each item in note_size_types
                   option(value=item.val, selected=(custom.note_size == item.val)) #{item.name}
@@ -213,7 +237,8 @@ div
                     {val: 10, name: 'フレネルビーム (Fresnel beam)'},
                     {val: 11, name: 'RESIDENT'},
                     {val: 12, name: 'EPOLIS'},
-                    {val: 13, name: 'Pinky Crush'}
+                    {val: 13, name: 'Pinky Crush'},
+                    {val: 14, name: 'Sparkle Shower'}
                   ]
                 each item in note_beam_types
                   option(value=item.val, selected=(custom.note_beam == item.val)) #{item.name}
@@ -225,6 +250,7 @@ div
                 - 
                   const beam_sizes = [
                     {val: 0, name: 'Default'},
+                    {val: 1, name: 'Short'},
                     {val: 2, name: 'Very Short'},
                     {val: 3, name: 'Long'}
                   ]
@@ -569,7 +595,40 @@ div
                     {val: 329, name: '灼熱 Lost Summer Dayz'},
                     {val: 330, name: 'get set mind'},
                     {val: 331, name: 'Raspberry Potion'},
-                    {val: 332, name: 'Secret Rouge'}
+                    {val: 332, name: 'Secret Rouge'},
+                    {val: 333, name: 'u gotta beat'},
+                    {val: 334, name: 'lane334'},
+                    {val: 335, name: 'lane335'},
+                    {val: 336, name: 'lane336'},
+                    {val: 337, name: 'lane337'},
+                    {val: 338, name: 'lane338'},
+                    {val: 339, name: 'lane339'},
+                    {val: 340, name: 'lane340'},
+                    {val: 341, name: 'lane341'},
+                    {val: 342, name: 'lane342'},
+                    {val: 343, name: 'lane343'},
+                    {val: 344, name: 'lane344'},
+                    {val: 345, name: 'lane345'},
+                    {val: 346, name: 'スキッテイエェエエェ!!!!'},
+                    {val: 347, name: 'Galaxy Collapse'},
+                    {val: 348, name: 'Bang-Boo Bumble'},
+                    {val: 349, name: 'Aqvion'},
+                    {val: 350, name: 'SμG@R RU$#'},
+                    {val: 351, name: 'FlyAway'},
+                    {val: 352, name: 'ドリムチウ'},
+                    {val: 353, name: 'Skratch Education Lv-1'},
+                    {val: 354, name: 'Uaigh Gealai'},
+                    {val: 355, name: 'Without Heaven'},
+                    {val: 356, name: 'Sparkle Shower'},
+                    {val: 357, name: 'デラむぅのでらっくす☆どり～むぅ'},
+                    {val: 358, name: 'Makin\' It'},
+                    {val: 359, name: 'ベラ・ベ・カラベラ'},
+                    {val: 360, name: 'Bang Bang Dance'},
+                    {val: 361, name: 'Nyan Nyan University'},
+                    {val: 362, name: '好吃来世deエレクトリック'},
+                    {val: 363, name: 'Begin'},
+                    {val: 364, name: 'BattleRoyal'},
+                    {val: 365, name: 'Disco Killer Music Lover'}
                   ]
                 each item in lane_cover_types
                   option(value=item.val, selected=(custom.lane_cover == item.val)) #{item.name}
@@ -912,7 +971,40 @@ div
                     {val: 329, name: '灼熱 Lost Summer Dayz'},
                     {val: 330, name: 'get set mind'},
                     {val: 331, name: 'Raspberry Potion'},
-                    {val: 332, name: 'Secret Rouge'}
+                    {val: 332, name: 'Secret Rouge'},
+                    {val: 333, name: 'u gotta beat'},
+                    {val: 334, name: 'lane334'},
+                    {val: 335, name: 'lane335'},
+                    {val: 336, name: 'lane336'},
+                    {val: 337, name: 'lane337'},
+                    {val: 338, name: 'lane338'},
+                    {val: 339, name: 'lane339'},
+                    {val: 340, name: 'lane340'},
+                    {val: 341, name: 'lane341'},
+                    {val: 342, name: 'lane342'},
+                    {val: 343, name: 'lane343'},
+                    {val: 344, name: 'lane344'},
+                    {val: 345, name: 'lane345'},
+                    {val: 346, name: 'スキッテイエェエエェ!!!!'},
+                    {val: 347, name: 'Galaxy Collapse'},
+                    {val: 348, name: 'Bang-Boo Bumble'},
+                    {val: 349, name: 'Aqvion'},
+                    {val: 350, name: 'SμG@R RU$#'},
+                    {val: 351, name: 'FlyAway'},
+                    {val: 352, name: 'ドリムチウ'},
+                    {val: 353, name: 'Skratch Education Lv-1'},
+                    {val: 354, name: 'Uaigh Gealai'},
+                    {val: 355, name: 'Without Heaven'},
+                    {val: 356, name: 'Sparkle Shower'},
+                    {val: 357, name: 'デラむぅのでらっくす☆どり～むぅ'},
+                    {val: 358, name: 'Makin\' It'},
+                    {val: 359, name: 'ベラ・ベ・カラベラ'},
+                    {val: 360, name: 'Bang Bang Dance'},
+                    {val: 361, name: 'Nyan Nyan University'},
+                    {val: 362, name: '好吃来世deエレクトリック'},
+                    {val: 363, name: 'Begin'},
+                    {val: 364, name: 'BattleRoyal'},
+                    {val: 365, name: 'Disco Killer Music Lover'}
                   ]
                 each item in lift_cover_types
                   option(value=item.val, selected=(custom.lift_cover == item.val)) #{item.name}
@@ -1255,7 +1347,40 @@ div
                     {val: 329, name: '灼熱 Lost Summer Dayz'},
                     {val: 330, name: 'get set mind'},
                     {val: 331, name: 'Raspberry Potion'},
-                    {val: 332, name: 'Secret Rouge'}
+                    {val: 332, name: 'Secret Rouge'},
+                    {val: 333, name: 'u gotta beat'},
+                    {val: 334, name: 'lane334'},
+                    {val: 335, name: 'lane335'},
+                    {val: 336, name: 'lane336'},
+                    {val: 337, name: 'lane337'},
+                    {val: 338, name: 'lane338'},
+                    {val: 339, name: 'lane339'},
+                    {val: 340, name: 'lane340'},
+                    {val: 341, name: 'lane341'},
+                    {val: 342, name: 'lane342'},
+                    {val: 343, name: 'lane343'},
+                    {val: 344, name: 'lane344'},
+                    {val: 345, name: 'lane345'},
+                    {val: 346, name: 'スキッテイエェエエェ!!!!'},
+                    {val: 347, name: 'Galaxy Collapse'},
+                    {val: 348, name: 'Bang-Boo Bumble'},
+                    {val: 349, name: 'Aqvion'},
+                    {val: 350, name: 'SμG@R RU$#'},
+                    {val: 351, name: 'FlyAway'},
+                    {val: 352, name: 'ドリムチウ'},
+                    {val: 353, name: 'Skratch Education Lv-1'},
+                    {val: 354, name: 'Uaigh Gealai'},
+                    {val: 355, name: 'Without Heaven'},
+                    {val: 356, name: 'Sparkle Shower'},
+                    {val: 357, name: 'デラむぅのでらっくす☆どり～むぅ'},
+                    {val: 358, name: 'Makin\' It'},
+                    {val: 359, name: 'ベラ・ベ・カラベラ'},
+                    {val: 360, name: 'Bang Bang Dance'},
+                    {val: 361, name: 'Nyan Nyan University'},
+                    {val: 362, name: '好吃来世deエレクトリック'},
+                    {val: 363, name: 'Begin'},
+                    {val: 364, name: 'BattleRoyal'},
+                    {val: 365, name: 'Disco Killer Music Lover'}
                   ]
                 each item in pacemaker_cover_types
                   option(value=item.val, selected=(custom.pacemaker_cover == item.val)) #{item.name}
@@ -1289,7 +1414,8 @@ div
                     {val: 20, name: 'CastHour'},
                     {val: 21, name: 'RESIDENT'},
                     {val: 22, name: 'EPOLIS'},
-                    {val: 23, name: 'Pinky Crush'}
+                    {val: 23, name: 'Pinky Crush'},
+                    {val: 24, name: 'Sparkle Shower'}
                   ]
                 each item in full_combo_splash_types
                   option(value=item.val, selected=(custom.full_combo_splash == item.val)) #{item.name}
@@ -1319,7 +1445,8 @@ div
                     {val: 16, name: 'CastHour'},
                     {val: 17, name: 'RESIDENT'},
                     {val: 18, name: 'EPOLIS'},
-                    {val: 19, name: 'Pinky Crush'}
+                    {val: 19, name: 'Pinky Crush'},
+                    {val: 20, name: 'Sparkle Shower'}
                   ]
                 each item in judge_font_types
                   option(value=item.val, selected=(custom.judge_font == item.val)) #{item.name}
@@ -1346,17 +1473,11 @@ div
         .field
           label.label Charge Note Size
           .control
-            if custom.cn_size === undefined
-              input.input(type="number" name="cn_size", id="cn_size", value="0")
-            else
-              input.input(type="number" name="cn_size", id="cn_size", value=custom.cn_size)
+            input.input(type="number" name="cn_size", id="cn_size", value=(custom.cn_size || "0"))
         .field
           label.label Charge Note Color
           .control
-            if custom.cn_color === undefined
-              input.input(type="number" name="cn_color", id="cn_color", value="0")
-            else
-              input.input(type="number" name="cn_color", id="cn_color", value=custom.cn_color)
+            input.input(type="number" name="cn_color", id="cn_color", value=(custom.cn_color || "0"))
         .field
           label.label Disable Music Preview
           .control
@@ -1364,7 +1485,7 @@ div
         .field
           label.label Disable HCN Color
           .control
-            input(type="checkbox" name="disable_hcn_color", id="disable_hcn_color", checked=Boolean(custom.disable_hcn_color))                      
+            input(type="checkbox" name="disable_hcn_color", id="disable_hcn_color", checked=Boolean(custom.disable_hcn_color))
         //- APPEND SETTINGS
         .field
           label.label Rank Folder
@@ -1405,7 +1526,7 @@ div
         .field
           label.label Classic Hi-SPEED
           .control
-            input(type="checkbox" name="class_hispeed", id="class_hispeed", checked=Boolean(custom.class_hispeed))
+            input(type="checkbox" name="classic_hispeed", id="classic_hispeed", checked=Boolean(custom.classic_hispeed))
         .field
           label.label Rival Played Folder
           .control
@@ -1417,10 +1538,7 @@ div
         .field
           label.label Disable Beginner Option
           .control
-            if custom.disable_beginner_option === undefined
-              input(type="checkbox" name="disable_beginner_option", id="disable_beginner_option", checked=Boolean(false))
-            else
-              input(type="checkbox" name="disable_beginner_option", id="disable_beginner_option", checked=Boolean(custom.disable_beginner_option))
+            input(type="checkbox" name="disable_beginner_option", id="disable_beginner_option", checked=Boolean(custom.disable_beginner_option || false))
         //- QPRO
         .field
           label.label QPRO Head
@@ -1445,10 +1563,7 @@ div
         .field
           label.label QPRO Back
           .control
-            if custom.qpro_back === undefined
-              input.input(type="number" name="qpro_back", id="qpro_back", value="0")
-            else
-              input.input(type="number" name="qpro_back", id="qpro_back", value=custom.qpro_back)
+            input.input(type="number" name="qpro_back", id="qpro_back", value=(custom.qpro_back || "0"))
         //- LIGHTNING CUSTOM
         if lm_custom != null
           .field
@@ -1462,24 +1577,15 @@ div
           .field
             label.label Premium Area Background (Concentration Mode)
             .control
-              if lm_custom.premium_bg_concent === undefined
-                input.input(type="number" name="lm_bg_2", id="lm_bg_2", value="0")
-              else
-                input.input(type="number" name="lm_bg_2", id="lm_bg_2", value=lm_custom.premium_bg_concent)
+              input.input(type="number" name="lm_bg_2", id="lm_bg_2", value=(lm_custom.premium_bg_concent || "0"))
           .field
             label.label Entry BG
             .control
-              if lm_custom.entry_bg === undefined
-                input.input(type="number" name="lm_entry_bg", id="lm_entry_bg", value="0")
-              else
-                input.input(type="number" name="lm_entry_bg", id="lm_entry_bg", value=lm_custom.entry_bg)
+              input.input(type="number" name="lm_entry_bg", id="lm_entry_bg", value=(lm_custom.entry_bg || "0"))
           .field
             label.label Entry BG Brightness
             .control
-              if lm_custom.entry_bg_brightness === undefined
-                input.input(type="number" name="lm_entry_bg_bright", id="lm_entry_bg_bright", value="0")
-              else
-                input.input(type="number" name="lm_entry_bg_bright", id="lm_entry_bg_bright", value=lm_custom.entry_bg_brightness)
+              input.input(type="number" name="lm_entry_bg_bright", id="lm_entry_bg_bright", value=(lm_custom.entry_bg_brightness || "0"))
         .field
           button.button.is-primary(type="submit") 
             span.icon

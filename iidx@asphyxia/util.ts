@@ -1,3 +1,4 @@
+import { lamp } from "./models/clearlamp";
 import { custom } from "./models/custom";
 import { pcdata } from "./models/pcdata";
 import { profile } from "./models/profile";
@@ -166,40 +167,20 @@ export async function ReftoPcdata(refid: string, version: number) {
     version: version,
   });
 
-  let p_data = [];
+  let p_data: number[] = [];
   try {
-    switch (version) {
-      case 20:
-      case 21:
-      case 22:
-      case 23:
-      case 24:
-      case 25:
-      case 26:
-        p_data = [
-          pcdata.sgid,
-          pcdata.dgid,
-          pcdata.sach,
-          pcdata.dach,
-          pcdata.st_sp_ach,
-          pcdata.st_dp_ach,
-        ];
-        break;
-      default:
-        p_data = [
-          pcdata.sgid,
-          pcdata.dgid,
-          pcdata.sach,
-          pcdata.dach,
-        ];
-        break;
-    }
+    p_data = [
+      pcdata.sgid ?? 0,
+      pcdata.dgid ?? 0,
+      pcdata.sach ?? 0,
+      pcdata.dach ?? 0,
+    ];
 
-    // this seems leftover from tricoro but still being referenced until HEROIC VERSE [st_sp_ach/st_dp_ach] //
-    for (let a = 0; a < p_data.length; a++) {
-      if (_.isNil(p_data[a])) p_data[a] = 0;
+    if (version >= 20) {
+      // this seems leftover from tricoro but still being referenced until HEROIC VERSE [st_sp_ach/st_dp_ach] //
+      p_data.push(pcdata.st_sp_ach ?? 0);
+      p_data.push(pcdata.st_dp_ach ?? 0);
     }
-    
   } catch {
     p_data = [0, 0, 0, 0, 0, 0];
   }
@@ -213,26 +194,18 @@ export async function ReftoQPRO(refid: string, version: number) {
     version: version,
   });
 
-  let qpro_data = [];
+  let qpro_data: number[] = [];
   try {
+    qpro_data = [
+      custom.qpro_hair ?? 0,
+      custom.qpro_head ?? 0,
+      custom.qpro_face ?? 0,
+      custom.qpro_body ?? 0,
+      custom.qpro_hand ?? 0
+    ];
+
     if (version >= 31) {
-      qpro_data = [
-        custom.qpro_hair,
-        custom.qpro_head,
-        custom.qpro_face,
-        custom.qpro_body,
-        custom.qpro_hand,
-        custom.qpro_back,
-      ];
-    }
-    else {
-      qpro_data = [
-        custom.qpro_hair,
-        custom.qpro_head,
-        custom.qpro_face,
-        custom.qpro_body,
-        custom.qpro_hand,
-      ];
+      qpro_data.push(custom.qpro_back ?? 0);
     }
   } catch {
     qpro_data = [0, 0, 0, 0, 0, 0];
@@ -273,4 +246,98 @@ export function GetCommand(data: any) {
   if (_.isNil(command)) return null;
 
   return command.split(' ');
+}
+
+export function LampIn(version: number, cflg: number) {
+  if (version == 9) {
+    return cflg == 1 ? lamp.CLEAR : lamp.FAILED;
+  }
+  else if (version == 10) {
+    switch (cflg) {
+      case 1: return lamp.EASY_CLEAR;
+      case 2: return lamp.CLEAR;
+      case 3: return lamp.FULL_COMBO;
+      default: return lamp.FAILED;
+    }
+  }
+  else if (version >= 11 && version < 14) {
+    switch (cflg) {
+      case 0: return lamp.NO_PLAY;
+      case 1: return lamp.FAILED;
+      case 2: return lamp.EASY_CLEAR;
+      case 3: return lamp.CLEAR;
+      case 4: return lamp.HARD_CLEAR;
+      case 5: return lamp.FULL_COMBO;
+      default: return lamp.FAILED;
+    }
+  }
+  else if (version >= 14 && version < 20) {
+    switch (cflg) {
+      case 0: return lamp.NO_PLAY;
+      case 1: return lamp.FAILED;
+      case 2: return lamp.ASSIST_CLEAR;
+      case 3: return lamp.EASY_CLEAR;
+      case 4: return lamp.CLEAR;
+      case 5: return lamp.HARD_CLEAR;
+      case 6: return lamp.FULL_COMBO;
+      default: return lamp.FAILED;
+    }
+  }
+
+  return cflg;
+}
+
+export function LampOut(version: number, cflg: number) {
+  if (version == 9) {
+    return cflg == lamp.NO_PLAY || cflg == lamp.FAILED ? 0 : 1;
+  }
+  else if (version == 10) {
+    switch (cflg) {
+      case lamp.NO_PLAY:
+      case lamp.FAILED:
+        return 0;
+      case lamp.ASSIST_CLEAR:
+      case lamp.EASY_CLEAR:
+        return 1;
+      case lamp.CLEAR:
+      case lamp.HARD_CLEAR:
+      case lamp.EX_HARD_CLEAR:
+        return 2;
+      case lamp.FULL_COMBO:
+        return 3;
+      default:
+        return 0;
+    }
+  }
+  else if (version >= 11 && version < 14) {
+    switch (cflg) {
+      case lamp.NO_PLAY: return 0;
+      case lamp.FAILED: return 1;
+      case lamp.ASSIST_CLEAR:
+      case lamp.EASY_CLEAR:
+        return 2;
+      case lamp.CLEAR: return 3;
+      case lamp.HARD_CLEAR:
+      case lamp.EX_HARD_CLEAR:
+        return 4;
+      case lamp.FULL_COMBO: return 5;
+      default: return 0;
+    }
+  }
+  else if (version >= 14 && version < 20) {
+    switch (cflg) {
+      case lamp.NO_PLAY: return 0;
+      case lamp.FAILED: return 1;
+      case lamp.ASSIST_CLEAR: return 2;
+      case lamp.EASY_CLEAR: return 3;
+      case lamp.CLEAR: return 4;
+      case lamp.HARD_CLEAR:
+      case lamp.EX_HARD_CLEAR:
+        return 5;
+      case lamp.FULL_COMBO: return 6;
+      default: return 0;
+    }
+  }
+
+  return cflg;
 }

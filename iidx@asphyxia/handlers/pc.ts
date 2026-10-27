@@ -1,7 +1,7 @@
 import { pcdata, KDZ_pcdata, IIDX27_pcdata, IIDX28_pcdata, IIDX29_pcdata, IIDX30_pcdata, JDZ_pcdata, LDJ_pcdata, IIDX21_pcdata, IIDX22_pcdata, IIDX23_pcdata, IIDX24_pcdata, IIDX25_pcdata, IIDX26_pcdata, JDJ_pcdata, HDD_pcdata, I00_pcdata, GLD_pcdata, IIDX31_pcdata, IIDX32_pcdata, IIDX33_pcdata, FDD_pcdata, ECO_pcdata, E11_pcdata, D01_pcdata } from "../models/pcdata";
 import { grade } from "../models/grade";
 import { custom, default_custom } from "../models/custom";
-import { IDtoCode, IDtoRef, GetVersion, ReftoProfile, ReftoPcdata, ReftoQPRO, appendSettingConverter, NumArrayToString, GetModel, GetCommand, NumArrayToHex } from "../util";
+import { IDtoCode, IDtoRef, GetVersion, ReftoProfile, ReftoPcdata, ReftoQPRO, appendSettingConverter, NumArrayToString, GetModel, GetCommand, NumArrayToHex, ClidToPlaySide } from "../util";
 import { eisei_grade, eisei_grade_data, lightning_custom, lightning_musicfilter, lightning_musicfilter_sort, lightning_musicmemo, lightning_musicmemo_new, lightning_playdata, lightning_settings, lm_customdata, lm_playdata, lm_settings, lm_settings_new, musicfilter_data, musicfilter_sort_data, musicmemo_data, musicmemo_data_new } from "../models/lightning";
 import { profile, default_profile } from "../models/profile";
 import { rival, rival_data, rival_sub } from "../models/rival";
@@ -15,6 +15,7 @@ import { extra_favorite } from "../models/favorite";
 import { activity, activity_mybest } from "../models/activity";
 import { extra_boss } from "../models/extraboss";
 import { djtraining } from "../models/djtraining";
+import { lane_ticket } from "../models/ticket";
 
 export const pcmethod: EPR = async (info, data, send) => {
   const command = GetCommand(data);
@@ -49,18 +50,32 @@ export const pccommon: EPR = async (info, data, send) => {
     expert_secret_full_open: {},
   }
 
+  let system_voice = [];
+  if (version >= 32) {
+    for (let a = 0; a < 5; a++) {
+      const flags = version == 32
+        ? { s_m: String(_.random(0, 1)), s_f: String(_.random(0, 1)), e_m: String(_.random(0, 1)), e_f: String(_.random(0, 1)) }
+        : { s_a: String(_.random(0, 1)), s_b: String(_.random(0, 1)), s_c: String(_.random(0, 1)), e_a: String(_.random(0, 1)), e_b: String(_.random(0, 1)), e_c: String(_.random(0, 1)) };
+
+      system_voice.push(K.ATTR({
+        season: String(a),
+        ...flags,
+      }));
+    }
+  }
+
   // have no idea what some of attribute or value does //
   // exposing these to plugin setting or use static value //
   switch (version) {
     case 10:
       break;
     case 11:
-      result["@attr"].tf = 1;
-      result["@attr"].csok = 1;
+      result["@attr"].tf = "1";
+      result["@attr"].csok = "1";
       break;
     case 12:
-      result["@attr"].tf = 1;
-      result["@attr"].beok = 1;
+      result["@attr"].tf = "1";
+      result["@attr"].beok = "1";
       break;
     case 13:
       break;
@@ -370,19 +385,9 @@ export const pccommon: EPR = async (info, data, send) => {
         vip_pass_black: {},
         deller_bonus: K.ATTR({ open: String(1) }),
         common_evnet: K.ATTR({ flg: String(-1) }),
-        /*system_voice: {
-          season: [
-            {
-              "@attr": {
-                season: String(0), // 0 -> 4 //
-                s_m: String(0),
-                s_f: String(0),
-                e_m: String(0),
-                e_f: String(0),
-              }
-            }
-          ]
-        },*/
+        system_voice: {
+          season: system_voice
+        },
         play_video: {},
         music_retry: {},
         display_asio_logo: {},
@@ -402,21 +407,9 @@ export const pccommon: EPR = async (info, data, send) => {
         vip_pass_black: {},
         deller_bonus: K.ATTR({ open: String(1) }),
         common_evnet: K.ATTR({ flg: String(-1) }),
-        /*system_voice: {
-          season: [
-            {
-              "@attr": {
-                season: String(0), // 0 -> 4 //
-                s_a: String(0),
-                s_b: String(0),
-                s_c: String(0),
-                e_a: String(0),
-                e_b: String(0),
-                e_c: String(0),
-              }
-            }
-          ]
-        },*/
+        system_voice: {
+          season: system_voice
+        },
         play_video: {},
         music_retry: {},
         display_asio_logo: {},
@@ -1470,40 +1463,14 @@ export const pcget: EPR = async (info, data, send) => {
     }
 
     /*** TODO:: figure out how badges works (following table is for EPOLIS)
-       [save] - element names are following below but get checks for id 0 ~ 16
-       step_up [2]
-       today_recommend
-       weekly_ranking
-       visitor [2]
-       notes_radar [2]
-       tsujigiri
-       iidx_exam
-       world_tourism
-       event1
-       arena [2]
-       event2
+       [save] - badge names are sent in string on save but on get it checks number (category_id)
+       (name) - category_name
+       flg_id - flag_id
+       flg - badge_flg
 
-       [get] (starts from zero)
+       [get]
        category_id - up to 16
-       badge_flg_id
-        - This can be up to 23 [category_id, badge_flg_id]
-          - 0    - 23 [djLevel]
-          - 1    - 23 [clear]
-          - 2    - 1 [grade]
-          - 3    - 1 [step_up]
-          - 4    - (none)
-          - 5    - (none)
-          - 6    - (none)
-          - 7    - 1 [visitor]
-          - 8    - 1 [notes_radar]
-          - 10   - (none)
-          - 11   - 1
-          - 12   - (none) [tourism?]
-          - 13   - (none) [event]
-          - 14   - 1
-          - 15   - (none)
-          - 16   - (none) [event2]
-          - 3001 - 9
+       badge_flg_id - This can be up to 23 [category_id, badge_flg_id]
        badge_flg (these are s64 - this may exceed max int value)
 
        - following codes are dummy code
@@ -1517,7 +1484,7 @@ export const pcget: EPR = async (info, data, send) => {
 
       badge.forEach(res => {
         const id = badgeData[res.category_name];
-        if (id !== undefined) {
+        if (!_.isNil(id)) {
           bArray.push({
             id,
             flg_id: res.flg_id,
@@ -2212,7 +2179,7 @@ export const pcsave: EPR = async (info, data, send) => {
   const hasTowerData = !(_.isNil($(data).element("tower_data")));
   const hasSkinData = !(_.isNil($(data).element("skin_equip"))) || !(_.isNil($(data).element("pskin_equip")));
   const hasTDJSkinData = !(_.isNil($(data).element("tdjskin_equip"))) || !(_.isNil($(data).element("vskin_equip")));
-  const hasVisualSkinData = !(_.isNil($(data).element("vskin_customize_setting")));
+  const hasVisualSkinData = !(_.isNil($(data).element("vskin_setting")));
   const hasMusicFilter = !(_.isNil($(data).element("music_filter")));
   const hasBadgeData = !(_.isNil($(data).element("badge")));
   const hasActivityData = !(_.isNil($(data).element("activity_data")));
@@ -2242,7 +2209,12 @@ export const pcsave: EPR = async (info, data, send) => {
 
       if (version >= 31) {
         lm_settings.keyboard_kind = Number($(data).attr("lightning_setting").keyboard_kind);
-        lm_settings.brightness = version < 33 ? Number($(data).attr("lightning_setting").brightness) : Number($(data).attr("lightning_setting").brightness_bg);
+        if (version < 33) {
+          lm_settings.brightness = Number($(data).attr("lightning_setting").brightness);
+        }
+        else {
+          lm_settings.brightness = Number($(data).attr("lightning_setting").brightness_bg);
+        }
 
         if (version >= 33) {
           lm_settings.brightness_concent = Number($(data).attr("lightning_setting").brightness_concentration);
@@ -5037,7 +5009,7 @@ export const pcsave: EPR = async (info, data, send) => {
           },
           {
             $set: {
-              play_num: Number(vocaloEvt.attr().play_num),
+              play_num: Number(vocaloEvt.attr().event_play_num),
               last_select_music: Number(vocaloEvt.attr().last_select_music),
               point_get: Number(vocaloEvt.attr().point_get),
               point_use_0: Number(vocaloEvt.attr().point_use_0),
@@ -5567,19 +5539,33 @@ export const pcsave: EPR = async (info, data, send) => {
   return send.success();
 };
 
-export const pcgetlanegacha: EPR = async (info, data, send) => {
-  let tArray = [];
-  for (let i = 0; i < 100; i++) {
-    let random = _.random(0, 5040);
+export const pcshopregister: EPR = async (info, data, send) => {
+  let refid = IDtoRef(Number($(data).str("iidx_id")));
+  let lid = $(data).str("location_id");
 
+  // TODO //
+
+  return send.success();
+};
+
+export const pcgetlanegacha: EPR = async (info, data, send) => {
+  const version = GetVersion(info);
+  const refid = await IDtoRef(Number($(data).attr().iidxid));
+
+  const tickets = await DB.Find<lane_ticket>(refid, {
+    collection: "lane_ticket",
+    version,
+  });
+  let tArray = [];
+  tickets.forEach((res) => {
     tArray.push(
       K.ATTR({
-        ticket_id: String(i + 1),
-        arrange_id: String(random),
-        expire_date: String(4102326000),
+        ticket_id: String(res.ticket_id),
+        arrange_id: String(res.arrange_id),
+        expire_date: String(Math.floor((Date.now() / 1000) + 604800)), // set expire date 7 days from now //
       })
     );
-  }
+  });
 
   // settings(sp, dp_left, dp_right), info(last_page) //
 
@@ -5591,35 +5577,64 @@ export const pcgetlanegacha: EPR = async (info, data, send) => {
   });
 };
 
-export const pcshopregister: EPR = async (info, data, send) => {
-  let refid = IDtoRef(Number($(data).str("iidx_id")));
-  let lid = $(data).str("location_id");
-
-  // TODO //
-
-  return send.success();
-};
-
 export const pcdrawlanegacha: EPR = async (info, data, send) => {
-  let drawNum = Number($(data).attr().draw_num);
-  let tArray = [];
+  const version = GetVersion(info);
+  const refid = await IDtoRef(Number($(data).attr().iidxid));
 
-  for (let i = 0; i < drawNum; i++) {
-    let random = _.random(0, 5040);
+  const proc_type = Number($(data).attr().proc_type);
+  if (proc_type == 0) {
+    return send.object({
+      session: K.ATTR({
+        session_id: String(_.random(0, 10000)),
+      }),
+    });
+  }
+  const session_id = Number($(data).attr().session_id);
+  const drawNum = Number($(data).attr().draw_num);
+
+  const tickets = await DB.Find<lane_ticket>(refid, {
+    collection: "lane_ticket",
+    version,
+  });
+  const usedIds = new Set(tickets.map(ticket => ticket.ticket_id));
+  const availableIds = Array.from({ length: 10000 }, (_, i) => i)
+    .filter(id => !usedIds.has(id));
+  if (availableIds.length === 0) {
+    return send.deny();
+  }
+
+  let tArray = [];
+  for (let i = 0; i < drawNum && availableIds.length > 0; i++) {
+    const index = _.random(0, availableIds.length - 1);
+    const ticket_id = availableIds.splice(index, 1)[0];
+    const random = _.random(0, 5039);
 
     tArray.push(
       K.ATTR({
-        ticket_id: String(_.random(101, 10000)),
+        ticket_id: String(ticket_id),
         arrange_id: String(random),
-        expire_date: String(4102326000),
+        expire_date: String(Math.floor((Date.now() / 1000) + 604800)),
       })
     );
+
+    await DB.Upsert<lane_ticket>(
+      refid,
+      {
+        collection: "lane_ticket",
+        version,
+        ticket_id,
+      },
+      {
+        $set: {
+          arrange_id: random,
+        }
+      });
   }
 
   return send.object({
     ticket: tArray,
     session: K.ATTR({
-      session_id: String(0),
+      session_id: String(session_id),
     }),
   });
 };
