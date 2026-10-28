@@ -1,0 +1,243 @@
+#tab-content, .tab-content {
+    display: none;
+}
+
+#tab-content.is-active, .tab-content.is-active {
+    display: block;
+}
+
+tr#tab-content.is-active, tr.tab-content.is-active {
+    display: table-row;
+}
+
+#tabs li.disabled a {
+    background-color: #c0c0c0;
+    border-color: #c0c0c0;
+    color: #7f7f7f;
+    cursor: default;
+}
+
+#form-pagination ul.pagination-list {
+    margin: 0!important;
+}
+.pagination-link, .pagination-next, .pagination-previous {
+    border-color: transparent;
+    transition: .2s linear;
+}
+.pagination-next, .pagination-previous {
+    color: #209CEE;
+}
+.pagination-next:not([disabled]):hover, .pagination-previous:not([disabled]):hover {
+    color: #118fe4;
+}
+/* Set all link color to Asphyxia CORE blue */
+::selection {
+    color: white;
+    background-color: #209CEE;
+}
+a {
+    color: #209CEE;
+}
+.tabs.is-toggle li.is-active a {
+    background-color: #209CEE; 
+    border-color: #209CEE;
+}
+.tabs li.is-active a {
+    color: #209CEE; 
+    border-color: #209CEE;
+}
+.pagination-link.is-current {
+    background-color: #209CEE; 
+    border-color: #209CEE;
+    cursor: default;
+}
+.select:not(.is-multiple):not(.is-loading):after {
+    border-color: #209CEE;
+}
+.select select:active, .select select:focus {
+    border-color: #209CEE;
+}
+.button.is-link {
+    background-color: #209CEE; 
+}
+.button.is-link.is-active, .button.is-link:active, .button.is-link.is-hovered, .button.is-link:hover {
+    background-color: #118fe4; 
+}
+.input:active, .input:focus {
+    border-color: #209CEE;
+}
+.table tr.is-selected {
+    background-color: #209CEE; 
+}
+
+#card-content.is-hidden {
+    display: none;
+}
+#card-content {
+    display: block;
+}
+.marquee-label {
+    display: inline-block;
+}
+.marquee-label-container {
+    overflow-x: hidden;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+}
+
+/* from Bulma */
+.button.is-danger.is-light {
+    background-color: #feecf0;
+    color: #cc0f35;
+}
+.button.is-link.is-light {
+    background-color: #edf8ff;
+    color: #209CEE;
+}
+.button.is-danger.is-light.is-hovered, .button.is-danger.is-light:hover {
+    background-color: #fde0e6;
+    color: #cc0f35;
+}
+.button.is-link.is-light.is-hovered, .button.is-link.is-light:hover {
+    background-color: #e0f1fc;
+    color: #209CEE;
+}
+.tag.is-link.is-light {
+    background-color: #edf8ff;
+    color: #0D7DC6;
+}
+.tag.is-link.is-light:hover {
+    background-color: #209CEE;
+    color: white;
+}
+.tag.is-delete:hover {
+    background-color: #FF3860!important;
+    color: white;
+}
+
+@media screen and (max-width: 768px) {
+    .pagination {
+    flex-wrap: nowrap;
+    justify-content: left;
+    }
+}
+.pagination-list {
+    flex-wrap: nowrap;
+    list-style: none!important;
+    margin-top: 0.25em!important;
+    margin-bottom: 0.25em!important;
+}
+
+.content li + li {
+    margin-top: 0;
+}
+
+.one-quarter#forwide, .one-third#forwide {
+    display: block;
+    min-width: 100px;
+}
+.one-quarter#fornarrow, .one-third#fornarrow {
+    display: none;
+    min-width: 50px;
+}
+@media only screen and (max-width: 1023px) {
+    .one-quarter#forwide {
+    display: none;
+    }
+    .one-quarter#fornarrow {
+    display: block;
+    }
+}
+@media only screen and (max-width: 700px) {
+    .one-third#forwide {
+    display: none;
+    }
+    .one-third#fornarrow {
+    display: block;
+    }
+}
+
+
+@keyframes notification-fadeout {
+    0% {
+    opacity: 1;
+    display: block;
+    }
+    80% {
+    opacity: 1;
+    display: block;
+    }
+    99.99% {
+    opacity: 0;
+    display: block;
+    }
+    100% {
+    opacity: 0;
+    display: none;
+    }
+}
+
+.notification {
+    animation: notification-fadeout 8s forwards;
+    animation-play-state: paused;
+}
+.notification:hover {
+    animation-play-state: paused;
+}
+.modal {
+    padding-bottom: 13px;
+}
+@media screen and (max-width:1024px) {
+    .modal {
+    transition: padding-left .2s ease-in-out 50ms;
+    }
+}
+@media screen and (min-width:1023px) {
+    .modal {
+    padding-left: 256px;
+    transition: padding-left .2s ease-in-out 50ms;
+    }
+}
+.tag {
+    transition: linear .2s;
+}
+.tags .tag:not(:last-child) {
+    cursor: default;
+}
+
+.modal table tr {
+    border: solid #dbdbdb;
+    border-width: 0 0 1px;
+}
+.modal table tbody tr:last-child {
+    border-bottom-width: 0;
+}
+.hidden-wrapper {
+    overflow: hidden;
+}
+.hidden-x-wrapper {
+    overflow-x: hidden;
+}
+.hidden-y-wrapper {
+    overflow-y: hidden;
+}
+.scrolling-wrapper {
+    overflow: auto;
+}
+.scrolling-x-wrapper {
+    overflow-x: auto;
+}
+.scrolling-y-wrapper {
+    overflow-y: auto;
+}
+a.pagination-previous {
+    overflow: hidden;
+}
+a.pagination-next {
+    overflow: hidden;
+}
+.button.checkbox, .button.checkbox .checkmark {
+    transition: linear .2s;
+}

@@ -1,7 +1,7 @@
 import { gameInfoGet, shopInfoRegist } from "./handlers/info";
 import { playableMusic } from "./handlers/MusicList"
 import { getPlayer, check, regist, savePlayers } from "./handlers/profiles";
-import { updatePlayerInfo, updateRival } from "./handlers/webui";
+import { updatePlayerInfo, updatePlayerBoard, updateRival } from "./handlers/webui";
 import { isAsphyxiaDebugMode, isRequiredCoreVersion } from "./utils";
 import Logger from "./utils/logger";
 
@@ -75,6 +75,7 @@ export function register() {
   })
 
   R.WebUIEvent('updatePlayerInfo', updatePlayerInfo);
+  R.WebUIEvent('updatePlayerBoard', updatePlayerBoard);
   R.WebUIEvent('updateRival', updateRival);
 
   const MultiRoute = (method: string, handler: EPR | boolean) => {

@@ -13,7 +13,7 @@
         return "GuitarFreaks"
       case "dm" :
         return "DrumMania"
-      default: 
+      default:
         return "Unknown"
     }
   }
@@ -35,517 +35,711 @@
         return "GALAXY WAVE"
       case "galaxywave_delta":
         return "GALAXY WAVE DELTA"
-      default: 
+      default:
         return "Unknown"
     }
   }
 
-  function getItemName(id) {
-    const item = (trbitems || []).find(entry => entry.id === Number(id));
-    return item ? item.name : `#${id}`;
+  const versionOrder = ["re", "matixx", "exchain", "nextage", "highvoltage", "fuzzup", "galaxywave", "galaxywave_delta"]
+  const gameOrder = ["gf", "dm"]
+
+  // Versions that have either a playerinfo or a profile document, in canonical order.
+  function getVersionsPresent(info, profile) {
+    const present = new Set()
+    for (const i of info) present.add(i.version)
+    for (const p of profile) present.add(p.version)
+    return versionOrder.filter(v => present.has(v))
   }
 
-  function getPlayerboardValue(info) {
-    const configured = (info && info.playerboard) || {};
-    const legacy = Array.isArray(info && info.card) ? info.card : [];
-    const source = Array.isArray(configured.sticker) ? configured.sticker : legacy;
-    const board = source.length ? source[0] : {};
-    const stickerSource = source.length ? source.slice(1) : [];
-    const numberOr = (value, fallback) => {
-      const number = Number(value);
-      return Number.isFinite(number) ? number : fallback;
-    };
-    return {
-      index: 1,
-      board_id: Math.trunc(numberOr(board.id, 0)),
-      is_active: configured.is_active === undefined
-        ? legacy.length > 0
-        : Boolean(configured.is_active === true || configured.is_active === 1 || configured.is_active === '1' || configured.is_active === 'true'),
-      sticker: stickerSource.map(item => {
-        item = item || {};
-        const position = Array.isArray(item.position) ? item.position : [];
-        const scale = Array.isArray(item.scale) ? item.scale : [];
-        return {
-          id: Math.trunc(numberOr(item.id, 0)),
-          pos_x: numberOr(item.pos_x === undefined ? position[0] : item.pos_x, 0),
-          pos_y: numberOr(item.pos_y === undefined ? position[1] : item.pos_y, 0),
-          scale_x: numberOr(item.scale_x === undefined ? scale[0] : item.scale_x, 1),
-          scale_y: numberOr(item.scale_y === undefined ? scale[1] : item.scale_y, 1),
-          rotate: numberOr(item.rotate === undefined ? item.rotation : item.rotate, 0)
-        };
+  // ---- Playerboard: mirrors models/playerboard.ts (fixed 3x5 grid, two sizes). ----
+  const PB = { CENTER_X: 160, CENTER_Y: 235, STEP: 96, SLOTS: 10, ROTATE_STEP: 45 }
+  const PB_COLUMNS = [PB.CENTER_X - PB.STEP, PB.CENTER_X, PB.CENTER_X + PB.STEP]
+  const PB_ROWS = [-2, -1, 0, 1, 2].map(n => PB.CENTER_Y + n * PB.STEP)
+  const catalogById = new Map((trbitems || []).map(item => [item.id, item]))
+  const sheetItems = (trbitems || []).filter(item => item.category === 'Sheet')
+  const stickerCatalog = (trbitems || []).filter(item => item.category !== 'Sheet').map(item => [item.id, item.name, item.category])
+
+  function closestIndex(value, options) {
+    return options.reduce((best, option, idx) => Math.abs(option - value) < Math.abs(options[best] - value) ? idx : best, 0)
+  }
+
+  // Turns any stored board shape into the editor's grid presets:
+  //  - current editor: playerboard.sheet + playerboard.sticker (with slot)
+  //  - older free-placement editor: playerboard.sticker, background first
+  //  - legacy: sheet + card
+  // Off-grid coordinates snap to the nearest grid cell / size.
+  function toPickerBoard(i) {
+    const pb = i && i.playerboard
+    let sheet = null
+    let list = []
+    if (pb && Array.isArray(pb.sticker)) {
+      list = pb.sticker
+      if (Object.prototype.hasOwnProperty.call(pb, 'sheet')) {
+        sheet = pb.sheet == null ? null : Number(pb.sheet)
+      } else if (list.length && (catalogById.get(Number(list[0].id)) || {}).category === 'Sheet') {
+        sheet = Number(list[0].id)
+        list = list.slice(1)
+      }
+    } else {
+      sheet = i && i.sheet != null ? Number(i.sheet) : null
+      list = Array.isArray(i && i.card) ? i.card : []
+    }
+
+    const num = (value, fallback) => Number.isFinite(Number(value)) ? Number(value) : fallback
+    const used = new Set()
+    const stickers = []
+    list.forEach((item, index) => {
+      if (!item || !Number.isFinite(Number(item.id))) return
+      const x = num(item.pos_x !== undefined ? item.pos_x : (item.position || [])[0], PB.CENTER_X)
+      const y = num(item.pos_y !== undefined ? item.pos_y : (item.position || [])[1], PB.CENTER_Y)
+      const scale = num(item.scale_x !== undefined ? item.scale_x : (item.scale || [])[0], 1)
+      const rotate = num(item.rotate !== undefined ? item.rotate : item.rotation, 0)
+      let slot = Number.isInteger(item.slot) ? item.slot : index
+      if (slot < 0 || slot >= PB.SLOTS || used.has(slot)) {
+        slot = [...Array(PB.SLOTS).keys()].find(s => !used.has(s))
+      }
+      if (slot === undefined) return
+      used.add(slot)
+      const snapped = Math.round(rotate / PB.ROTATE_STEP) * PB.ROTATE_STEP
+      stickers.push({
+        id: Math.trunc(Number(item.id)),
+        position: closestIndex(y, PB_ROWS) * 3 + closestIndex(x, PB_COLUMNS) + 1,
+        size: scale < 0.8 ? 2 : 1,
+        rotate: ((snapped % 360) + 360) % 360,
+        slot
       })
-    };
+    })
+    return { sheet, stickers }
   }
 -
+  const versionsPresent = getVersionsPresent(info, profile)
 
-
-div
-  each i in info
-    .card
-      .card-header
-        p.card-header-title
+mixin userCard(i)
+  .card.user-card
+    .card-header
+      p.card-header-title
+        span.icon
+          i.mdi.mdi-account-edit
+        | User Detail (#{getFullGameVersion(i.version)})
+        a.button.is-link.is-small(href=('/plugin/gitadora@asphyxia/profile?refid=' + encodeURIComponent(refid) + '&version=' + encodeURIComponent(i.version) + '&view=playerboard') style="margin-left:auto")
           span.icon
-            i.mdi.mdi-account-edit
-          | User Detail (#{getFullGameVersion(i.version)})
-          a.button.is-link.playerboard-link(href=('/plugin/gitadora@asphyxia/profile?refid=' + refid + '&version=' + i.version + '&view=playerboard') style="margin-left:auto")
-            span.icon
-              i.mdi.mdi-view-dashboard
-            span PlayerBoard
-      .card-content
-        form(method="post" action="/emit/updatePlayerInfo")
-          .field.playerboard-meta-field
-            label.label ID
-            .control
-              input.input(type="text" name="refid", value=refid readonly)
-          .field.playerboard-meta-field
-            label.label Version
-            .control
-              input.input(type="text" name="version", value=i.version readonly)
-          .field
-            label.label Name
-            .control
-              input.input(type="text" name="name", value=i.name)
-          .field
-            label.label Title
-            .control
-              input.input(type="text" name="title", value=i.title)
-          - const boardValue = getPlayerboardValue(i)
-          .field.is-hidden(data-playerboard-section)#playerboard
-            label.label Playerboard
-            .box.playerboard-editor(data-playerboard-editor)
-              .columns.is-variable.is-4
-                .column.is-half
-                  p.help Preview (drag a sticker to change its position)
-                  .playerboard-preview(data-board-preview)
-                    .playerboard-preview-grid
-                .column.is-half
-                  .field
-                    label.label Board
-                    .control
-                      select.input(data-board-id)
-                        each item in trbitems.filter(entry => entry.stk_category === 0)
-                          option(value=item.id selected=item.id === boardValue.board_id)= `[${item.id}]: ${item.name}`
-                      input.input(type="hidden" data-board-index value="1")
-                  .field
-                    label.label Stickers
-                    .playerboard-sticker-list(data-sticker-list)
-                  .buttons
-                    button.button.is-link.is-light(type="button" data-add-sticker)
-                      span.icon
-                        i.mdi.mdi-plus
-                      span Add sticker
-              textarea.is-hidden(data-board-json name="playerboard")= JSON.stringify(boardValue)
-          .field
+            i.mdi.mdi-view-dashboard
+          span PlayerBoard
+    .card-content
+      form.ajax-form(method="post" action="/emit/updatePlayerInfo")
+        .field
+          label.label ID
+          .control
+            input.input(type="text" name="refid", value=refid readonly)
+        .field
+          label.label Version
+          .control
+            input.input(type="text" name="version", value=i.version readonly)
+        .field
+          label.label Name
+          .control
+            input.input(type="text" name="name", value=i.name)
+        .field
+          label.label Title
+          .control
+            input.input(type="text" name="title", value=i.title)
+        .field.is-grouped.is-align-items-center
+          .control
             button.button.is-primary(type="submit")
               span.icon
                 i.mdi.mdi-check
               span Submit
+          .control
+            span.help(data-role="form-status")
 
-div
-  each pr in profile 
-    .card 
-      .card-header 
-        p.card-header-title 
-          span.icon 
-            i.mdi.mdi-account-details
-          | Profile Detail (#{getFullGameName(pr.game)} #{getFullGameVersion(pr.version)})
-      .card-content
-        form(method="post")
-          .field 
-            label.label Skill
-            .control
-              input.input(type="text" name="skill", value=(pr.skill/100) readonly)
-          .field 
-            label.label Skill (All Songs)
-            .control
-              input.input(type="text" name="all_skill", value=(pr.all_skill/100) readonly)
-          .field 
-            label.label Songs Cleared
-            .control
-              input.input(type="text" name="clear_num", value=pr.clear_num readonly)
-          .field 
-            label.label Full Combos
-            .control
-              input.input(type="text" name="full_num", value=pr.full_num readonly)
-          .field 
-            label.label Excellent Full Combos
-            .control
-              input.input(type="text" name="exce_num", value=pr.exce_num readonly)
-          .field 
-            label.label Highest Difficulty Cleared
-            .control
-              input.input(type="text" name="max_clear_diff", value=(pr.max_clear_diff/100) readonly)
-          .field 
-            label.label Highest Difficulty Full Combo
-            .control
-              input.input(type="text" name="max_full_diff", value=(pr.max_full_diff/100) readonly)
-          .field 
-            label.label Highest Difficulty Excellent Full Combo
-            .control
-              input.input(type="text" name="max_exce_diff", value=(pr.max_exce_diff/100) readonly)
-          .field 
-            label.label Sessions
-            .control
-              input.input(type="text" name="session_cnt", value=pr.session_cnt readonly)
-
-    .card
-      .card-header
-        p.card-header-title
+mixin boardCard(i)
+  .card.board-card
+    .card-header
+      p.card-header-title
+        span.icon
+          i.mdi.mdi-view-dashboard
+        | PlayerBoard (#{getFullGameVersion(i.version)})
+        a.button.is-small(href=('/plugin/gitadora@asphyxia/profile?refid=' + encodeURIComponent(refid) + '&version=' + encodeURIComponent(i.version)) style="margin-left:auto")
           span.icon
-            i.mdi.mdi-account-multiple
-          | Rivals (#{getFullGameName(pr.game)} #{getFullGameVersion(pr.version)})
-      .card-content
-        -
-          const selectedRivals = (rivals || [])
-            .filter(r => r.game === pr.game && r.version === pr.version)
-            .sort((a, b) => (a.slot || 0) - (b.slot || 0))
-            .map(r => r.rival_refid);
-          const candidates = (all_players || []).filter(p =>
-            p.__refid !== refid && p.version === pr.version);
-        form(method="post" action="/emit/updateRival")
-          input(type="hidden" name="refid" value=refid)
-          input(type="hidden" name="version" value=pr.version)
-          input(type="hidden" name="game" value=pr.game)
-          p.help Select up to five distinct players. Only players with the same game version are shown.
-          each slot in [1, 2, 3, 4, 5]
-            .field
-              label.label Rival #{slot}
-              .control
-                .select.is-fullwidth
-                  select(name=`rival${slot}`)
-                    option(value="") None
-                    each candidate in candidates
-                      option(value=candidate.__refid selected=(selectedRivals[slot - 1] === candidate.__refid)) #{candidate.name} (DID: #{candidate.id})
+            i.mdi.mdi-arrow-left
+          span Back to Profile
+    .card-content
+      form.ajax-form(method="post" action="/emit/updatePlayerBoard")
+        input(type="hidden" name="refid" value=refid)
+        input(type="hidden" name="version" value=i.version)
+        textarea.is-hidden(name="board" data-pb-json)= JSON.stringify(toPickerBoard(i))
+        .pb-editor(data-pb-editor tabindex="0")
+          .pb-col.pb-left
+            .pb-heading Sheet
+            .select.is-fullwidth.is-small
+              select(data-pb-sheet)
+                option(value="") (none)
+                each item in sheetItems
+                  option(value=item.id)= item.name
+            .pb-heading Stickers
+            .pb-slots(data-pb-slots)
+          .pb-col.pb-center
+            .pb-board
+              .pb-header
+                .pb-nameplate
+                  .pb-title= i.title
+                  .pb-name= i.name
+                .pb-skill SKILL
+              .pb-area(data-pb-area)
+          .pb-col.pb-right
+            .pb-heading(data-pb-selected-label) Sticker
+            .pb-picker
+              .select.is-fullwidth.is-small
+                select(data-pb-category)
+              input.input.is-small(type="search" placeholder="Filter by name" data-pb-filter)
+              .select.is-fullwidth.is-small
+                select(data-pb-item)
+              button.button.is-small.is-danger.is-light.is-fullwidth(type="button" data-pb-action="remove")
+                span.icon
+                  i.mdi.mdi-delete
+                span Remove sticker
+            .pb-heading Move
+            .pb-dpad
+              button.pb-btn.pb-up(type="button" data-pb-action="up" title="Up")
+                i.mdi.mdi-chevron-up
+              button.pb-btn.pb-left-btn(type="button" data-pb-action="left" title="Left")
+                i.mdi.mdi-chevron-left
+              button.pb-btn.pb-right-btn(type="button" data-pb-action="right" title="Right")
+                i.mdi.mdi-chevron-right
+              button.pb-btn.pb-down(type="button" data-pb-action="down" title="Down")
+                i.mdi.mdi-chevron-down
+            .pb-heading Rotate
+            .pb-row
+              button.pb-btn(type="button" data-pb-action="rotate-ccw" title="Rotate left")
+                i.mdi.mdi-rotate-left
+              button.pb-btn(type="button" data-pb-action="rotate-cw" title="Rotate right")
+                i.mdi.mdi-rotate-right
+            .pb-heading Size
+            .pb-row
+              button.pb-btn(type="button" data-pb-action="size-small" title="Small")
+                i.mdi.mdi-arrow-collapse-all
+              button.pb-btn(type="button" data-pb-action="size-normal" title="Normal")
+                i.mdi.mdi-checkbox-blank-outline
+            .pb-heading Layer
+            .pb-row
+              button.pb-btn(type="button" data-pb-action="layer-up" title="Bring forward (move to previous slot)")
+                i.mdi.mdi-arrange-bring-forward
+              button.pb-btn(type="button" data-pb-action="layer-down" title="Send backward (move to next slot)")
+                i.mdi.mdi-arrange-send-backward
+            button.pb-save(type="submit") Save
+            p.help.pb-status(data-role="form-status")
+
+mixin profileCard(pr)
+  .card.profile-card
+    .card-header
+      p.card-header-title
+        span.icon
+          i.mdi.mdi-account-details
+        | Profile Detail (#{getFullGameName(pr.game)} #{getFullGameVersion(pr.version)})
+    .card-content
+      form(method="post")
+        .field
+          label.label Skill
+          .control
+            input.input(type="text" name="skill", value=(pr.skill/100) readonly)
+        .field
+          label.label Skill (All Songs)
+          .control
+            input.input(type="text" name="all_skill", value=(pr.all_skill/100) readonly)
+        .field
+          label.label Songs Cleared
+          .control
+            input.input(type="text" name="clear_num", value=pr.clear_num readonly)
+        .field
+          label.label Full Combos
+          .control
+            input.input(type="text" name="full_num", value=pr.full_num readonly)
+        .field
+          label.label Excellent Full Combos
+          .control
+            input.input(type="text" name="exce_num", value=pr.exce_num readonly)
+        .field
+          label.label Highest Difficulty Cleared
+          .control
+            input.input(type="text" name="max_clear_diff", value=(pr.max_clear_diff/100) readonly)
+        .field
+          label.label Highest Difficulty Full Combo
+          .control
+            input.input(type="text" name="max_full_diff", value=(pr.max_full_diff/100) readonly)
+        .field
+          label.label Highest Difficulty Excellent Full Combo
+          .control
+            input.input(type="text" name="max_exce_diff", value=(pr.max_exce_diff/100) readonly)
+        .field
+          label.label Sessions
+          .control
+            input.input(type="text" name="session_cnt", value=pr.session_cnt readonly)
+
+mixin rivalCard(pr)
+  .card.rival-card
+    .card-header
+      p.card-header-title
+        span.icon
+          i.mdi.mdi-account-multiple
+        | Rivals (#{getFullGameName(pr.game)} #{getFullGameVersion(pr.version)})
+    .card-content
+      -
+        const selectedRivals = (rivals || [])
+          .filter(r => r.game === pr.game && r.version === pr.version)
+          .sort((a, b) => (a.slot || 0) - (b.slot || 0))
+          .map(r => r.rival_refid);
+        const candidates = (all_players || []).filter(p =>
+          p.__refid !== refid && p.version === pr.version);
+      form.ajax-form(method="post" action="/emit/updateRival")
+        input(type="hidden" name="refid" value=refid)
+        input(type="hidden" name="version" value=pr.version)
+        input(type="hidden" name="game" value=pr.game)
+        p.help Select up to five distinct players. Only players with the same game version are shown.
+        each slot in [1, 2, 3, 4, 5]
           .field
+            label.label Rival #{slot}
+            .control
+              .select.is-fullwidth
+                select(name=`rival${slot}`)
+                  option(value="") None
+                  each candidate in candidates
+                    option(value=candidate.__refid selected=(selectedRivals[slot - 1] === candidate.__refid)) #{candidate.name} (DID: #{candidate.id})
+        .field.is-grouped.is-align-items-center
+          .control
             button.button.is-primary(type="submit")
               span.icon
                 i.mdi.mdi-check
               span Save rivals
+          .control
+            span.help(data-role="form-status")
+
+link(rel="stylesheet", href="static/css/webui_util.css", type="text/css")
+script(src = "static/js/webui_util.js")
+script(src = "static/js/ajax-form.js")
+
+if versionsPresent.length == 0
+  p.has-text-grey No profile data available yet.
+else
+  .tabs.is-toggle.is-toggle-rounded.is-small.version-tabs#tabs
+    ul
+      each version, vIdx in versionsPresent
+        li(tab-group="profile-version", tab-index=vIdx, data-version=version, class=(vIdx == 0) ? "is-active" : "")
+          a #{getFullGameVersion(version)}
+
+  each version, vIdx in versionsPresent
+    #tab-content(tab-group="profile-version", tab-index=vIdx, data-version=version, class=(vIdx == 0) ? "is-active" : "")
+      -
+        const infoForVersion = info.find(i => i.version === version)
+        const profilesForVersion = profile
+          .filter(p => p.version === version)
+          .sort((a, b) => gameOrder.indexOf(a.game) - gameOrder.indexOf(b.game))
+
+      if infoForVersion
+        +userCard(infoForVersion)
+        +boardCard(infoForVersion)
+
+      each pr in profilesForVersion
+        +profileCard(pr)
+        +rivalCard(pr)
 
 style.
-  .playerboard-fullscreen .playerboard-meta-field { display: none; }
-  .playerboard-fullscreen .card-content > form > .field:not([data-playerboard-section]):not(:has(button[type="submit"])) { display: none; }
-  .playerboard-fullscreen .card:not(:has([data-playerboard-section])) { display: none; }
-  .playerboard-fullscreen .card-content > * { display: none; }
-  .playerboard-fullscreen .card-content > form { display: block !important; }
-  .playerboard-fullscreen .card-content > form > [data-playerboard-section] { display: block !important; }
-  .playerboard-fullscreen [data-playerboard-section] { display: block !important; }
-  .playerboard-editor { background: #000; color: #fff; }
-  .playerboard-preview {
-    position: relative;
-    width: 320px;
-    height: 554px;
+  /* Profile view shows everything except the board editor; board view shows only the editor. */
+  .board-card { display: none; }
+  .playerboard-fullscreen .board-card { display: block; }
+  .playerboard-fullscreen .version-tabs,
+  .playerboard-fullscreen .user-card,
+  .playerboard-fullscreen .profile-card,
+  .playerboard-fullscreen .rival-card { display: none; }
 
-    margin: 0 auto;
-    flex: 0 0 320px;
+  .pb-editor {
+    display: flex; flex-wrap: wrap; gap: 1.25rem; justify-content: center; align-items: flex-start;
+    padding: 1rem 0; outline: none;
+  }
+  .pb-col { display: flex; flex-direction: column; gap: .5rem; }
+  .pb-left, .pb-right { flex: 1 1 200px; max-width: 260px; }
+  .pb-center { flex: 0 1 360px; }
+  .pb-heading {
+    background: #111; color: #fff; text-align: center; font-weight: 600;
+    padding: .3rem .5rem; margin-top: .35rem; border-radius: 2px; letter-spacing: .03em;
+  }
+  .pb-slots { display: flex; flex-direction: column; gap: .35rem; }
+  .pb-slot {
+    display: flex; align-items: center; gap: .5rem; width: 100%; min-height: 2.6rem;
+    padding: .3rem .5rem; border: 2px solid #dbdbdb; border-radius: 3px;
+    background: #fff; color: #333; text-align: left; cursor: pointer; font-size: .8rem; line-height: 1.2;
+  }
+  .pb-slot:hover { background: #f0f0f0; }
+  .pb-slot.is-empty { color: #999; }
+  .pb-slot.is-selected { border-color: #ffd600; background: #e8e8e8; box-shadow: 0 0 0 2px rgba(255,214,0,.35); }
+  .pb-slot-no { flex: 0 0 auto; min-width: 1.6rem; font-weight: 700; color: #6b4fd8; }
+  .pb-slot-name { flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-    overflow: hidden;
-    border: 1px solid #dbdbdb;
-    border-radius: 6px;
+  .pb-board { width: 100%; max-width: 360px; margin: 0 auto; background: #000; border: 1px solid #555; }
+  .pb-header { display: flex; gap: 4px; padding: 6px; background: #000; }
+  .pb-nameplate { flex: 1 1 auto; border: 1px solid #888; padding: 2px 6px; min-width: 0; }
+  .pb-title { font-size: .7rem; color: #ddd; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pb-name { font-size: .95rem; font-weight: 700; color: #ff4d4d; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pb-skill { flex: 0 0 64px; border: 1px solid #888; color: #aaa; font-size: .7rem; padding: 2px 6px; }
+  .pb-area {
+    position: relative; width: 100%; aspect-ratio: 320 / 470; overflow: hidden; touch-action: none;
     background: linear-gradient(135deg, #20243a, #384d69);
   }
-  .playerboard-preview-grid {
-    position: absolute;
-    inset: 0;
-    opacity: .25;
-    background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px);
-    background-size: 10% 10%;
+  .pb-area.has-sheet { background: linear-gradient(135deg, #3a3f62, #6a7fa3); }
+  .pb-sheet-label {
+    position: absolute; inset: 4px 0 auto 0; text-align: center; font-size: .7rem;
+    color: rgba(255,255,255,.55); pointer-events: none;
   }
-  .playerboard-sticker {
-    position: absolute;
-    z-index: 2;
-    min-width: 38px;
-    min-height: 30px;
-    padding: 4px 7px;
-    border: 1px solid #666;
-    border-radius: 5px;
-    color: #fff;
-    background: #000;
-    box-shadow: 0 2px 5px rgba(0,0,0,.35);
-    cursor: grab;
-    transform-origin: center;
+  .pb-cell {
+    position: absolute; width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(255,255,255,.28); transform: translate(-50%, -50%); pointer-events: none;
   }
-  .playerboard-sticker:active { cursor: grabbing; }
-  .playerboard-sticker-row { margin-bottom: .35rem; padding: .35rem; background: #000; color: #fff; border: 1px solid #555; border-radius: 5px; }
-  .playerboard-sticker-row .field { margin-bottom: .15rem; }
-  .playerboard-sticker-row .label { font-size: .75rem; color: #fff; }
-  .playerboard-editor .label, .playerboard-editor .help { color: #fff; }
-  .playerboard-empty { color: #777; font-size: .9rem; padding: .5rem 0; }
+  .pb-cell.is-target { background: #ffd600; width: 12px; height: 12px; }
+  .pb-sticker {
+    position: absolute; display: flex; align-items: center; justify-content: center;
+    padding: 2px; border: 1px solid rgba(255,255,255,.7); border-radius: 4px;
+    background: rgba(0,0,0,.72); color: #fff; font-size: .62rem; line-height: 1.1; text-align: center;
+    overflow: hidden; cursor: grab; user-select: none; transform-origin: center;
+  }
+  .pb-sticker.is-selected { border: 2px solid #ffd600; box-shadow: 0 0 8px rgba(255,214,0,.7); z-index: 20; }
+  .pb-sticker.is-dragging { cursor: grabbing; opacity: .85; z-index: 30; }
+
+  .pb-picker { display: flex; flex-direction: column; gap: .35rem; }
+  .pb-dpad {
+    display: grid; grid-template-columns: repeat(3, 3rem); grid-template-rows: repeat(3, 3rem);
+    gap: .35rem; justify-content: center;
+  }
+  .pb-up { grid-column: 2; grid-row: 1; }
+  .pb-left-btn { grid-column: 1; grid-row: 2; }
+  .pb-right-btn { grid-column: 3; grid-row: 2; }
+  .pb-down { grid-column: 2; grid-row: 3; }
+  .pb-row { display: flex; gap: .6rem; justify-content: center; }
+  .pb-btn {
+    width: 3rem; height: 3rem; display: inline-flex; align-items: center; justify-content: center;
+    background: #fff; color: #111; border: 3px solid #111; border-radius: 2px;
+    box-shadow: 2px 2px 0 rgba(0,0,0,.45); font-size: 1.6rem; cursor: pointer;
+  }
+  .pb-btn:hover:not(:disabled) { background: #f3f3f3; }
+  .pb-btn:active:not(:disabled) { transform: translate(1px, 1px); box-shadow: 1px 1px 0 rgba(0,0,0,.45); }
+  .pb-btn:disabled { opacity: .35; cursor: default; }
+  .pb-btn.is-current { background: #ffd600; }
+  .pb-save {
+    margin-top: .9rem; align-self: center; width: 9rem; height: 3.4rem;
+    background: #ffe600; color: #555; border: 3px solid #111; border-radius: 2px;
+    font-size: 1.15rem; font-weight: 700; cursor: pointer; box-shadow: 2px 2px 0 rgba(0,0,0,.45);
+  }
+  .pb-save:hover { background: #fff04d; }
+  .pb-status { text-align: center; min-height: 1.2em; }
 
 script.
   (() => {
-    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
-    const numberOr = (value, fallback) => {
-      const number = Number(value);
-      return Number.isFinite(number) ? number : fallback;
-    };
-    const stickerOptions = !{JSON.stringify(trbitems.filter(item => item.stk_category !== 0).map(item => `<option value="${item.id}">[${item.id}]: ${item.name}</option>`).join(''))};
-    const stickerTemplate = () => `
-      <div class="playerboard-sticker-row" data-sticker-row>
-        <div class="columns is-mobile is-multiline">
-          <div class="column is-half"><label class="label">Sticker<select class="input" data-sticker-field="id">${stickerOptions}</select></label></div>
-          <div class="column is-half"><label class="label">Rotation<input class="input" type="number" step="0.01" data-sticker-field="rotate" value="1"></label></div>
-          <div class="column is-one-quarter"><label class="label">X<input class="input" type="number" step="0.01" data-sticker-field="pos_x" value="1"></label></div>
-          <div class="column is-one-quarter"><label class="label">Y<input class="input" type="number" step="0.01" data-sticker-field="pos_y" value="1"></label></div>
-          <div class="column is-one-quarter"><label class="label">Scale X<input class="input" type="number" step="0.01" data-sticker-field="scale_x" value="0.5"></label></div>
-          <div class="column is-one-quarter"><label class="label">Scale Y<input class="input" type="number" step="0.01" data-sticker-field="scale_y" value="0.5"></label></div>
-        </div>
-        <button class="button is-small is-danger is-light" type="button" data-remove-sticker>Remove sticker</button>
-      </div>`;
-
-    const getRows = editor => Array.from(editor.querySelectorAll('[data-sticker-row]'));
-    const readRows = editor => getRows(editor).map(row => {
-      const value = field => row.querySelector(`[data-sticker-field="${field}"]`).value;
-      return {
-        id: Math.trunc(numberOr(value('id'), 0)),
-        pos_x: numberOr(value('pos_x'), 0),
-        pos_y: numberOr(value('pos_y'), 0),
-        scale_x: numberOr(value('scale_x'), 1),
-        scale_y: numberOr(value('scale_y'), 1),
-        rotate: numberOr(value('rotate'), 0)
-      };
-    });
-    const BOARD_WIDTH = 320;
-    const BOARD_HEIGHT = 554;
-    const toXPercent = value => clamp(value / BOARD_WIDTH * 100, 0, 100);
-    const toYPercent = value => clamp(value / BOARD_HEIGHT * 100, 0, 100);
-    const fromXPercent = value => value / 100 * BOARD_WIDTH;
-    const fromYPercent = value => value / 100 * BOARD_HEIGHT;
-
-    const renderPreview = editor => {
-      const preview = editor.querySelector('[data-board-preview]');
-      const stickers = readRows(editor);
-
-      preview.querySelectorAll('.playerboard-sticker').forEach(item => item.remove());
-      stickers.forEach((sticker, index) => {
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'playerboard-sticker';
-        button.dataset.stickerIndex = index;
-        button.textContent = `#${sticker.id}`;
-        button.title = 'Click to select; drag to reposition';
-        button.style.left = `${toXPercent(sticker.pos_x)}%`;
-        button.style.top = `${toYPercent(sticker.pos_y)}%`;
-        const sizeX = clamp(Math.abs(sticker.scale_x) * 28, 24, 100);
-        const sizeY = clamp(Math.abs(sticker.scale_y) * 22, 20, 80);
-        button.style.minWidth = `${sizeX}px`;
-        button.style.minHeight = `${sizeY}px`;
-        button.style.transform = `translate(-50%, 50%) rotate(${sticker.rotate}deg)`;
-        button.addEventListener('click', () => {
-          const row = getRows(editor)[index];
-          row && row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        });
-        let drag;
-        button.addEventListener('pointerdown', event => {
-          event.preventDefault();
-          button.setPointerCapture(event.pointerId);
-          const bounds = preview.getBoundingClientRect();
-          drag = { bounds };
-        });
-        button.addEventListener('pointermove', event => {
-          if (!drag) return;
-          const x = clamp((event.clientX - drag.bounds.left) / drag.bounds.width * 100, 0, 100);
-          const y = clamp((event.clientY - drag.bounds.top) / drag.bounds.height * 100, 0, 100);
-          const row = getRows(editor)[index];
-          if (!row) return;
-          row.querySelector('[data-sticker-field="pos_x"]').value = fromXPercent(x).toFixed(2);
-          row.querySelector('[data-sticker-field="pos_y"]').value = fromYPercent(y).toFixed(2);
-          sync(editor);
-          button.style.left = `${x}%`;
-          button.style.top = `${y}%`;
-        });
-        button.addEventListener('pointerup', event => { if (drag) { try { button.releasePointerCapture(event.pointerId); } catch (_) {} } drag = null; });
-        button.addEventListener('pointercancel', () => { drag = null; });
-        preview.appendChild(button);
-      });
-    };
-    const sync = editor => {
-      const json = {
-        index: 1,
-        is_active: true,
-        sticker: [{ id: Math.trunc(numberOr(editor.querySelector('[data-board-id]').value, 0)), pos_x: 160, pos_y: 235, scale_x: 1, scale_y: 1, rotate: 0 }].concat(readRows(editor))
-      };
-      editor.querySelector('[data-board-json]').value = JSON.stringify(json);
-    };
-    const addSticker = (editor, sticker = {}) => {
-      const list = editor.querySelector('[data-sticker-list]');
-      if (list.querySelectorAll('[data-sticker-row]').length >= 10) return;
-      list.insertAdjacentHTML('beforeend', stickerTemplate());
-      const row = list.lastElementChild;
-      Object.entries({ id: 0, pos_x: 160, pos_y: 235, scale_x: 0.5, scale_y: 0.5, rotate: 0, ...sticker }).forEach(([field, value]) => {
-        row.querySelector(`[data-sticker-field="${field}"]`).value = value;
-      });
-    };
-    const initialize = editor => {
-      let initial = {};
-      try { initial = JSON.parse(editor.querySelector('[data-board-json]').value || '{}'); } catch (_) { initial = {}; }
-      const stickers = Array.isArray(initial.sticker) ? initial.sticker : [];
-      stickers.forEach(sticker => addSticker(editor, sticker));
-      editor.querySelector('[data-board-index]').value = 1;
-      editor.addEventListener('input', event => {
-        if (event.target.matches('[data-board-index], [data-sticker-field]')) {
-          sync(editor);
-          renderPreview(editor);
-        }
-      });
-      editor.addEventListener('change', event => {
-        if (event.target.matches('[data-board-index], [data-sticker-field]')) { sync(editor); renderPreview(editor); }
-      });
-      editor.querySelector('[data-add-sticker]').addEventListener('click', () => { addSticker(editor); sync(editor); renderPreview(editor); });
-      editor.closest('form').addEventListener('submit', () => sync(editor));
-      editor.addEventListener('click', event => {
-        if (false) {
-          addSticker(editor);
-          sync(editor);
-          renderPreview(editor);
-        }
-        const remove = event.target.closest('[data-remove-sticker]');
-        if (remove) {
-          remove.closest('[data-sticker-row]').remove();
-          sync(editor);
-          renderPreview(editor);
-        }
-      });
-      sync(editor);
-      renderPreview(editor);
-    };
-    document.querySelectorAll('[data-playerboard-editor]').forEach(initialize);
-    document.querySelectorAll('[data-toggle-playerboard]').forEach(button => {
-      button.addEventListener('click', () => {
-        const section = button.closest('.card').querySelector('[data-playerboard-section]');
-        if (section) section.classList.toggle('is-hidden');
-      });
-    });
-  })();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-script.
-  document.addEventListener('click', function (event) {
-    const button = event.target.closest('[data-toggle-playerboard]');
-    if (!button) return;
-    const card = button.closest('.card');
-    const section = card && card.querySelector('[data-playerboard-section]');
-    if (section) section.classList.toggle('is-hidden');
-  });
-
-
-
-
-
-
-
-script.
-  (() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('view') !== 'playerboard') return;
-    const section = document.querySelector('[data-playerboard-section]');
-    if (!section) return;
-    section.classList.remove('is-hidden');
-    document.body.classList.add('playerboard-fullscreen');
-  })();
-
-
-script.
-  (() => {
-    const isBoardView = new URLSearchParams(location.search).get('view') === 'playerboard';
-    const selectedVersion = new URLSearchParams(location.search).get('version');
-    document.querySelectorAll('.playerboard-link').forEach(toggle => {
-      const card = toggle.closest('.card');
-      const version = card && card.querySelector('input[name="version"]');
-      if (isBoardView && (!selectedVersion || !version || version.value === selectedVersion)) {
-        toggle.textContent = 'Back to Profile';
-        toggle.href = location.pathname + '?refid=' + encodeURIComponent(new URLSearchParams(location.search).get('refid') || '') + '&version=' + encodeURIComponent(version ? version.value : '');
-      }
-    });
-    const editor = document.querySelector('[data-playerboard-editor]');
-    const preview = document.querySelector('[data-board-preview]');
-    if (!editor || !preview) return;
-    const rows = () => [...editor.querySelectorAll('[data-sticker-row]')];
-    const draw = () => {
-      preview.querySelectorAll('.playerboard-sticker').forEach(x => x.remove());
-      rows().forEach((row, index) => {
-        const x = Number(row.querySelector('[data-sticker-field="pos_x"]').value) || 0;
-        const y = Number(row.querySelector('[data-sticker-field="pos_y"]').value) || 0;
-        const b = document.createElement('button'); b.type='button'; b.className='playerboard-sticker'; b.textContent='#'+(row.querySelector('[data-sticker-field="id"]').value||0);
-        b.style.left=(x/320*100)+'%'; b.style.top=(y/554*100)+'%'; b.style.transform='translate(-50%,-50%)';
-        let moving=false; b.addEventListener('pointerdown',e=>{moving=true;b.setPointerCapture(e.pointerId)}); b.addEventListener('pointermove',e=>{if(!moving)return;const r=preview.getBoundingClientRect();const nx=Math.max(0,Math.min(320,(e.clientX-r.left)/r.width*320));const ny=Math.max(0,Math.min(554,(e.clientY-r.top)/r.height*554));row.querySelector('[data-sticker-field="pos_x"]').value=nx.toFixed(2);row.querySelector('[data-sticker-field="pos_y"]').value=ny.toFixed(2);b.style.left=(nx/320*100)+'%';b.style.top=(ny/554*100)+'%'}); b.addEventListener('pointerup',()=>moving=false); preview.appendChild(b);
-      });
-    };
-    window.playerboardRedraw = draw;
-    draw();
-    setInterval(() => { if (editor.querySelectorAll('[data-sticker-row]').length !== preview.querySelectorAll('.playerboard-sticker').length) draw(); }, 100);
-  })();
-
-
-
-
-
-script.
-  (() => {
-    const editor = document.querySelector('[data-playerboard-editor]');
-    if (!editor) return;
-    const refresh = () => window.playerboardRedraw && window.playerboardRedraw();
-    editor.addEventListener('change', () => setTimeout(() => window.playerboardRedraw && window.playerboardRedraw(), 0));
-    editor.addEventListener('click', e => { if (e.target.closest('[data-add-sticker],[data-remove-sticker]')) setTimeout(() => window.playerboardRedraw && window.playerboardRedraw(), 20); });
-    new MutationObserver(() => refresh()).observe(editor.querySelector('[data-sticker-list]'), { childList: true });
-  })();
-
-
-
-
-
-
-script.
-  (() => {
+    // Page mode: ?version=<v> opens that version tab; adding &view=playerboard
+    // switches to the playerboard editor for that version.
     const params = new URLSearchParams(location.search);
     const selectedVersion = params.get('version');
-    if (!selectedVersion || params.get('view') !== 'playerboard') return;
-    document.querySelectorAll('[data-playerboard-editor]').forEach(editor => {
-      const form = editor.closest('form');
-      const version = form && form.querySelector('input[name="version"]');
-      if (version && version.value !== selectedVersion) editor.closest('.card').style.display = 'none';
-    });
+    if (selectedVersion) {
+      const tab = document.querySelector('li[tab-group="profile-version"][data-version="' + CSS.escape(selectedVersion) + '"]');
+      if (tab) {
+        const index = tab.getAttribute('tab-index');
+        document.querySelectorAll('[tab-group="profile-version"]').forEach(el => {
+          el.classList.toggle('is-active', el.getAttribute('tab-index') === index);
+        });
+      }
+    }
+    if (params.get('view') === 'playerboard') document.body.classList.add('playerboard-fullscreen');
   })();
 
+script.
+  window.GITADORA_STICKER_CATALOG = !{JSON.stringify(stickerCatalog).replace(/</g, '\\u003c')};
+
+script.
+  (() => {
+    // Must match models/playerboard.ts.
+    const BOARD_W = 320, BOARD_H = 470;
+    const CENTER_X = 160, CENTER_Y = 235, STEP = 96;
+    const COLUMNS = 3, ROWS = 5, SLOTS = 10, ROTATE_STEP = 45;
+    const SIZE_SCALE = { 1: 1, 2: 0.6 };
+    const CATEGORY_ORDER = ['Sticker', 'Seasonal', 'Special'];
+
+    const catalog = window.GITADORA_STICKER_CATALOG || [];
+    const byId = new Map(catalog.map(entry => [entry[0], entry]));
+    const byCategory = new Map();
+    for (const entry of catalog) {
+      if (!byCategory.has(entry[2])) byCategory.set(entry[2], []);
+      byCategory.get(entry[2]).push(entry);
+    }
+    const categories = CATEGORY_ORDER.filter(c => byCategory.has(c))
+      .concat([...byCategory.keys()].filter(c => !CATEGORY_ORDER.includes(c)));
+
+    const positionToXY = position => {
+      const row = Math.floor((position - 1) / COLUMNS);
+      const col = (position - 1) % COLUMNS;
+      return [CENTER_X + (col - 1) * STEP, CENTER_Y + (row - 2) * STEP];
+    };
+    const xyToPosition = (x, y) => {
+      const col = Math.max(0, Math.min(COLUMNS - 1, Math.round((x - CENTER_X) / STEP) + 1));
+      const row = Math.max(0, Math.min(ROWS - 1, Math.round((y - CENTER_Y) / STEP) + 2));
+      return row * COLUMNS + col + 1;
+    };
+    const stickerName = id => {
+      const entry = byId.get(id);
+      return entry ? entry[1] : 'Unknown #' + id;
+    };
+
+    const initialize = editor => {
+      const form = editor.closest('form');
+      const jsonField = form.querySelector('[data-pb-json]');
+      const sheetSelect = editor.querySelector('[data-pb-sheet]');
+      const slotList = editor.querySelector('[data-pb-slots]');
+      const area = editor.querySelector('[data-pb-area]');
+      const categorySelect = editor.querySelector('[data-pb-category]');
+      const filterInput = editor.querySelector('[data-pb-filter]');
+      const itemSelect = editor.querySelector('[data-pb-item]');
+      const selectedLabel = editor.querySelector('[data-pb-selected-label]');
+
+      // ---- State ----
+      let initial = {};
+      try { initial = JSON.parse(jsonField.value || '{}'); } catch (_) { initial = {}; }
+      const state = { sheet: initial.sheet == null ? null : Number(initial.sheet), slots: Array(SLOTS).fill(null), selected: 0 };
+      (Array.isArray(initial.stickers) ? initial.stickers : []).forEach(item => {
+        if (item && Number.isInteger(item.slot) && item.slot >= 0 && item.slot < SLOTS) {
+          state.slots[item.slot] = { id: item.id, position: item.position || 8, size: item.size || 1, rotate: item.rotate || 0 };
+        }
+      });
+
+      if (state.sheet != null && !sheetSelect.querySelector('option[value="' + state.sheet + '"]')) {
+        sheetSelect.insertAdjacentHTML('beforeend', '<option value="' + state.sheet + '">Unknown #' + state.sheet + '</option>');
+      }
+      sheetSelect.value = state.sheet == null ? '' : String(state.sheet);
+
+      const current = () => state.slots[state.selected];
+      const sync = () => {
+        jsonField.value = JSON.stringify({
+          sheet: state.sheet,
+          stickers: state.slots
+            .map((s, slot) => s && { id: s.id, position: s.position, size: s.size, rotate: s.rotate, slot })
+            .filter(Boolean)
+        });
+      };
+
+      // ---- Static preview grid ----
+      const sheetLabel = document.createElement('div');
+      sheetLabel.className = 'pb-sheet-label';
+      area.appendChild(sheetLabel);
+      const cells = [];
+      for (let position = 1; position <= COLUMNS * ROWS; position++) {
+        const [x, y] = positionToXY(position);
+        const cell = document.createElement('div');
+        cell.className = 'pb-cell';
+        cell.style.left = (x / BOARD_W * 100) + '%';
+        cell.style.top = (y / BOARD_H * 100) + '%';
+        area.appendChild(cell);
+        cells.push(cell);
+      }
+
+      // ---- Slot list ----
+      const slotButtons = [];
+      for (let slot = 0; slot < SLOTS; slot++) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'pb-slot';
+        button.innerHTML = '<span class="pb-slot-no"></span><span class="pb-slot-name"></span>';
+        button.querySelector('.pb-slot-no').textContent = slot + 1;
+        button.addEventListener('click', () => { state.selected = slot; render(); });
+        slotList.appendChild(button);
+        slotButtons.push(button);
+      }
+
+      // ---- Sticker picker ----
+      const fillCategories = () => {
+        categorySelect.innerHTML = '';
+        categories.forEach(c => {
+          const option = document.createElement('option');
+          option.value = c;
+          option.textContent = c + ' (' + byCategory.get(c).length + ')';
+          categorySelect.appendChild(option);
+        });
+      };
+      const fillItems = selectedId => {
+        const query = filterInput.value.trim().toLowerCase();
+        const items = (byCategory.get(categorySelect.value) || [])
+          .filter(entry => !query || entry[1].toLowerCase().includes(query) || String(entry[0]) === query);
+        itemSelect.innerHTML = '';
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = current() ? '— keep current —' : '— choose a sticker —';
+        itemSelect.appendChild(placeholder);
+        items.forEach(entry => {
+          const option = document.createElement('option');
+          option.value = entry[0];
+          option.textContent = entry[1];
+          itemSelect.appendChild(option);
+        });
+        itemSelect.value = selectedId != null && items.some(e => e[0] === selectedId) ? String(selectedId) : '';
+      };
+      const syncPicker = () => {
+        const sticker = current();
+        const entry = sticker && byId.get(sticker.id);
+        if (entry) categorySelect.value = entry[2];
+        filterInput.value = '';
+        fillItems(sticker ? sticker.id : null);
+      };
+      fillCategories();
+
+      // ---- Rendering ----
+      const placeSticker = (el, sticker, x, y) => {
+        const scale = SIZE_SCALE[sticker.size] || 1;
+        el.style.left = (x / BOARD_W * 100) + '%';
+        el.style.top = (y / BOARD_H * 100) + '%';
+        el.style.width = (STEP * scale / BOARD_W * 100) + '%';
+        el.style.height = (STEP * scale / BOARD_H * 100) + '%';
+        el.style.transform = 'translate(-50%, -50%) rotate(' + sticker.rotate + 'deg)';
+      };
+
+      const render = () => {
+        const selected = current();
+
+        area.classList.toggle('has-sheet', state.sheet != null);
+        sheetLabel.textContent = state.sheet != null ? 'Sheet: ' + (sheetSelect.selectedOptions[0] || {}).textContent : '';
+        cells.forEach((cell, index) => cell.classList.toggle('is-target', !!selected && selected.position === index + 1));
+
+        area.querySelectorAll('.pb-sticker').forEach(el => el.remove());
+        state.slots.forEach((sticker, slot) => {
+          if (!sticker) return;
+          const el = document.createElement('div');
+          el.className = 'pb-sticker' + (slot === state.selected ? ' is-selected' : '');
+          el.textContent = stickerName(sticker.id);
+          el.title = 'Slot ' + (slot + 1) + ': ' + stickerName(sticker.id) + ' — drag to move';
+          el.style.zIndex = slot + 1;
+          placeSticker(el, sticker, ...positionToXY(sticker.position));
+          bindDrag(el, slot);
+          area.appendChild(el);
+        });
+
+        slotButtons.forEach((button, slot) => {
+          const sticker = state.slots[slot];
+          button.classList.toggle('is-selected', slot === state.selected);
+          button.classList.toggle('is-empty', !sticker);
+          button.querySelector('.pb-slot-name').textContent = sticker ? stickerName(sticker.id) : '(empty)';
+        });
+
+        selectedLabel.textContent = 'Sticker — slot ' + (state.selected + 1);
+        const has = !!selected;
+        editor.querySelectorAll('[data-pb-action]').forEach(button => { button.disabled = !has; });
+        if (has) {
+          const row = Math.floor((selected.position - 1) / COLUMNS), col = (selected.position - 1) % COLUMNS;
+          editor.querySelector('[data-pb-action="up"]').disabled = row === 0;
+          editor.querySelector('[data-pb-action="down"]').disabled = row === ROWS - 1;
+          editor.querySelector('[data-pb-action="left"]').disabled = col === 0;
+          editor.querySelector('[data-pb-action="right"]').disabled = col === COLUMNS - 1;
+          editor.querySelector('[data-pb-action="layer-up"]').disabled = state.selected === 0;
+          editor.querySelector('[data-pb-action="layer-down"]').disabled = state.selected === SLOTS - 1;
+        }
+        editor.querySelector('[data-pb-action="size-small"]').classList.toggle('is-current', has && selected.size === 2);
+        editor.querySelector('[data-pb-action="size-normal"]').classList.toggle('is-current', has && selected.size === 1);
+
+        syncPicker();
+        sync();
+      };
+
+      // Free drag for feedback, snapped to the nearest grid cell on release.
+      const bindDrag = (el, slot) => {
+        let drag = null;
+        el.addEventListener('pointerdown', event => {
+          event.preventDefault();
+          editor.focus({ preventScroll: true });
+          el.setPointerCapture(event.pointerId);
+          drag = { rect: area.getBoundingClientRect(), moved: false };
+          if (state.selected !== slot) {
+            state.selected = slot;
+            slotButtons.forEach((b, i) => b.classList.toggle('is-selected', i === slot));
+            area.querySelectorAll('.pb-sticker').forEach(s => s.classList.remove('is-selected'));
+            el.classList.add('is-selected');
+          }
+        });
+        el.addEventListener('pointermove', event => {
+          if (!drag) return;
+          drag.moved = true;
+          el.classList.add('is-dragging');
+          const x = Math.max(0, Math.min(BOARD_W, (event.clientX - drag.rect.left) / drag.rect.width * BOARD_W));
+          const y = Math.max(0, Math.min(BOARD_H, (event.clientY - drag.rect.top) / drag.rect.height * BOARD_H));
+          drag.position = xyToPosition(x, y);
+          placeSticker(el, state.slots[slot], x, y);
+          cells.forEach((cell, index) => cell.classList.toggle('is-target', drag.position === index + 1));
+        });
+        const end = event => {
+          if (!drag) return;
+          try { el.releasePointerCapture(event.pointerId); } catch (_) {}
+          if (drag.moved && drag.position) state.slots[slot].position = drag.position;
+          drag = null;
+          render();
+        };
+        el.addEventListener('pointerup', end);
+        el.addEventListener('pointercancel', end);
+      };
+
+      // ---- Actions ----
+      const move = (dRow, dCol) => {
+        const s = current();
+        if (!s) return;
+        const row = Math.floor((s.position - 1) / COLUMNS) + dRow;
+        const col = (s.position - 1) % COLUMNS + dCol;
+        if (row < 0 || row >= ROWS || col < 0 || col >= COLUMNS) return;
+        s.position = row * COLUMNS + col + 1;
+      };
+      const actions = {
+        'up': () => move(-1, 0),
+        'down': () => move(1, 0),
+        'left': () => move(0, -1),
+        'right': () => move(0, 1),
+        'rotate-ccw': () => { current().rotate = (current().rotate - ROTATE_STEP + 360) % 360; },
+        'rotate-cw': () => { current().rotate = (current().rotate + ROTATE_STEP) % 360; },
+        'size-small': () => { current().size = 2; },
+        'size-normal': () => { current().size = 1; },
+        'remove': () => { state.slots[state.selected] = null; },
+        'layer-up': () => swap(state.selected, state.selected - 1),
+        'layer-down': () => swap(state.selected, state.selected + 1),
+      };
+      const swap = (a, b) => {
+        if (b < 0 || b >= SLOTS) return;
+        [state.slots[a], state.slots[b]] = [state.slots[b], state.slots[a]];
+        state.selected = b;
+      };
+      editor.addEventListener('click', event => {
+        const button = event.target.closest('[data-pb-action]');
+        if (!button || button.disabled) return;
+        if (!current() && button.dataset.pbAction !== 'remove') return;
+        actions[button.dataset.pbAction]();
+        render();
+      });
+      editor.addEventListener('keydown', event => {
+        if (event.target.matches('input, select, textarea')) return;
+        const key = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right', Delete: 'remove' }[event.key];
+        if (!key || !current()) return;
+        event.preventDefault();
+        actions[key]();
+        render();
+      });
+
+      sheetSelect.addEventListener('change', () => {
+        state.sheet = sheetSelect.value === '' ? null : Number(sheetSelect.value);
+        render();
+      });
+      categorySelect.addEventListener('change', () => { filterInput.value = ''; fillItems(current() ? current().id : null); });
+      filterInput.addEventListener('input', () => fillItems(current() ? current().id : null));
+      itemSelect.addEventListener('change', () => {
+        if (itemSelect.value === '') return;
+        const id = Number(itemSelect.value);
+        if (current()) current().id = id;
+        else state.slots[state.selected] = { id, position: 8, size: 1, rotate: 0 };
+        render();
+      });
+      // Registered before ajax-form.js binds its handler, so the JSON is current when sent.
+      form.addEventListener('submit', sync);
+
+      const firstUsed = state.slots.findIndex(Boolean);
+      state.selected = firstUsed >= 0 ? firstUsed : 0;
+      render();
+    };
+
+    document.querySelectorAll('[data-pb-editor]').forEach(initialize);
+  })();

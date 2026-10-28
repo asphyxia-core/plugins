@@ -1,12 +1,15 @@
 import { PlayerInfo } from "../models/playerinfo"
+import { isValidPickerBoard, pickerToPlayerBoard } from "../models/playerboard"
 import { Rival } from "../models/rival"
+import Logger from "../utils/logger"
+
+const logger = new Logger("webui")
 
 export const updatePlayerInfo = async (data: {
   refid: string;
   version: string;
   name?: string;
   title?: string;
-  playerboard?: string | PlayerInfo['playerboard'];
 }) => {
   if (data.refid == null) return;
 
@@ -22,11 +25,6 @@ export const updatePlayerInfo = async (data: {
     update.title = data.title;
   }
 
-  if (data.playerboard !== undefined) {
-    const playerboard = parsePlayerBoard(data.playerboard);
-    if (playerboard) update.playerboard = playerboard;
-  }
-
   await DB.Update<PlayerInfo>(
     data.refid,
     { collection: 'playerinfo', version: data.version },
@@ -34,60 +32,36 @@ export const updatePlayerInfo = async (data: {
   );
 };
 
-/** Parse and normalize the JSON editor payload before persisting it. */
-function parsePlayerBoard(input: string | PlayerInfo['playerboard']): PlayerInfo['playerboard'] | null {
-  let value: any = input;
-  if (typeof input === 'string') {
-    try {
-      value = input.trim() ? JSON.parse(input) : {};
-    } catch (error) {
-      console.warn('[gitadora] Ignoring invalid playerboard JSON:', error);
-      return null;
-    }
+// The playerboard is edited only through the WebUI board editor (the game client displays the
+// board but never sends edits back). The editor submits grid/size presets, which are converted
+// to coordinates here so stored boards always stay on the official 3x5 grid.
+export const updatePlayerBoard = async (data: {
+  refid: string;
+  version: string;
+  board?: string;
+}) => {
+  if (data.refid == null || !data.version) return;
+  if (data.board == null || data.board.trim().length === 0) return;
+
+  let parsed: any;
+  try {
+    parsed = JSON.parse(data.board);
+  } catch (e) {
+    logger.error(`Failed to parse player board JSON for refid ${data.refid}: ${e}`);
+    return;
   }
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
 
-  const numberOr = (candidate: unknown, fallback: number) => {
-    const parsed = typeof candidate === 'number' ? candidate : Number(candidate);
-    return Number.isFinite(parsed) ? parsed : fallback;
-  };
-  const boolOr = (candidate: unknown, fallback: boolean) => {
-    if (candidate === undefined || candidate === null || candidate === '') return fallback;
-    if (typeof candidate === 'boolean') return candidate;
-    if (candidate === 1 || candidate === '1' || candidate === 'true') return true;
-    if (candidate === 0 || candidate === '0' || candidate === 'false') return false;
-    return fallback;
-  };
+  if (!isValidPickerBoard(parsed)) {
+    logger.error(`Rejected invalid player board for refid ${data.refid}`);
+    return;
+  }
 
-  const stickers = Array.isArray(value.sticker) ? value.sticker : [];
-  const normalizedStickers = stickers.slice(0, 11).reduce((result: any[], sticker: any) => {
-    if (!sticker || typeof sticker !== 'object') return result;
-    const position = Array.isArray(sticker.position) ? sticker.position : [];
-    const scale = Array.isArray(sticker.scale) ? sticker.scale : [];
-    const id = numberOr(sticker.id, NaN);
-    const posX = numberOr(sticker.pos_x ?? position[0], NaN);
-    const posY = numberOr(sticker.pos_y ?? position[1], NaN);
-    const scaleX = numberOr(sticker.scale_x ?? scale[0], NaN);
-    const scaleY = numberOr(sticker.scale_y ?? scale[1], NaN);
-    const rotate = numberOr(sticker.rotate ?? sticker.rotation, NaN);
-    if (![id, posX, posY, scaleX, scaleY, rotate].every(Number.isFinite)) return result;
-    result.push({
-      id: Math.trunc(id),
-      pos_x: posX,
-      pos_y: posY,
-      scale_x: scaleX,
-      scale_y: scaleY,
-      rotate,
-    });
-    return result;
-  }, []);
-
-  return {
-    index: Math.trunc(numberOr(value.index, 1)),
-    is_active: boolOr(value.is_active, false),
-    sticker: normalizedStickers,
-  };
-}
+  await DB.Update<PlayerInfo>(
+    data.refid,
+    { collection: 'playerinfo', version: data.version },
+    { $set: { playerboard: pickerToPlayerBoard(parsed) } }
+  );
+};
 
 /**
  * Replace the rival list for one game/version pair.
@@ -144,15 +118,3 @@ export const updateRival = async (data: {
     });
   }
 };
-
-
-
-
-
-
-
-
-
-
-
-

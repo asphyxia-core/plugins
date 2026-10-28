@@ -1,6 +1,6 @@
 /// <reference lib="es2020.bigint" />
 
-import { getDefaultPlayerInfo, PlayerInfo } from "../models/playerinfo";
+import { findInheritablePlayerInfo, getDefaultPlayerInfo, PlayerInfo } from "../models/playerinfo";
 import { PlayerRanking } from "../models/playerranking";
 import { getDefaultProfile, Profile } from "../models/profile";
 import { getDefaultRecord, Record } from "../models/record";
@@ -625,6 +625,12 @@ async function registerUser(refid: string, version: string, id = _.random(0, 999
   }
 
   const defaultInfo: PlayerInfo = getDefaultPlayerInfo(version, id)
+
+  const inherited = await findInheritablePlayerInfo(refid);
+  if (inherited) {
+    defaultInfo.name = inherited.name || defaultInfo.name;
+    defaultInfo.title = inherited.title || defaultInfo.title;
+  }
 
   const gf = { game: 'gf', version };
   const dm = { game: 'dm', version };
