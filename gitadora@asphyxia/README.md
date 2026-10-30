@@ -61,6 +61,17 @@ Scores are stored under `version: "shared"` but are automatically applied to the
 Release Notes
 =============
 
+v1.5.5
+----------------
+ * A version played for the first time now inherits the player's name/title from another version
+ * WebUI: profile page grouped into per-version tabs (User Detail / Playerboard, Profile and Rivals per game)
+ * WebUI: leaderboards grouped into per-version tabs, then per game
+ * WebUI: forms save in place without reloading, so the selected tab is kept
+ * Playerboard editor reworked to match the official customize page: stickers snap to the fixed 3x5 grid in two sizes,
+   with a visual preview (drag snaps to the grid), move / rotate / size / layer buttons and 10 sticker slots.
+   Boards saved by earlier editors are still sent to the game unchanged and are snapped to the grid when opened in the editor.
+ * Sticker catalog (data/trbitems.json) replaced with the cabinet-derived list (Sheet / Sticker / Seasonal / Special)
+
 v1.5.0
 ----------------
  * Added(more like bugfix lol) support for GALAXY WAVE DELTA

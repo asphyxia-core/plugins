@@ -1,3 +1,5 @@
+import { getBoardStickers } from "../playerboard";
+
 export interface PlayerStickerResponse {
     id: KITEM<'s32'>,
     pos_x: KITEM<'float'> ,
@@ -59,23 +61,14 @@ export function getPlayerStickerResponse(playerCard : any[]) : PlayerStickerResp
   return stickers
   }
 
-/** Build the playerboard response, with a safe fallback for old playerinfo documents. */
+/** Build the playerboard response from any stored board shape (see models/playerboard.ts). */
 export function getPlayerBoardResponse(playerInfo: any): PlayerBoardConfig {
-  const configured = playerInfo?.playerboard;
-  const legacyCard = playerInfo?.card;
-  const stickers = getPlayerStickerResponse(
-    _.isArray(configured?.sticker) ? configured.sticker : legacyCard
-  );
-  const index = finiteNumber(configured?.index, 0);
-  const activeValue = configured?.is_active;
-  const isActive = activeValue === undefined
-    ? _.isArray(legacyCard)
-    : Boolean(activeValue === true || activeValue === 1 || activeValue === '1' || activeValue === 'true');
+  const { stickers, isActive } = getBoardStickers(playerInfo);
+  const index = finiteNumber(playerInfo?.playerboard?.index, 1);
 
   return {
     index: K.ITEM('s32', Math.trunc(index)),
     is_active: K.ITEM('bool', isActive ? 1 : 0),
-    sticker: stickers,
+    sticker: getPlayerStickerResponse(stickers),
   };
 }
-

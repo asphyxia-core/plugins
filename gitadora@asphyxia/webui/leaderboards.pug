@@ -14,7 +14,7 @@
         return "Unknown"
     }
   }
-  
+
   function getFullGameVersion(shortVer) {
     switch (shortVer) {
       case "re" :
@@ -33,27 +33,13 @@
         return "GALAXY WAVE"
       case "galaxywave_delta":
         return "GALAXY WAVE DELTA"
-      default: 
+      default:
         return "Unknown"
     }
   }
 
   const versions = ["re", "matixx", "exchain", "nextage", "highvoltage", "fuzzup", "galaxywave", "galaxywave_delta"]
   const games = ["gf", "dm"]
-
-  function generateLeaderboards(infos, profiles) {
-      let result = []
-
-      for (const version of versions) {
-          for (const game of games) {
-              result.push(generateLeaderboard(infos, profiles, version, game))
-          }
-      }
-
-      // Hide versions and games with no entries
-      result = result.filter((e) => e.entries.length > 0)
-      return result
-  }
 
   function generateLeaderboard(infos, profiles, version, game) {
       let entries = []
@@ -73,35 +59,80 @@
               clear_diff: profile.clear_diff / 100
           }
           entries.push(scoreData)
-          idx++      
+          idx++
       }
 
-      let result = {
+      return {
           version: version,
           game: game,
           entries: entries
       }
+  }
+
+  // Group leaderboards by version first, then by game (GuitarFreaks / DrumMania) within each version.
+  // Versions/games with no entries are omitted entirely.
+  function generateLeaderboardsByVersion(infos, profiles) {
+      let result = []
+
+      for (const version of versions) {
+          let gameBoards = []
+          for (const game of games) {
+              const board = generateLeaderboard(infos, profiles, version, game)
+              if (board.entries.length > 0) gameBoards.push(board)
+          }
+          if (gameBoards.length > 0) {
+              result.push({ version, games: gameBoards })
+          }
+      }
+
       return result
   }
 
 -
+  const versionGroups = generateLeaderboardsByVersion(infos, profiles)
 
-each board in generateLeaderboards(infos, profiles) 
-  h3 #{getFullGameName(board.game)} #{getFullGameVersion(board.version)}
+mixin leaderboardTable(entries)
   table
-    tr 
-      th Rank 
-      th Name 
-      th Skill 
+    tr
+      th Rank
+      th Name
+      th Skill
       th All Skill
       th Songs Cleared
       th Hardest Clear
-    each e in board.entries
-      tr 
+    each e in entries
+      tr
         td #{e.rank}
         td #{e.name}
         td #{e.skill}
         td #{e.all_skill}
         td #{e.clear_music_num}
         td #{e.clear_diff}
-      
+
+link(rel="stylesheet", href="static/css/webui_util.css", type="text/css")
+script(src = "static/js/webui_util.js")
+
+if versionGroups.length == 0
+  p.has-text-grey No leaderboard data available yet.
+else
+  .tabs.is-toggle.is-toggle-rounded.is-small#tabs
+    ul
+      each vg, vIdx in versionGroups
+        li(tab-group="leaderboard-version", tab-index=vIdx, class=(vIdx == 0) ? "is-active" : "")
+          a #{getFullGameVersion(vg.version)}
+
+  each vg, vIdx in versionGroups
+    #tab-content(tab-group="leaderboard-version", tab-index=vIdx, class=(vIdx == 0) ? "is-active" : "")
+      if vg.games.length > 1
+        .tabs#tabs
+          ul
+            each board, gIdx in vg.games
+              li(tab-group=("leaderboard-game-" + vg.version), tab-index=gIdx, class=(gIdx == 0) ? "is-active" : "")
+                a #{getFullGameName(board.game)}
+        each board, gIdx in vg.games
+          #tab-content(tab-group=("leaderboard-game-" + vg.version), tab-index=gIdx, class=(gIdx == 0) ? "is-active" : "")
+            +leaderboardTable(board.entries)
+      else
+        each board in vg.games
+          h4 #{getFullGameName(board.game)}
+          +leaderboardTable(board.entries)
