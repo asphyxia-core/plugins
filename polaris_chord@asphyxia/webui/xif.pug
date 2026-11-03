@@ -1,0 +1,48 @@
+//-
+  xif@asphyxia 控制台页面
+  可用前端库：Bulma / MaterialDesignIcons / jQuery / axios / GeoPattern / jdenticon
+
+.content
+  h3.title.is-5 xif@asphyxia 控制台
+  p.subtitle.is-6 ポラリスコード (XIF) 本地服务器插件 —— 存档概况与维护
+
+  #xif-loading.notification.is-light 正在读取存档…
+
+  #xif-panel(style="display:none")
+    .columns.is-multiline
+      .column.is-half
+        .box
+          p.heading 玩家
+          p.title.is-5#xif-name —
+          p#xif-meta.is-size-7 —
+      .column.is-half
+        .box
+          p.heading 存档概况
+          table.table.is-narrow.is-fullwidth
+            tbody
+              tr
+                td 成绩记录
+                td#xif-scores —
+              tr
+                td 持久道具条目
+                td#xif-persistent —
+              tr
+                td 已落库节点
+                td#xif-rawnodes —
+
+    .box
+      p.heading 维护操作
+      .buttons
+        button.button.is-info#xif-export
+          span.icon: i.mdi.mdi-download
+          span 导出存档 JSON
+        button.button.is-danger#xif-reset
+          span.icon: i.mdi.mdi-delete-sweep
+          span 清空持久道具表
+      p.help
+        | 「清空持久道具表」会移除 usr.save 累计的商店购买/奖励记录，
+        | 下次登录时道具恢复为插件内置的基础配置。此操作不可撤销。
+
+  #xif-toast.notification.is-success(style="display:none")
+
+script(src="static/js/xif.js")
