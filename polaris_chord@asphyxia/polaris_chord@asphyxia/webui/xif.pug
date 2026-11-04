@@ -1,0 +1,49 @@
+//-
+  xif@asphyxia console page
+  Available front-end libraries: Bulma / MaterialDesignIcons / jQuery / axios / GeoPattern / jdenticon
+
+.content
+  h3.title.is-5 xif@asphyxia Console
+  p.subtitle.is-6 Polaris Chord (XIF) local server plugin — save overview and maintenance
+
+  #xif-loading.notification.is-light Reading player data…
+
+  #xif-panel(style="display:none")
+    .columns.is-multiline
+      .column.is-half
+        .box
+          p.heading Player
+          p.title.is-5#xif-name —
+          p#xif-meta.is-size-7 —
+      .column.is-half
+        .box
+          p.heading Save overview
+          table.table.is-narrow.is-fullwidth
+            tbody
+              tr
+                td Score entries
+                td#xif-scores —
+              tr
+                td Persistent item entries
+                td#xif-persistent —
+              tr
+                td Stored raw nodes
+                td#xif-rawnodes —
+
+    .box
+      p.heading Maintenance
+      .buttons
+        button.button.is-info#xif-export
+          span.icon: i.mdi.mdi-download
+          span Export save as JSON
+        button.button.is-danger#xif-reset
+          span.icon: i.mdi.mdi-delete-sweep
+          span Clear persistent item table
+      p.help
+        | "Clear persistent item table" drops the shop purchases / rewards accumulated through
+        | usr.save, so the next login falls back to the baseline item set bundled with the plugin.
+        | This cannot be undone.
+
+  #xif-toast.notification.is-success(style="display:none")
+
+script(src="static/js/xif.js")
