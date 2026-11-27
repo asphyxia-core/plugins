@@ -1,13 +1,17 @@
 declare const BigInt: any; // CORE typecheck targets es2017
-// jubeat Qubell (L44 2016-2017) handlers for Asphyxia CORE.
-// Response layout follows bemaniutils' bemani/backend/jubeat/qubell.py (format_profile,
-// format_scores, unformat_profile, __get_global_info) so the game accepts it.
-// Profiles live in collection "qubell_profile", scores in "qubell_score" (separate from the
-// festo collections used by the original plugin code).
+// Qubell's profile, in the layout of bemaniutils' bemani/backend/jubeat/qubell.py
+// (format_profile, unformat_profile). Clan reuses it under its own version id.
+//
+// The jubeat ID and name come from the shared profile; everything else is the
+// version's own data (handlers/version_data.ts).
 
-// ---------------------------------------------------------------------------------------------
-// helpers
-// ---------------------------------------------------------------------------------------------
+import Profile from "../../models/profile";
+import { VersionInfo } from "../types";
+import { loadPlayer, findPlayer, playerByJid } from "../../handlers/player";
+import { loadVersionData, saveVersionData } from "../../handlers/version_data";
+import { legacyMdata, saveResultTunes, versionScores } from "../../handlers/scores";
+import { info as globalInfo } from "./info";
+
 const fill = (n: number, v: number): number[] => new Array(n).fill(v);
 const s32a = (v: number[]) => K.ARRAY("s32", v);
 const fix = (v: any, n: number, def: number): number[] => {
@@ -16,12 +20,8 @@ const fix = (v: any, n: number, def: number): number[] => {
   return a;
 };
 
-const FLAG_PLAYED = 0x1, FLAG_CLEARED = 0x2, FLAG_FC = 0x4, FLAG_EX = 0x8;
-
-export interface QProfile {
-  collection: "qubell_profile";
-  jid: number;
-  name: string;
+/** Qubell's player data, kept in version data. */
+export interface QubellData {
   saved: boolean;
   jubility: number; jubility_yday: number;
   tune_cnt: number; save_cnt: number; saved_cnt: number; fc_cnt: number; ex_cnt: number;
@@ -36,8 +36,8 @@ export interface QProfile {
     emblem: number[];
   };
   music_list: number[]; theme_list: number[]; marker_list: number[];
-  title_list: number[]; parts_list: number[]; emblem_list: number[]; secret_list: number[];
-  theme_list_new: number[]; marker_list_new: number[]; secret_list_new: number[];
+  title_list: number[]; parts_list: number[]; emblem_list: number[];
+  theme_list_new: number[]; marker_list_new: number[];
   jbox_point: number; jbox_normal_index: number; jbox_premium_index: number;
   navi_flag: number;
   born_status: number; born_year: number;
@@ -46,17 +46,8 @@ export interface QProfile {
   stages: { [num: string]: number };
 }
 
-export interface QScore {
-  collection: "qubell_score";
-  musicId: number; seq: number;
-  score: number; clear: number;
-  playCnt: number; clearCnt: number; fcCnt: number; exCnt: number;
-  bar: number[];
-}
-
-const newProfile = (name: string, jid: number): QProfile => ({
-  collection: "qubell_profile",
-  jid, name, saved: false,
+const defaults = (): QubellData => ({
+  saved: false,
   jubility: 0, jubility_yday: 0,
   tune_cnt: 0, save_cnt: 0, saved_cnt: 0, fc_cnt: 0, ex_cnt: 0,
   clear_cnt: 0, match_cnt: 0, beat_cnt: 0, mynews_cnt: 0,
@@ -69,56 +60,22 @@ const newProfile = (name: string, jid: number): QProfile => ({
   },
   music_list: fill(64, -1), theme_list: fill(16, -1), marker_list: fill(16, -1),
   title_list: fill(160, -1), parts_list: fill(160, -1), emblem_list: fill(96, -1),
-  secret_list: fill(64, -1),
-  theme_list_new: fill(16, -1), marker_list_new: fill(16, -1), secret_list_new: fill(64, -1),
+  theme_list_new: fill(16, -1), marker_list_new: fill(16, -1),
   jbox_point: 0, jbox_normal_index: 2, jbox_premium_index: 1,
   navi_flag: 0, born_status: 0, born_year: 0,
   events: {}, digdig: {}, stages: {},
 });
 
-// ---------------------------------------------------------------------------------------------
-// global "info" node (shopinfo.regist, gametop.get_info, and inside every profile)
-// ---------------------------------------------------------------------------------------------
-const EVENTS = [5, 6, 15, 19];
-
-export const qubellInfo = () => ({
-  event_info: {
-    event: EVENTS.map(e => K.ATTR({ type: String(e) }, { state: K.ITEM("u8", 0) })),
-  },
-  share_music: {},
-  bonus_music: {},
-  white_music_list: s32a(fill(64, -1)),
-  white_marker_list: s32a(fill(16, -1)),
-  white_theme_list: s32a(fill(16, -1)),
-  open_music_list: s32a(fill(64, -1)),
-  shareable_music_list: s32a(fill(64, -1)),
-  jbox: {
-    point: K.ITEM("s32", 0),
-    emblem: {
-      normal: { index: K.ITEM("s16", 2) },
-      premium: { index: K.ITEM("s16", 1) },
-    },
-  },
-  born: { status: K.ITEM("s8", 0), year: K.ITEM("s16", 0) },
-  digdig: {
-    stage_list: {
-      stage: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].map(n =>
-        K.ATTR({ number: String(n) }, { state: K.ITEM("u8", 1) })),
-    },
-  },
-  collection: { rating_s: {} },
-  generic_dig: { map_list: {} },
-  expert_option: { is_available: K.ITEM("bool", true) },
-  tsumtsum: { is_available: K.ITEM("bool", true) },
-  nagatanien: { is_available: K.ITEM("bool", true) },
-  all_music_matching: { is_available: K.ITEM("bool", true) },
-  question_list: {},
-});
+const load = async (refid: string, version: VersionInfo): Promise<QubellData> => {
+  const d: any = { ...defaults(), ...(await loadVersionData(refid, version.id)) };
+  d.last = { ...defaults().last, ...(d.last || {}) };
+  return d;
+};
 
 // ---------------------------------------------------------------------------------------------
 // profile -> response
 // ---------------------------------------------------------------------------------------------
-const formatProfile = (p: QProfile) => {
+const format = (player: Profile, p: QubellData) => {
   const l = p.last;
   const emblem = fix(l.emblem, 5, 0);
   if (emblem[1] === 0) emblem[1] = 2; // default main part, as bemaniutils does
@@ -126,11 +83,11 @@ const formatProfile = (p: QProfile) => {
   const et = dd.eternal || {};
   return {
     data: {
-      info: qubellInfo(),
+      info: globalInfo(),
       player: {
         server: {},
-        name: K.ITEM("str", p.name),
-        jid: K.ITEM("s32", p.jid),
+        name: K.ITEM("str", player.name),
+        jid: K.ITEM("s32", player.jubeatId),
         session_id: K.ITEM("s32", 1),
         event_flag: K.ITEM("u64", BigInt(0)),
         info: {
@@ -258,129 +215,9 @@ const formatProfile = (p: QProfile) => {
 };
 
 // ---------------------------------------------------------------------------------------------
-// DB access
+// request -> profile (gameend.regist)
 // ---------------------------------------------------------------------------------------------
-const findProfile = (refid: string) =>
-  DB.FindOne<QProfile>(refid, { collection: "qubell_profile" });
-
-const nextJid = async (): Promise<number> => {
-  // 8-digit id, retried until unused
-  for (let i = 0; i < 20; i++) {
-    const jid = 10000000 + Math.floor(Math.random() * 89999999);
-    const hit = await DB.FindOne<QProfile>(null, { collection: "qubell_profile", jid });
-    if (!hit) return jid;
-  }
-  return 10000000 + Math.floor(Math.random() * 89999999);
-};
-
-// ---------------------------------------------------------------------------------------------
-// routes
-// ---------------------------------------------------------------------------------------------
-export const shopinfoRegist = (info: EamuseInfo, data: any, send: EamuseSend) => {
-  const locId = $(data).str("data.shop.locationid", "nowhere");
-  return send.object({
-    data: {
-      cabid: K.ITEM("u32", 1),
-      locationid: K.ITEM("str", locId || "nowhere"),
-      tax_phase: K.ITEM("u8", 1),
-      facility: { exist: K.ITEM("u32", 1) },
-      info: qubellInfo(),
-    },
-  }, { compress: true });
-};
-
-export const gametopGetInfo = (info: EamuseInfo, data: any, send: EamuseSend) =>
-  send.object({ data: { info: qubellInfo() } }, { compress: true });
-
-export const gametopGetMeeting = (info: EamuseInfo, data: any, send: EamuseSend) =>
-  send.object({
-    data: {
-      meeting: { single: K.ATTR({ count: "0" }), tag: K.ATTR({ count: "0" }) },
-      reward: { total: K.ITEM("s32", -1), point: K.ITEM("s32", -1) },
-    },
-  }, { compress: true });
-
-export const gametopRegist = async (info: EamuseInfo, data: any, send: EamuseSend) => {
-  const refid = $(data).str("data.player.refid");
-  const name = $(data).str("data.player.name") || "なし";
-  if (!refid) return send.deny();
-  let p = await findProfile(refid);
-  if (!p) {
-    const np = newProfile(name, await nextJid());
-    await DB.Upsert<QProfile>(refid, { collection: "qubell_profile" }, np);
-    p = await findProfile(refid);
-  }
-  console.log(`[qubell] gametop.regist -> jid ${p.jid} name ${p.name}`);
-  return send.object(formatProfile(p), { compress: true });
-};
-
-export const gametopGetPdata = async (info: EamuseInfo, data: any, send: EamuseSend) => {
-  const refid = $(data).str("data.player.refid");
-  if (!refid) return send.deny();
-  let p = await findProfile(refid);
-  if (!p) {
-    // The card is already bound to this game on the CORE side (it went through registration
-    // once with the festo-format code), so Qubell never calls gametop.regist again and treats a
-    // "no profile" status as a login failure. Create the Qubell profile here instead, reusing
-    // the name from the old festo-format profile if one exists.
-    const old: any = await DB.FindOne<any>(refid, { collection: "profile" });
-    const name = (old && old.name) ? String(old.name) : "なし";
-    await DB.Upsert<QProfile>(refid, { collection: "qubell_profile" }, newProfile(name, await nextJid()));
-    p = await findProfile(refid);
-    console.log(`[qubell] gametop.get_pdata: created profile on the fly, name=${name} jid=${p.jid}`);
-  }
-  console.log(`[qubell] gametop.get_pdata -> jid ${p.jid} name ${p.name}`);
-  return send.object(formatProfile(p), { compress: true });
-};
-
-export const gametopGetMdata = async (info: EamuseInfo, data: any, send: EamuseSend) => {
-  const jid = $(data).number("data.player.jid");
-  const mdataVer = $(data).number("data.player.mdata_ver", 1);
-  if (!jid) return send.deny();
-  const p = await DB.FindOne<QProfile>(null, { collection: "qubell_profile", jid });
-  if (!p) return send.status(109);
-
-  // all scores go out in partition 1; later partitions are empty
-  const scores = mdataVer === 1
-    ? await DB.Find<QScore>(p.__refid, { collection: "qubell_score" })
-    : [];
-
-  const byMusic: { [id: string]: QScore[] } = {};
-  for (const s of scores) (byMusic[String(s.musicId)] = byMusic[String(s.musicId)] || []).push(s);
-
-  const musicdata = Object.keys(byMusic).map(id => {
-    const play = [0, 0, 0], clr = [0, 0, 0], fc = [0, 0, 0], ex = [0, 0, 0], pts = [0, 0, 0], flags = [0, 0, 0];
-    const bars: any[] = [];
-    for (const s of byMusic[id]) {
-      if (s.seq < 0 || s.seq > 2) continue;
-      play[s.seq] = s.playCnt | 0; clr[s.seq] = s.clearCnt | 0; fc[s.seq] = s.fcCnt | 0; ex[s.seq] = s.exCnt | 0;
-      pts[s.seq] = s.score | 0;
-      let f = FLAG_PLAYED;
-      if (s.clearCnt > 0) f |= FLAG_CLEARED;
-      if (s.fcCnt > 0) f |= FLAG_FC;
-      if (s.exCnt > 0) f |= FLAG_EX;
-      flags[s.seq] = f;
-      if (s.bar && s.bar.length) bars.push(K.ARRAY("u8", fix(s.bar, 30, 0), { seq: String(s.seq) }));
-    }
-    return K.ATTR({ music_id: id }, {
-      play_cnt: s32a(play), clear_cnt: s32a(clr), fc_cnt: s32a(fc), ex_cnt: s32a(ex),
-      score: s32a(pts), clear: K.ARRAY("s8", flags),
-      ...(bars.length ? { bar: bars } : {}),
-    });
-  });
-
-  console.log(`[qubell] gametop.get_mdata jid ${jid} ver ${mdataVer} -> ${musicdata.length} songs`);
-  return send.object({
-    data: { player: { jid: K.ITEM("s32", jid), mdata_list: { musicdata } } },
-  }, { compress: true });
-};
-
-export const gameendRegist = async (info: EamuseInfo, data: any, send: EamuseSend) => {
-  const refid = $(data).str("data.player.refid");
-  if (!refid) return send.deny();
-  const p = await findProfile(refid);
-  if (!p) return send.deny();
-  const d = $(data);
+const unformat = (d: KDataReader, p: QubellData) => {
   const num = (path: string, def: number) => { const v = d.number(path); return (v === undefined || v === null || isNaN(v)) ? def : v; };
   const nums = (path: string, n: number, cur: number[]) => { const v = d.numbers(path); return (v && v.length) ? fix(v, n, -1) : cur; };
 
@@ -431,11 +268,13 @@ export const gameendRegist = async (info: EamuseInfo, data: any, send: EamuseSen
   p.born_status = num("data.player.born.status", p.born_status);
   p.born_year = num("data.player.born.year", p.born_year);
 
+  p.events = p.events || {};
   for (const ev of d.elements("data.player.event_info.event") || []) {
     const t = ev.attr("").type;
     if (t !== undefined) p.events[String(t)] = ev.bool("is_completed");
   }
 
+  p.stages = p.stages || {};
   const dd = p.digdig || {};
   if (d.element("data.player.digdig")) {
     dd.flag = num("data.player.digdig.flag", dd.flag | 0);
@@ -473,81 +312,65 @@ export const gameendRegist = async (info: EamuseInfo, data: any, send: EamuseSen
     }
   }
   p.digdig = dd;
+};
 
-  // scores
-  let saved = 0;
-  for (const tune of d.elements("data.result.tune") || []) {
-    const musicId = tune.number("music");
-    const sa = tune.attr("player.score") || {};
-    const seq = parseInt(sa.seq), flags = parseInt(sa.clear) | 0;
-    const points = tune.number("player.score") | 0;
-    const bar = tune.numbers("player.mbar");
-    if (!musicId || isNaN(seq)) continue;
-    p.last.music_id = musicId; p.last.seq_id = seq;
-    const old = await DB.FindOne<QScore>(refid, { collection: "qubell_score", musicId, seq });
-    const ns: QScore = old || { collection: "qubell_score", musicId, seq, score: 0, clear: 0, playCnt: 0, clearCnt: 0, fcCnt: 0, exCnt: 0, bar: [] };
-    ns.playCnt++;
-    if (flags & FLAG_CLEARED) ns.clearCnt++;
-    if (flags & FLAG_FC) ns.fcCnt++;
-    if (flags & FLAG_EX) ns.exCnt++;
-    ns.score = Math.max(ns.score | 0, points);
-    ns.clear = (ns.clear | 0) | flags;
-    if (bar && bar.length) ns.bar = bar;
-    await DB.Upsert<QScore>(refid, { collection: "qubell_score", musicId, seq }, {
-      $set: { musicId, seq, score: ns.score, clear: ns.clear, playCnt: ns.playCnt, clearCnt: ns.clearCnt, fcCnt: ns.fcCnt, exCnt: ns.exCnt, bar: ns.bar },
-    });
-    saved++;
+// ---------------------------------------------------------------------------------------------
+// routes
+// ---------------------------------------------------------------------------------------------
+export const regist = (version: VersionInfo): EamusePluginRoute => async (info, data, send) => {
+  const refid = $(data).str("data.player.refid");
+  if (!refid) return send.deny();
+  const player = await loadPlayer(refid, $(data).str("data.player.name"));
+  return send.object(format(player, await load(refid, version)), { compress: true });
+};
+
+// Same as regist: the game skips regist for cards CORE already knows.
+export const getPdata = regist;
+
+export const getMdata = (version: VersionInfo): EamusePluginRoute => async (info, data, send) => {
+  const jid = $(data).number("data.player.jid");
+  if (!jid) return send.deny();
+  const player = await playerByJid(jid);
+  if (!player) return send.status(109);
+  const part = Math.min(3, Math.max(1, $(data).number("data.player.mdata_ver", 1)));
+  const musicdata = legacyMdata(await versionScores(player.__refid, version), part);
+  return send.object({
+    data: { player: { jid: K.ITEM("s32", jid), mdata_list: { musicdata } } },
+  }, { compress: true });
+};
+
+export const gameendRegist = (version: VersionInfo): EamusePluginRoute => async (info, data, send) => {
+  const refid = $(data).str("data.player.refid");
+  if (!refid || !(await findPlayer(refid))) return send.deny();
+  const d = $(data);
+  const p = await load(refid, version);
+  unformat(d, p);
+
+  const plays = await saveResultTunes(refid, d);
+  if (plays.length) {
+    p.last.music_id = plays[plays.length - 1].musicId;
+    p.last.seq_id = plays[plays.length - 1].seq;
   }
 
-  const { __refid, _id, createdAt, updatedAt, ...plain } = p as any;
-  await DB.Update<QProfile>(refid, { collection: "qubell_profile" }, { $set: plain });
-  console.log(`[qubell] gameend.regist jid ${p.jid}: ${saved} tune(s) saved`);
+  await saveVersionData(refid, version.id, p);
+  console.log(`[jubeat] ${version.name} gameend.regist: ${plays.length} tune(s) saved`);
   return send.object({
     data: { player: { session_id: K.ITEM("s32", 1), end_final_session_id: K.ITEM("s32", 1) } },
   }, { compress: true });
 };
 
-export const gameendFinal = async (info: EamuseInfo, data: any, send: EamuseSend) => {
+export const gameendFinal = (version: VersionInfo): EamusePluginRoute => async (info, data, send) => {
   const refid = $(data).str("data.player.refid");
-  if (refid) {
-    const p = await findProfile(refid);
-    if (p) {
-      const d = $(data);
-      const jbType = d.number("data.player.jbox.emblem.type"), jbIndex = d.number("data.player.jbox.emblem.index");
-      const upd: any = {};
-      const pt = d.number("data.player.jbox.point"); if (pt !== undefined && !isNaN(pt)) upd.jbox_point = pt;
-      if (jbType === 1) upd.jbox_normal_index = jbIndex; else if (jbType === 2) upd.jbox_premium_index = jbIndex;
-      const bs = d.number("data.player.born.status"); if (bs !== undefined && !isNaN(bs)) upd.born_status = bs;
-      const by = d.number("data.player.born.year"); if (by !== undefined && !isNaN(by)) upd.born_year = by;
-      if (Object.keys(upd).length) await DB.Update<QProfile>(refid, { collection: "qubell_profile" }, { $set: upd });
-    }
+  if (refid && (await findPlayer(refid))) {
+    const d = $(data);
+    const ok = (v: number) => v !== undefined && v !== null && !isNaN(v);
+    const upd: any = {};
+    const pt = d.number("data.player.jbox.point"); if (ok(pt)) upd.jbox_point = pt;
+    const jbType = d.number("data.player.jbox.emblem.type"), jbIndex = d.number("data.player.jbox.emblem.index");
+    if (jbType === 1) upd.jbox_normal_index = jbIndex; else if (jbType === 2) upd.jbox_premium_index = jbIndex;
+    const bs = d.number("data.player.born.status"); if (ok(bs)) upd.born_status = bs;
+    const by = d.number("data.player.born.year"); if (ok(by)) upd.born_year = by;
+    if (Object.keys(upd).length) await saveVersionData(refid, version.id, upd);
   }
   return send.success();
 };
-
-export const lobbyCheck = (info: EamuseInfo, data: any, send: EamuseSend) =>
-  send.object({
-    data: {
-      interval: K.ITEM("s16", 0),
-      entry_timeout: K.ITEM("s16", 0),
-      entrant_nr: K.ITEM("u32", 0, { time: "0" }),
-    },
-  }, { compress: true });
-
-export const demodataGetNews = (info: EamuseInfo, data: any, send: EamuseSend) =>
-  send.object({ data: { officialnews: K.ATTR({ count: "0" }) } }, { compress: true });
-
-export const demodataGetHitchart = (info: EamuseInfo, data: any, send: EamuseSend) => {
-  const now = new Date();
-  const pad = (n: number) => (n < 10 ? "0" : "") + n;
-  return send.object({
-    data: {
-      update: K.ITEM("str", `${pad(now.getDate())}/${pad(now.getMonth() + 1)}/${now.getFullYear()}`),
-      hitchart_lic: K.ATTR({ count: "0" }),
-      hitchart_org: K.ATTR({ count: "0" }),
-    },
-  }, { compress: true });
-};
-
-export const recommendGetRecommend = (info: EamuseInfo, data: any, send: EamuseSend) =>
-  send.object({ data: { player: { music_list: {} } } }, { compress: true });

@@ -1,8 +1,11 @@
-import Profile from "../models/profile";
-import {Course} from "../models/course";
-import {emoList, shopList, FestoCourse, courseCategories, COURSE_STATUS} from "../static/data"
+// festo's player node, built from the shared profile (festo keeps its fields there).
+import Profile from "../../models/profile";
+import {Course} from "../../models/course";
+import {emoList, shopList, FestoCourse, courseCategories, COURSE_STATUS} from "../../data/festo"
 
-module.exports = async (data: Profile) => ({
+declare const BigInt: any; // CORE typecheck targets es2017
+
+export const profileData = async (data: Profile & { __refid?: string }) => ({
   info: {
     tune_cnt: K.ITEM("s32", data?.tuneCount || 0),
     save_cnt: K.ITEM("s32", data?.saveCount || 0),
@@ -18,11 +21,11 @@ module.exports = async (data: Profile) => ({
     mtg_result: K.ITEM("u8", 0),
     bonus_tune_points: K.ITEM("s32", data?.bonusPoints || 0),
     is_bonus_tune_played: K.ITEM("bool", data?.isBonusPlayed || false),
-    last_play_time: K.ITEM("s64", data?.lastPlayTime || 0),
+    last_play_time: (K.ITEM as any)("s64", data?.lastPlayTime || 0),
   },
 
   last: {
-    play_time: K.ITEM("s64", data?.lastPlayTime || 0),
+    play_time: (K.ITEM as any)("s64", data?.lastPlayTime || 0),
     shopname: K.ITEM("str", data.lastShopname),
     areaname: K.ITEM("str", data.lastAreaname),   
     music_id: K.ITEM("s32", data.musicId || 0),

@@ -1,4 +1,7 @@
-import {emoList, shopList, FestoCourse, courseCategories} from "../static/data"
+// festo's global "info" node (shopinfo.regist, gametop.get_info, and inside every profile).
+import {emoList, shopList, FestoCourse, courseCategories} from "../../data/festo"
+
+declare const BigInt: any; // CORE typecheck targets es2017
 
 /*
 if pos_index is not (1230 ~ 1236 or 1204 ~ 1205) and pos_index > 1200:
@@ -11,7 +14,7 @@ for(var i=0; i<=36; i++){
 pick_up_array[37] = -3211264;
 pick_up_array[38] = -2080769;
 
-module.exports = () => ({
+export const festoInfo = () => ({
   info: {
     white_music_list: K.ARRAY("s32", new Array(64).fill(-1)),
     white_marker_list: K.ARRAY("s32", new Array(16).fill(-1)),
