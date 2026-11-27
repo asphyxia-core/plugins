@@ -1,7 +1,9 @@
-export default (_: EamuseInfo, data: any, send: EamuseSend) => {
+import { festoInfo } from "./info";
+
+export const shopInfo = (_: EamuseInfo, data: any, send: EamuseSend) => {
   
   const locId = $(data).element("shop").content("locationid");
-  console.log({...require("../templates/gameInfos.ts")()}, {depth:null});
+  console.log({...festoInfo()}, {depth:null});
   return send.object(
     {
       data: {
@@ -12,7 +14,7 @@ export default (_: EamuseInfo, data: any, send: EamuseSend) => {
           exist: K.ITEM("u32", 0),
         },
 
-        ...require("../templates/gameInfos.ts")(),
+        ...festoInfo(),
       },
     },
     { compress: true }

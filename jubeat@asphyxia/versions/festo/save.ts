@@ -1,7 +1,8 @@
-import {Score} from "../models/score"
-import Profile from "../models/profile";
-import { Course } from "../models/course";
-import { COURSE_STATUS } from "../static/data";
+import {Score} from "../../models/score"
+import Profile from "../../models/profile";
+import { Course } from "../../models/course";
+import { COURSE_STATUS } from "../../data/festo";
+import { findPlayer } from "../../handlers/player";
 
 export const saveProfile = async (info, {data}, send) => {
     console.log("gameend.regist");
@@ -9,7 +10,7 @@ export const saveProfile = async (info, {data}, send) => {
     const refId = $(data).str("player.refid");
     if (!refId) return send.deny();
 
-    const profile = await DB.FindOne<Profile>(refId, { collection: "profile" });
+    const profile = await findPlayer(refId);
     if (!profile) return send.deny();
 
     let lastMarker = 0;

@@ -1,3 +1,5 @@
+// Lobby replies (festo's layout). Every version uses entry / refresh / report; festo also uses check.
+
 export const Check = (req, reqData, send) => {
 const { data } = reqData;
 const enter = $(data).content("enter");

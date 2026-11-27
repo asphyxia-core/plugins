@@ -4,9 +4,13 @@ Jubeat Plugin for Asphyxia Core
 
 # Supported Versions
 
+- prop
+- Qubell (tested with L44:J:B:A:2017062001)
+- clan (answered with Qubell's handlers, untested)
 - Festo
-- prop (model dates 2015022000 - 2016032999; profile, scores, course mode, league, shop info)
-- Qubell (tested with L44:J:B:A:2017062001; prop and clan are routed to the same handlers but untested)
+
+Scores are shared by every version (a version only sees the songs and charts it has). The jubeat ID and name
+are shared; each version keeps its own settings, items and progress.
 
 # Versions
 
@@ -23,14 +27,19 @@ Jubeat Plugin for Asphyxia Core
     - Older builds (model date < 2018090000) use the Qubell handlers; festo behaviour is unchanged
 
 - V2.2.0 (2026/11/27)
-    - Add jubeat prop support via version-split handlers in `prop/`
+    - Add jubeat prop support
         - Profile load/save in the prop layout (career, league class, jbox, items, navi, events)
         - Score list (`gametop.get_mdata`, split over its 3 requests) and score saving with ghosts
         - Course mode (`gametop.get_course`) with the Saucer Fulfill base courses and the 5th KAC prop courses
         - Weekly league (`gametop.get_league`): 3 songs per week, top 30% promoted and bottom 30% demoted, absent players demoted every 2 weeks
-        - Daily FC challenge songs and a hit chart from local plays
-    - prop data is stored in its own collections (`prop_profile`, `prop_score`, `prop_course`, `prop_league`); a card that already has a Qubell or festo profile gets a new prop profile with the same name
-    - All secret songs are unlocked
+        - Daily FC challenge songs
+    - One jubeat ID and name per card in every version
+    - Scores are shared by every version; prop, Qubell and clan only see normal-mode charts of the songs they have
+    - Qubell saves from V2.1.0 are moved over on the card's first login
+    - clan has its own entry (still answered with Qubell's handlers) and keeps its own data
+    - Hit charts list the most played songs on the server
+    - Builds older than prop are now refused instead of being answered as Qubell
+    - All secret songs are unlocked on prop and Qubell
     - The WebUI profile pages still only show festo data
 
 # TODO

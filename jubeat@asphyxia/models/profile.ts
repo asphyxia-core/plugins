@@ -1,3 +1,7 @@
+/**
+ * The shared player profile. `jubeatId` and `name` are used by every version;
+ * the other fields are festo's (older versions keep theirs in version data).
+ */
 export default interface Profile {
     collection: "profile";
     navi?: number,

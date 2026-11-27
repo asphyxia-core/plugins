@@ -1,5 +1,9 @@
-import Profile from '../models/profile';
-import { Score } from '../models/score';
+import { Score } from '../../models/score';
+import { createPlayer, findPlayer, playerByJid } from '../../handlers/player';
+import { festoInfo } from './info';
+import { profileData } from './profile_data';
+
+declare const BigInt: any; // CORE typecheck targets es2017
 
 export const getProfile = async (
   info: EamuseInfo,
@@ -13,23 +17,10 @@ export const getProfile = async (
   console.log(data, { depth: null });
   if (!refId) return send.deny();
 
-  let profile = await DB.FindOne<Profile>(refId, { collection: 'profile' });
+  let profile = await findPlayer(refId);
 
   if (!profile && name) {
-    const newProfile: Profile = {
-      collection: 'profile',
-      jubeatId: Math.round(Math.random() * 99999999),
-      eventFlag: 0,
-      name: name,
-      isFirstplay: true,
-      emo: [],
-      lastShopname: '',
-      lastAreaname: '',
-    };
-
-    await DB.Upsert<Profile>(refId, { collection: 'profile' }, newProfile);
-
-    profile = newProfile;
+    profile = await createPlayer(refId, name);
   } else if (!profile && !name) {
     return send.deny();
   }
@@ -37,7 +28,7 @@ export const getProfile = async (
   return send.object(
     {
       data: {
-        ...require('../templates/gameInfos.ts')(),
+        ...festoInfo(),
 
         player: {
           jid: K.ITEM('s32', profile.jubeatId),
@@ -45,7 +36,7 @@ export const getProfile = async (
           name: K.ITEM('str', profile.name),
           event_flag: K.ITEM('u64', BigInt(profile.eventFlag || 0)),
 
-          ...(await require('../templates/profiles.ts')(profile)),
+          ...(await profileData(profile)),
         },
       },
     },
@@ -56,7 +47,7 @@ export const getProfile = async (
 export const Getinfo = (info: EamuseInfo, data: any, send: EamuseSend) => {
   console.log(data, { depth: null });
   return send.object(
-    { data: require('../templates/gameInfos')() },
+    { data: festoInfo() },
     { compress: true }
   );
 };
@@ -68,10 +59,7 @@ export const loadScore = async (info, data, send) => {
   const jubeatId = $(data).number('data.player.jid');
   if (!jubeatId) return send.deny();
 
-  const profile = await DB.FindOne<Profile>(null, {
-    collection: 'profile',
-    jubeatId,
-  });
+  const profile = await playerByJid(jubeatId);
   if (!profile) return send.deny();
 
   const scores = await DB.Find<Score>(profile.__refid, { collection: 'score' });
@@ -108,14 +96,15 @@ export const loadScore = async (info, data, send) => {
     }
 
     const data = scoreData[score.musicId][score.isHardMode ? 1 : 0];
-    data.musicRate[score.seq] = score.musicRate;
-    data.playCnt[score.seq] = score.playCount;
-    data.clearCnt[score.seq] = score.clearCount;
-    data.fcCnt[score.seq] = score.fullcomboCount;
-    data.exCnt[score.seq] = score.excellentCount;
-    data.clear[score.seq] = score.clear;
-    data.score[score.seq] = score.score;
-    data.bar[score.seq] = score.bar;
+    // Records saved by older versions have no music rate, and may have no ghost.
+    data.musicRate[score.seq] = score.musicRate || 0;
+    data.playCnt[score.seq] = score.playCount || 0;
+    data.clearCnt[score.seq] = score.clearCount || 0;
+    data.fcCnt[score.seq] = score.fullcomboCount || 0;
+    data.exCnt[score.seq] = score.excellentCount || 0;
+    data.clear[score.seq] = score.clear || 0;
+    data.score[score.seq] = score.score || 0;
+    if (score.bar && score.bar.length) data.bar[score.seq] = score.bar;
   }
 
   var sendobj = {
